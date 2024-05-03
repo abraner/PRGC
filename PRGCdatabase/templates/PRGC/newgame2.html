@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="../../../img/favicon1.png"/>
+    <link rel="stylesheet" href="../../../static/login/newgame.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.png');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title2">Member's Playing</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+        <form id="form3" method="post">
+        <div id="menu2">
+            <div id="header1">
+                <div id="A">ID</div>
+                <div id="C">First Name</div>
+                <div id="D">Last Name</div>
+                <div id="E">Playing</div>
+
+            </div>
+        <div id="scroll">
+            <form id="form1" method="post"
+                yes-url="{% url 'PRGCdatabase:ninegroup' %}"
+            >
+                <div class="form-rowconinfo">
+                    {% for obj in object_list %}
+                    <a id="id" href="{{ obj.get_absolute2_url }}">{{ obj.memberid }}</a>
+                    <div id="firstname">{{ obj.firstname }}</div>
+                    <div id="lastname">{{ obj.lastname }}</div>
+                    <div id="add1">
+                       <a id="playing"  href="{{ obj.get_absolute5_url }}" >{{ obj.playing|yesno:"Yes,No,maybe" }}</a>
+                        <!--<input type="checkbox" class="hidden-box" id="{{ obj.memberid }}" autocomplete="off" {{ obj.playing }}/>-->
+                </div>
+
+                    {% endfor %}
+                </div>
+            </form>
+
+
+        </div>
+            <div class="selectgame">
+                <a href="/PRGCdatabase/selectgame">
+                    <button type="button" id="selectgame" class="btn btn1">Select Game</button>
+                </a>
+            </div>
+
+        </div>
+
+        </form>
+
+     </div>
+<div class="container3">
+        </div>
+    </div>
+</div>
+</body>

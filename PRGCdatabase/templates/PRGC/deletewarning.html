@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/playing.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.png');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+            <div id="background">
+
+                <div id="title4">Ready to delete this game?</div>
+
+                <form id="form2" method="post">
+                </form>
+                <div id="button1">
+                    <a class="button4" >Yes</a>
+                    <a class="button5" href="{% url 'PRGCdatabase:home' %}">No</a>
+                </div>
+            </div>
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$(document).ready(function() {
+localStorage.clear();
+});
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 1 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 100);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 2 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame2' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 3 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame3' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 700);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 4 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame4' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 1000);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 5 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame5' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 1300);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 6 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame6' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 2500);
+         });
+       });
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 7 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame7' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 1600);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 8 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame8' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 1900);
+         });
+       });
+
+$(function(){
+         $('a.button4').click(function(){
+          setTimeout(function(){
+                console.log("Game 9 Deleted.");
+                window.location.replace("http://127.0.0.1:8000/PRGCdatabase/home/");
+                 link = "{% url 'PRGCdatabase:deletegame9' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 2200);
+         });
+       });
+
+</script>

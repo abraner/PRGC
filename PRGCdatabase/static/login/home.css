@@ -1,0 +1,184 @@
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+}
+label{
+
+}
+
+
+div.container{
+    width:100%;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+div#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+div#name{
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 4vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+a {
+    display: inline-block;
+    margin-top: 0px;
+    height: 0px;
+    width: 100%;
+}
+
+button.selectgame, button.deletegame, button.sethole, button.newmember, button.editmember, button.guest
+, button.editguest, button.admin, button.logout, button.startnineholes{
+    width: 20%;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 2vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+div#logout{
+    height:1.5em;
+    width: 100%;
+    padding-top:50px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+
+.button1{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+
+}
+.button2{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+}
+@media only screen and (max-width: 400px) {
+
+div#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:23px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 8vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+div#name{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 6vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+a.btn.btn1, button.btn.btn1{
+    height:2em;
+    width: 75%;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:black;
+    text-align:center;
+    font-size: 6vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px grey;
+    border-radius: 10px;
+}
+
+
+.button1{
+    height:34px;
+    width: 100%;
+    padding-top:22px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+.button2{
+    height:34px;
+    width: 100%;
+    padding-top:8px;
+    margin-top: 3px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+
+}
+
+
+
+}

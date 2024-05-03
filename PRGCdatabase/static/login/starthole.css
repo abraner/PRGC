@@ -1,0 +1,132 @@
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+}
+
+#background{
+    background: lightgreen;
+    text-align: center;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 250px;
+    height: 315px;
+    border: 5px solid black;
+}
+
+#title4{
+    height:1.5em;
+    width: 100%;
+    padding-top: 9px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(2vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+#title5{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(2vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+#title6{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(2vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+#starthole{
+    margin-top: 30px;
+}
+select#id_starthole{
+        text-align: center;
+        font-size: calc(1vw + .5vh + .25vmin);
+}
+
+
+label{
+    display: none;
+}
+
+input#id_firstname, input#id_lastname{
+    display: none;
+}
+
+button#btn1.btn-success{
+    border: 2px solid black;
+    border-radius: 2px;
+    background: #b08f26;
+    width: 50%;
+    height: 4vh;
+    font-size: calc(.75vw + .5vh + .25vmin);
+    color: black;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight:bold;
+    cursor: pointer;
+    margin-top: 2vh;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom: 15px;
+    transition: 0.6s;
+    position: relative;
+    overflow: hidden;
+
+}
+button#btn1.btn-success{
+    color: #000000;
+}
+
+button#btn1.btn-success:hover{
+    color: white;
+    background: #5a3510;
+}
+
+#button{
+    width: 100%;
+    text-align: center;
+}
+
+.button1{
+    width: 100%;
+    text-align: center;
+}
+
+
+
+button#home.btn.btn1 {
+  width: 300px;
+  padding-top: 0px;
+  margin-top: 36px;
+  margin-left: auto;
+  margin-right: auto;
+  color: black;
+  text-align: center;
+  font-size: 1.5vw;
+  font-style: italic;
+  font-family: "Times New Roman";
+  text-shadow: 2px 2px 5px grey;
+  border-radius: 10px;
+}

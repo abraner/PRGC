@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/holehandicap.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<section id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+            <h1 id="formh2">Edit Hole Handicaps</h1>
+
+                <form class="form2" method="post">
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="form-row">
+                        {{ form.hole1handicap.errors }}
+                        <label class="label_hole1handicap">Hole 1 Handicap:</label>
+                        {{ form.hole1handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole2handicap.errors }}
+                        <label class="label_hole1handicap">Hole 2 Handicap:</label>
+                        {{ form.hole2handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole3handicap.errors }}
+                        <label class="label_hole1handicap">Hole 3 Handicap:</label>
+                        {{ form.hole3handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole4handicap.errors }}
+                        <label class="label_hole1handicap">Hole 4 Handicap:</label>
+                        {{ form.hole4handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole5handicap.errors }}
+                        <label class="label_hole1handicap">Hole 5 Handicap:</label>
+                        {{ form.hole5handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole6handicap.errors }}
+                        <label class="label_hole1handicap">Hole 6 Handicap:</label>
+                        {{ form.hole6handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole7handicap.errors }}
+                        <label class="label_hole1handicap">Hole 7 Handicap:</label>
+                        {{ form.hole7handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole8handicap.errors }}
+                        <label class="label_hole1handicap">Hole 8 Handicap:</label>
+                        {{ form.hole8handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole9handicap.errors }}
+                        <label class="label_hole1handicap">Hole 9 Handicap:</label>
+                        {{ form.hole9handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole10handicap.errors }}
+                        <label class="label_hole1handicap">Hole 10 Handicap:</label>
+                        {{ form.hole10handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole11handicap.errors }}
+                        <label class="label_hole1handicap">Hole 11 Handicap:</label>
+                        {{ form.hole11handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole12handicap.errors }}
+                        <label class="label_hole1handicap">Hole 12 Handicap:</label>
+                        {{ form.hole12handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole13handicap.errors }}
+                        <label class="label_hole1handicap">Hole 13 Handicap:</label>
+                        {{ form.hole13handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole14handicap.errors }}
+                        <label class="label_hole1handicap">Hole 14 Handicap:</label>
+                        {{ form.hole14handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole15handicap.errors }}
+                        <label class="label_hole1handicap">Hole 15 Handicap:</label>
+                        {{ form.hole15handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole16handicap.errors }}
+                        <label class="label_hole1handicap">Hole 16 Handicap:</label>
+                        {{ form.hole16handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole17handicap.errors }}
+                        <label class="label_hole1handicap">Hole 17 Handicap:</label>
+                        {{ form.hole17handicap }}
+                    </div>
+                    <div class="form-row">
+                        {{ form.hole18handicap.errors }}
+                        <label class="label_hole1handicap">Hole 18 Handicap:</label>
+                        {{ form.hole18handicap }}
+                    </div>
+
+                    <div id="button">
+                     <button id="btn1" type="submit" class="btn-success">ENTER</button>
+                    </div>
+            </form>
+
+
+        </div>
+        <div class="container3">
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<script type="text/javascript">
+</script>

@@ -1,0 +1,391 @@
+div.container{
+    width:100%;
+    height:111vh;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    display: flex;
+}
+
+#title2{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(3vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+div.container1{
+    flex: .5;
+}
+
+div.container2{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+div.container3{
+    flex: .5;
+}
+
+#line1, #line2, #line3, #line4{
+    display: flex;
+    justify-content: center;
+}
+
+#line5{
+    display: flex;
+    justify-content: center;
+}
+
+
+
+div#menu3, div#menu4, div#menu5, div#menu6, div#menu7, div#menu8, div#menu9, div#menu10, div#menu11 {
+    height:200px;
+    width: 195px;
+    display:block;
+    font-size: 0vw;
+    background: lightgreen;
+    position:relative;
+    overflow:auto;
+}
+
+div#menu3, div#menu6, div#menu9{
+    margin-right: 90px;
+}
+
+div#menu5, div#menu8, div#menu11{
+    margin-left: 90px;
+}
+
+.hole1{
+    width: 174px;
+    margin-top: 5px;
+}
+
+.hole1a{
+    pointer-events:none;
+}
+
+
+
+
+select#id_memberid, select#id_memberid2, select#id_memberid3, select#id_memberid4, select#id_memberid5,
+ select#id_memberid221, select#id_memberid222, select#id_memberid223, select#id_memberid224, select#id_memberid225,
+ select#id_memberid331, select#id_memberid332, select#id_memberid333, select#id_memberid334, select#id_memberid335,
+ select#id_memberid441, select#id_memberid442, select#id_memberid443, select#id_memberid444, select#id_memberid445,
+ select#id_memberid551, select#id_memberid552, select#id_memberid553, select#id_memberid554, select#id_memberid555,
+ select#id_memberid661, select#id_memberid662, select#id_memberid663, select#id_memberid664, select#id_memberid665,
+ select#id_memberid771, select#id_memberid772, select#id_memberid773, select#id_memberid774, select#id_memberid775,
+ select#id_memberid881, select#id_memberid882, select#id_memberid883, select#id_memberid884, select#id_memberid885,
+ select#id_memberid991, select#id_memberid992, select#id_memberid993, select#id_memberid994, select#id_memberid995{
+    width: 174px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+
+
+
+
+div#header1{
+    width:100%;
+    display:flex;
+}
+
+div#A{
+    display:inline-block;
+    width: 51px;
+    margin-top:0px;
+    padding-top:7px;
+    padding-bottom:0px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align:center;
+    border-left: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    border-bottom: 2px solid #c0c0c0;
+    font-weight:bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+div#C{
+    display: inline-block;
+    width: 170px;
+    padding-top: 5px;
+    padding-bottom:5px;
+    font-size: calc(.65vw + .5vh + .25vmin);
+    text-align: center;
+    border-right: 2px solid #c0c0c0;
+    border-bottom: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+div#E{
+    display: inline-block;
+    width: 85px;
+    padding-top: 7px;
+    padding-bottom:0px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align: center;
+    border-bottom: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+div#playerhandicap{
+    display:inline-block;
+    width: 52px;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align:center;
+    font-weight:bold;
+    border-bottom: 2px solid #c0c0c0;
+    border-left: 2px solid #c0c0c0;
+    box-sizing: border-box;
+}
+
+div#firstname{
+    display:inline-block;
+    width: 173px;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align:center;
+    border-bottom: 2px solid #c0c0c0;
+    border-left: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight:bold;
+    box-sizing: border-box;
+}
+#id_firstname{
+    display:inline-block;
+    width: 84px;
+    padding-bottom:0.0%;
+    font-size: calc(.5vw + .95vh + .25vmin);
+    text-align:center;
+    border-bottom: 2px solid #c0c0c0;
+    font-weight:bold;
+    box-sizing: border-box;
+    border: none;
+}
+
+a#id{
+    display:inline-block;
+    width: 54px;
+    margin-top:0px;
+    padding-top:3px;
+    padding-bottom:3px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align:center;
+    border-bottom: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight:bold;
+    box-sizing: border-box;
+}
+
+div#menu2 {
+    height:470px;
+    width: 312px;
+    display:block;
+    font-size: 0vw;
+    background: lightgreen;
+    position:relative;
+    overflow:auto;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid black;
+}
+
+.header3{
+    width:100%;
+    display:flex;
+}
+.C{
+    display: inline-block;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom:5px;
+    font-size: calc(.5vw + .5vh + .25vmin);
+    text-align: center;
+    border: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+.form3, .form4, .form5, .form6, .form7, .form8, .form9, .form10, .form11, .form12, .form13, .form14, .form15, .form16,
+.form17, .form18, .form19, .form20, .form21, .form22, .form23, .form24, .form25, .form26, .form27, .form28, .form29,
+ .form30, .form31, .form32, .form33, .form34, .form35, .form36, .form37, .form38, .form39, .form40, .form41, .form42,
+  .form43, .form44, .form45, .form46, .form47{
+    width: 100%;
+    height: 25px;
+    justify-content: center;
+    display: flex;
+    margin-top: 5px;
+}
+}
+
+.firstname{
+    display:inline-block;
+    width: 173px;
+    height: 28px;
+    padding-top:3px;
+    font-size: calc(.7vw + .5vh + .25vmin);
+    text-align:center;
+    border-bottom: 2px solid #c0c0c0;
+    border-left: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight:bold;
+    box-sizing: border-box;
+}
+
+
+#home1{
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+
+.button1{
+
+    width: 100%;
+    margin-top: 22px;
+    padding-top:0px;
+    text-align:center;
+}
+
+
+.button2{
+    width: 100%;
+    padding-top:0px;
+    margin-top: 22px;
+    text-align:center;
+}
+
+button#holeassignment.btn.btn1{
+    border: 2px solid black;
+    border-radius: 2px;
+    background: white;
+    width: 300px;
+    font-size: calc(.95vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    cursor: pointer;
+    display:inline-block;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0%;
+    transition: 0.6s;
+   text-align: center;
+    overflow: hidden;
+    padding:8px 5px;
+}
+
+a#back{
+    color: #000000;
+}
+
+a#back:hover{
+    color: white;
+    background: grey;
+}
+
+.home1{
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    margin-top: 3px;
+}
+
+.back{
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    margin-top: 0px;
+}
+
+button#selectgame.btn.btn1{
+    border: 2px solid black;
+    border-radius: 2px;
+    background: white;
+    width: 300px;
+    font-size: calc(.95vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    cursor: pointer;
+    display:inline-block;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0%;
+    transition: 0.6s;
+   text-align: center;
+    overflow: hidden;
+    padding:8px 5px;
+
+}
+
+button.backpage{
+    border: 2px solid black;
+    border-radius: 2px;
+    background: white;
+    width: 300px;
+    font-size: calc(.95vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    cursor: pointer;
+    display:inline-block;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0%;
+    transition: 0.6s;
+   text-align: center;
+    overflow: hidden;
+    padding:8px 5px;
+
+}
+
+
+.button.row{
+    margin-top: 7px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.startround1{
+    margin-right: 190px;
+}
+
+.startround3{
+    margin-left: 190px;
+}
+
+#hole1.btn.btn1, #startround2.btn.btn1, #startround3.btn.btn1, #startround4.btn.btn1, #startround5.btn.btn1
+, #startround6.btn.btn1, #startround7.btn.btn1, #startround8.btn.btn1, #startround9.btn.btn1{
+    font-size: 17px;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+}
+

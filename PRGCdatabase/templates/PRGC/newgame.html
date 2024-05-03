@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="../../../img/favicon1.png"/>
+    <link rel="stylesheet" href="../../../static/login/newgame.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.png');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title2">Member's Playing</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+        <form id="form" method="post">
+        <div id="menu2">
+            <div id="header1">
+                <div id="C">First Name</div>
+                <div id="D">Last Name</div>
+                <div id="E">Playing</div>
+
+            </div>
+        <div id="scroll">
+            <form class="form2" method="post">
+                    {% for obj in object_list2 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                {% csrf_token %}
+                <div class="add1">
+                        <input type="checkbox" class="save-cb-state" name="mycheckbox" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form3" method="post">
+                    {% for obj in object_list3 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                        <input type="checkbox" class="save-cb-state" name="mycheckbox2" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form4" method="post">
+                    {% for obj in object_list4 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                        <input type="checkbox" class="save-cb-state" name="mycheckbox3" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form5" method="post">
+                    {% for obj in object_list5 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox4" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form6" method="post">
+                    {% for obj in object_list6 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                        <input type="checkbox" class="save-cb-state" name="mycheckbox5" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form7" method="post">
+                    {% for obj in object_list7 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox6" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form8" method="post">
+                    {% for obj in object_list8 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox7" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form9" method="post">
+                    {% for obj in object_list9 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox8" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form10" method="post">
+                    {% for obj in object_list10 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox9" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form11" method="post">
+                    {% for obj in object_list11 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox10" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form12" method="post">
+                    {% for obj in object_list12 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox11" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form13" method="post">
+                    {% for obj in object_list13 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox12" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form14" method="post">
+                    {% for obj in object_list14 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox13" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form15" method="post">
+                    {% for obj in object_list15 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox14" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form16" method="post">
+                    {% for obj in object_list16 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox15" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form17" method="post">
+                    {% for obj in object_list17 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox16" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form18" method="post"
+                yes-url="{% url 'PRGCdatabase:ninegroup' %}">
+                    {% for obj in object_list18 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox17" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form19" method="post">
+                    {% for obj in object_list19 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox18" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form20" method="post">
+                    {% for obj in object_list20 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox19" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form21" method="post">
+                    {% for obj in object_list21 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox20" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form22" method="post">
+                    {% for obj in object_list22 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox21" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form23" method="post">
+                    {% for obj in object_list23 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox22" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form24" method="post">
+                    {% for obj in object_list24 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox23" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form25" method="post">
+                    {% for obj in object_list25 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox24" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form26" method="post">
+                    {% for obj in object_list26 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox25" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form27" method="post">
+                    {% for obj in object_list27 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox26" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form28" method="post">
+                    {% for obj in object_list28 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox27" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form29" method="post">
+                    {% for obj in object_list29 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox28" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form30" method="post">
+                    {% for obj in object_list30 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox29" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form31" method="post">
+                    {% for obj in object_list31 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox30" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form32" method="post">
+                    {% for obj in object_list32 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox31" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form33" method="post">
+                    {% for obj in object_list33 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox32" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form34" method="post">
+                    {% for obj in object_list34 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox33" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form35" method="post">
+                    {% for obj in object_list35 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox34" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form36" method="post">
+                    {% for obj in object_list36 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox35" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form37" method="post">
+                    {% for obj in object_list37 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox36" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form38" method="post">
+                    {% for obj in object_list38 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox37" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form39" method="post">
+                    {% for obj in object_list39 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox38" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form40" method="post">
+                    {% for obj in object_list40 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox39" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+             <form class="form41" method="post">
+                    {% for obj in object_list41 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox40" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form42" method="post">
+                    {% for obj in object_list42 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox41" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form43" method="post">
+                    {% for obj in object_list43 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox42" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form44" method="post">
+                    {% for obj in object_list44 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                       <input type="checkbox" class="save-cb-state" name="mycheckbox43" value="yes"/>
+                </div>
+                {% endfor %}
+            </form>
+            <form class="form45" method="post">
+                    {% for obj in object_list45 %}
+                    <div class="firstname">{{ obj.firstname }}</div>
+                    <div class="lastname">{{ obj.lastname }}</div>
+                    <div class="add1">
+                      <input type="checkbox" class="save-cb-state" name="mycheckbox44" value="yes"/>
+                </div>
+                {% endfor %}
+
+            </form>
+
+        </div>
+            <div class="selectgame">
+                <a href="/PRGCdatabase/selectgame">
+                    <button type="button" id="selectgame" class="btn btn1">Select Game</button>
+                </a>
+            </div>
+
+        </div>
+
+
+        </form>
+
+     </div>
+<div class="container3">
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+$(document).ready(function() {
+localStorage.clear();
+});
+$(document).ready(function() {
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 1 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 100);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 2 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame2' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 200);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 3 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame3' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 300);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 4 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame4' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 5 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame5' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 500);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 6 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame6' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 600);
+       });
+$(function(){
+          setTimeout(function(){
+                console.log("Game 7 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame7' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 700);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 8 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame8' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 800);
+       });
+
+$(function(){
+          setTimeout(function(){
+                console.log("Game 9 Deleted.");
+                 link = "{% url 'PRGCdatabase:deletegame9' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 900);
+       });
+
+
+
+
+
+(function() {
+  // variable to store our current state
+  var cbstate;
+
+  // bind to the onload event
+  window.addEventListener('load', function() {
+    // Get the current state from localstorage
+    // State is stored as a JSON string
+    cbstate = JSON.parse(localStorage['CBState'] || '{}');
+
+    // Loop through state array and restore checked
+    // state for matching elements
+    for(var i in cbstate) {
+      var el = document.querySelector('input[name="' + i + '"]');
+      if (el) el.checked = true;
+    }
+
+    // Get all checkboxes that you want to monitor state for
+    var cb = document.getElementsByClassName('save-cb-state');
+
+    // Loop through results and ...
+    for(var i = 0; i < cb.length; i++) {
+
+      //bind click event handler
+      cb[i].addEventListener('click', function(evt) {
+        // If checkboxe is checked then save to state
+        if (this.checked) {
+          cbstate[this.name] = true;
+        }
+
+    // Else remove from state
+        else if (cbstate[this.name]) {
+          delete cbstate[this.name];
+        }
+
+    // Persist state
+        localStorage.CBState = JSON.stringify(cbstate);
+      });
+    }
+  });
+})();
+
+
+
+
+});
+
+//////////////////////////////////////// Checkbox 1 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox1' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox01' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 2 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox2"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox2' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox02' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox2"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 3 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox3"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox3' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox03' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox3"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 4 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox4"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox4' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox04' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox4"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 5 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox5"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox5' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox05' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox5"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+
+//////////////////////////////////////// Checkbox 6 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox6"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox6' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox06' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox6"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 7 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox7"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox7' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox07' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox7"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #7.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 8 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox8"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox8' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox08' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox8"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 9 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox9"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox9' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox09' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox9"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 10 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox10"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox10' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox010' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox10"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 11 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox11"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox11' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox011' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox11"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 12 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox12"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox12' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox012' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox12"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 13 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox13"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox13' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox013' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox13"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 14 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox14"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox14' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox014' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox14"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 15 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox15"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox15' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox015' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox15"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+
+//////////////////////////////////////// Checkbox 16 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox16"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox16' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox016' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox16"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 17 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox17"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox17' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox017' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox17"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #7.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 18 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox18"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox18' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox018' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox18"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 19 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox19"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox19' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox019' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox19"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 20 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox20"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox20' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox020' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox20"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 21 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox21"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox21' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox021' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox21"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 22 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox22"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox22' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox022' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox22"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 23 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox23"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox23' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox023' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox23"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 24 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox24"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox24' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox024' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox24"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 25 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox25"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox25' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox025' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox25"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+
+//////////////////////////////////////// Checkbox 26 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox26"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox26' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox026' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox26"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 27 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox27"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox27' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox027' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox27"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #7.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 28 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox28"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox28' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox028' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox28"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 29 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox29"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox29' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox029' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox29"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 30 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox30"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox30' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox030' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox30"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 31 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox31"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox31' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox031' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox31"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 32 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox32"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox32' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox032' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox32"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 33 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox33"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox33' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox033' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox33"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 34 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox34"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox34' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox034' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox34"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 35 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox35"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox35' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox035' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox35"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+
+//////////////////////////////////////// Checkbox 36 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox36"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox36' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox036' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox36"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 37 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox37"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox37' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox037' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox37"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 38 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox38"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox38' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox038' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox38"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 39 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox39"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox39' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox039' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox39"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 40 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox40"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox40' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox040' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox40"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 41 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox41"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox41' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox041' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox41"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+//////////////////////////////////////// Checkbox 42 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox42"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox42' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox042' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox42"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 43 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox43"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox43' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox043' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox43"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 44 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox44"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox44' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox044' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox44"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+       //////////////////////////////////////// Checkbox 45 ///////////////////////////////////////////////////
+$(function(){
+          $('input[name="mycheckbox45"]').change(function(){
+            var item = $(this);
+            if (item.is(":checked")) {
+                 console.log("Checkbox is checked.");
+                  link = "{% url 'PRGCdatabase:checkbox45' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+            else {
+                console.log("Checkbox is unchecked.");
+                link = "{% url 'PRGCdatabase:checkbox045' %}";
+                         $.ajax({
+                           type:'POST',
+                           url: link,
+                           data:{
+                                csrfmiddlewaretoken: '{{ csrf_token }}'
+                           },
+                         });
+            }
+
+          });
+        });
+
+$(function(){
+         $('input[name="mycheckbox45"]').change(function(){
+           var item = $(this);
+           if (item.is(":checked")) {
+          setTimeout(function(){
+                console.log("Checkbox is checked #2.");
+                 link = "{% url 'PRGCdatabase:checkbox1a' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+           }, 400);
+           }
+
+         });
+       });
+
+
+</script>

@@ -1,0 +1,244 @@
+div.container{
+    width:100%;
+    margin-top: 30px;
+    margin-left:auto;
+    margin-right:auto;
+    display: flex;
+}
+
+div.container1{
+    flex: .5;
+}
+
+div.container2{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.container3{
+    flex: .5;
+}
+
+
+#title{
+    width: 100%;
+    margin-top:5px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(3vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}#title2{
+    width: 100%;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(3vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+#title3{
+    width: 100%;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(3vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+#title4{
+    width: 100%;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(3vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+div#menu3 {
+    height:300px;
+    width: 272px;
+    margin-top: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    display:block;
+    font-size: 0vw;
+    background: lightgreen;
+    position:relative;
+    overflow:auto;
+}
+
+.gohole2{
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+    display: flex;
+    margin-top: 38px;
+}
+
+button#hole1.btn.btn1{
+    height:1.5em;
+    width: 297px;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:black;
+    text-align:center;
+    font-size: calc( 1vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px grey;
+
+}
+
+.back, .scorecard, .home{
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+    display: flex;
+    margin-top: 15px;
+}
+
+button#back.btn.btn1, button#scorecard.btn.btn1, button#home.btn.btn1{
+    height:1.5em;
+    width: 297px;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:black;
+    text-align:center;
+    font-size: calc( 1vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px grey;
+
+}
+
+
+
+.header3{
+    width:100%;
+    display:flex;
+}
+
+.A{
+    display: inline-block;
+    width: 175px;
+    padding-top: 5px;
+    padding-bottom:5px;
+    font-size: calc(.5vw + .7vh + .25vmin);
+    text-align: center;
+    border-bottom: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+.B{
+    display: inline-block;
+    width: 95px;
+    padding-top: 5px;
+    padding-bottom:5px;
+    font-size: calc(.5vw + .7vh + .25vmin);
+    text-align: center;
+    border-bottom: 2px solid #c0c0c0;
+    border-right: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+.C{
+    display: inline-block;
+    width: 95px;
+    padding-top: 5px;
+    padding-bottom:5px;
+    font-size: calc(.5vw + .7vh + .25vmin);
+    text-align: center;
+    border-bottom: 2px solid #c0c0c0;
+    font-weight: bold;
+    color:#a9a9a9;
+    background:#505050;
+}
+
+.form1, .form2, .form3, .form4, .form5{
+    width: 267px;
+    display: flex;
+    justify-content: right;
+}
+
+.break{
+    height: 25px;
+}
+
+.player1id{
+    width: 30px;
+    font-size: calc(.7vw + .5vh + .25vmin);
+    padding-top:3px;
+    text-align:center;
+    font-weight:bold;
+    box-sizing: border-box;
+    border-bottom: 2px solid #c0c0c0;
+}
+
+.id1{
+    width: 20px;
+    font-size: calc(.7vw + .5vh + .25vmin);
+    text-align:center;
+    font-weight:bold;
+}
+
+.firstname{
+    display:inline-block;
+    width: 177px;
+    height: 28px;
+    padding-top:3px;
+    padding-bottom: 26px;
+    font-size: calc(.7vw + .5vh + .25vmin);
+    text-align:center;
+    border: 2px solid #c0c0c0;
+    font-weight:bold;
+    box-sizing: border-box;
+}
+
+
+.player1hole1, .player2hole1, .player3hole1, .player4hole1, .player5hole1{
+    width: 90px;
+    justify-content: center;
+    display: flex;
+}
+#id_score1, #id_score2, #id_score3, #id_score4, #id_score5{
+    font-size: calc(.7vw + .5vh + .25vmin);
+    text-align: center;
+    width: 90px;
+}
+
+.hole1{
+    width: 90px;
+    height: 30px;
+
+}
+
+select#id_hole1{
+    font-size: calc(.7vw + .5vh + .25vmin);
+    text-align: center;
+}

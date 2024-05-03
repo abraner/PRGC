@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/9holegroup.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title2">9 Hole Game</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+            <div id="menu2">
+            <div id="header1">
+                <div id="A">HDC</div>
+                <div id="C">Golfers</div>
+                <div id="E">Starting Hole</div>
+            </div>
+            <form id="form" method="post">
+                    {% for obj in object_list %}
+                <div id="playerhandicap">{{ obj.handicap }}</div>
+                <div id="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                <a id="id" href="{{ obj.get_absolute_url }}">{{ obj.starthole }} </a>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu3">
+            <div class="header3">
+                <div class="C">Hole 1</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list2 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu4">
+            <div class="header3">
+                <div class="C">Hole 2</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list3 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu5">
+            <div class="header3">
+                <div class="C">Hole 3</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list4 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu6">
+            <div class="header3">
+                <div class="C">Hole 4</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list5 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu7">
+            <div class="header3">
+                <div class="C">Hole 5</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list6 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu8">
+            <div class="header3">
+                <div class="C">Hole 6</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list7 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu9">
+            <div class="header3">
+                <div class="C">Hole 7</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list8 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu10">
+            <div class="header3">
+                <div class="C">Hole 8</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list9 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+        <div id="menu11">
+            <div class="header3">
+                <div class="C">Hole 9</div>
+            </div>
+            <form class="form3" method="post">
+                    {% for obj in object_list10 %}
+                <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+            </form>
+        </div>
+             <div id="home1">
+                <a id="back"  href="{% url 'PRGCdatabase:home' %}">Home</a>
+             </div>
+        </div>
+        <div class="container3">
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+<script>
+
+function change(url) {
+    window.history.pushState('new', 'title', url);
+}
+$(document).ready(function() {
+
+$(function(){
+    $('#id_golferid').change(function(){
+                var selectBox =document.getElementById('id_golferid');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $("#form2").attr("golferid1-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_golferid: $('#id_golferid').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_golferid').change(function(){
+        setTimeout(function(){
+           location.href=location.href;
+        }, 200);
+    });
+});
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+$(function(){
+    $('#id_golferid2').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_golferid2');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $("#form4").attr("golferid2-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_golferid2: $('#id_golferid2').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+        }, 200);
+    });
+});
+
+$(function(){
+    $('#id_golferid3').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_golferid3');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $("#form5").attr("golferid3-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_golferid3: $('#id_golferid3').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+        }, 200);
+    });
+});
+
+$(function(){
+    $('#id_golferid4').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_golferid4');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $("#form6").attr("golferid4-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_golferid4: $('#id_golferid4').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+        }, 200);
+    });
+});
+
+$(function(){
+    $('#id_golferid5').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_golferid5');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $("#form7").attr("golferid5-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_golferid5: $('#id_golferid5').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+        }, 200);
+    });
+});
+
+
+
+
+</script>

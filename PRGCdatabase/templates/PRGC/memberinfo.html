@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/memberedit.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+            <h1 id="title">Edit Contractor Information</h1>
+            <div id="container">
+               <form id="form2" method="post">
+                    <br>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <br>
+                    <div id="button">
+                        <button id="btn1" type="submit" class="btn-success">ENTER</button>
+                     </div>
+                </form>
+
+
+
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+</script>

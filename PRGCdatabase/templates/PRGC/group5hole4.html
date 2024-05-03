@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/hole.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/hole4.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title">Hole #4</div>
+<div id="title2">Par 3</div>
+<div id="title3">139 Yards</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+
+            <div id="menu3">
+                <div class="header3">
+                    <div class="A">Golfers</div>
+                    <div class="B">Score</div>
+
+                </div>
+                <form class="form1" method="post"
+                    score1-url="{% url 'PRGCdatabase:start5hole4player1' %}"
+                >
+                    {% for obj in object_list1 %}
+                    <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                 {{ form.name_of_field }}
+                    <div class="player1hole1">
+                    {{ form.score1 }}
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form2" method="post"
+                    score2-url="{% url 'PRGCdatabase:start5hole4player2' %}"
+                >
+                     {% for obj in object_list2 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player2hole1">
+                    {{ form2.score2 }}
+                    </div>
+
+                </form>
+                <div class=break>
+                </div>
+                <form class="form3" method="post"
+                    score3-url="{% url 'PRGCdatabase:start5hole4player3' %}"
+                >
+                    {% for obj in object_list3 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player3hole1">
+                    {{ form3.score3 }}
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form4" method="post"
+                    score4-url="{% url 'PRGCdatabase:start5hole4player4' %}"
+                >
+                    {% for obj in object_list4 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player4hole1">
+                    {{ form4.score4 }}
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form5" method="post"
+                    score5-url="{% url 'PRGCdatabase:start5hole4player5' %}"
+                >
+                    {% for obj in object_list5 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player5hole1">
+                    {{ form5.score5 }}
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="gohole2">
+                <a href="/PRGCdatabase/group5hole14">
+                    <button type="button" id="hole1" class="btn btn1">Go to Hole 14</button>
+                </a>
+            </div>
+            <div class="scorecard">
+                <a href="/PRGCdatabase/scorecard">
+                    <button type="button" id="scorecard" class="btn btn1">View Score Card</button>
+                </a>
+            </div>
+            <div class="back">
+                <a href="/PRGCdatabase/group5hole3">
+                    <button type="button" id="back" class="btn btn1">Back One Hole</button>
+                </a>
+            </div>
+            <div class="home">
+                <a href="/PRGCdatabase/home">
+                    <button type="button" id="home" class="btn btn1">Home</button>
+                </a>
+            </div>
+        </div>
+        <div class="container3">
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+<script>
+$(function(){
+    $('#id_score1').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score1');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form1").attr("score1-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score1: $('#id_score1').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+});
+
+$(function(){
+    $('#id_score2').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score2');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form2").attr("score2-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score2: $('#id_score2').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+});
+$(function(){
+    $('#id_score3').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score3');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form3").attr("score3-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score3: $('#id_score3').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+});
+$(function(){
+    $('#id_score4').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score4');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form4").attr("score4-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score4: $('#id_score4').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+});
+$(function(){
+    $('#id_score5').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score5');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form5").attr("score5-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score5: $('#id_score5').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+});
+
+</script>

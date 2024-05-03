@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/startnineholes.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.PNG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title2">Hole Selection</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+        <div id="line1">
+            <div id="menu3">
+                <div class="header3">
+                    <div class="C">Hole 1</div>
+                </div>
+                <form class="form3" method="post"
+                    holeoneplayer1-url="{% url 'PRGCdatabase:holeoneplayer1' %}"
+                    holeoneplayer1a-url="{% url 'PRGCdatabase:load_holeoneplayer1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form2.memberid }}
+                    </div>
+                    {% else %}
+                     <div class="hole1a" >
+                        {{ form2.memberid }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form4" method="post"
+                    holeoneplayer2-url="{% url 'PRGCdatabase:holeoneplayer2' %}"
+                    holeoneplayer2a-url="{% url 'PRGCdatabase:load_holeoneplayer2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form3.memberid2 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form3.memberid2 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form5" method="post"
+                    holeoneplayer3-url="{% url 'PRGCdatabase:holeoneplayer3' %}"
+                    holeoneplayer3a-url="{% url 'PRGCdatabase:load_holeoneplayer3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form4.memberid3 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form4.memberid3 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form6" method="post"
+                    holeoneplayer4-url="{% url 'PRGCdatabase:holeoneplayer4' %}"
+                    holeoneplayer4a-url="{% url 'PRGCdatabase:load_holeoneplayer4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form5.memberid4 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form5.memberid4 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form7" method="post"
+                    holeoneplayer5-url="{% url 'PRGCdatabase:holeoneplayer5' %}"
+                    holeoneplayer5a-url="{% url 'PRGCdatabase:load_holeoneplayer5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form6.memberid5 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form6.memberid5 }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+
+        <div id="menu4">
+            <div class="header3">
+                <div class="C">Hole 2</div>
+            </div>
+            <form class="form8" method="post" 
+                  hole2player1-url="{% url 'PRGCdatabase:hole2player1' %}" 
+                  hole2player1a-url="{% url 'PRGCdatabase:load_hole2player1' %}"
+            >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form22.memberid221 }}
+                    </div>
+                {% else %}
+                    <div class="hole1a" >
+                        {{ form22.memberid221 }}
+                    </div>
+                {% endif %}
+                </form>
+                <form class="form9" method="post"
+                      hole2player2-url="{% url 'PRGCdatabase:hole2player2' %}" 
+                      hole2player2a-url="{% url 'PRGCdatabase:load_hole2player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form23.memberid222 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                     {{ form23.memberid222 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form10" method="post" 
+                      hole2player3-url="{% url 'PRGCdatabase:hole2player3' %}"
+                      hole2player3a-url="{% url 'PRGCdatabase:load_hole2player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form24.memberid223 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form24.memberid223 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form11" method="post" 
+                      hole2player4-url="{% url 'PRGCdatabase:hole2player4' %}"
+                      hole2player4a-url="{% url 'PRGCdatabase:load_hole2player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form25.memberid224 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form25.memberid224 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form12" method="post" 
+                      hole2player5-url="{% url 'PRGCdatabase:hole2player5' %}"
+                      hole2player5a-url="{% url 'PRGCdatabase:load_hole2player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form26.memberid225 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form26.memberid225 }}
+                    </div>
+                    {% endif %}
+                </form>
+        </div>
+            <div id="menu5">
+                <div class="header3">
+                    <div class="C">Hole 3</div>
+                </div>
+                <form class="form13" method="post"
+                    hole3player1-url="{% url 'PRGCdatabase:hole3player1' %}"
+                    hole3player1a-url="{% url 'PRGCdatabase:load_hole3player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form32.memberid331 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form32.memberid331 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form14" method="post"
+                    hole3player2-url="{% url 'PRGCdatabase:hole3player2' %}"
+                    hole3player2a-url="{% url 'PRGCdatabase:load_hole3player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form33.memberid332 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                         {{ form33.memberid332 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form15" method="post"
+                    hole3player3-url="{% url 'PRGCdatabase:hole3player3' %}"
+                    hole3player3a-url="{% url 'PRGCdatabase:load_hole3player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form34.memberid333 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form34.memberid333 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form16" method="post"
+                    hole3player4-url="{% url 'PRGCdatabase:hole3player4' %}"
+                    hole3player4a-url="{% url 'PRGCdatabase:load_hole3player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form35.memberid334 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form35.memberid334 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form17" method="post"
+                    hole3player5-url="{% url 'PRGCdatabase:hole3player5' %}"
+                    hole3player5a-url="{% url 'PRGCdatabase:load_hole3player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form36.memberid335 }}
+                    </div>
+                    {% else %}
+                    <div class="hole1a" >
+                        {{ form36.memberid335 }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+            <div class="button row">
+                <div class="startround1">
+                    <a href="/PRGCdatabase/group1hole1">
+                        <button type="button" id="hole1" class="btn btn1">Start Hole 1</button>
+                    </a>
+                </div>
+                <div class="startround2">
+                    <a href="/PRGCdatabase/group2hole2">
+                        <button type="button" id="startround2" class="btn btn1">Start Hole 2</button>
+                    </a>
+                </div>
+                <div class="startround3">
+                    <a href="/PRGCdatabase/group3hole3">
+                        <button type="button" id="startround3" class="btn btn1">Start Hole 3</button>
+                    </a>
+                </div>
+            </div>
+        <div id="line2">
+
+            <div id="menu6">
+                <div class="header3">
+                    <div class="C">Hole 4</div>
+                </div>
+                <form class="form18" method="post"
+                    hole4player1-url="{% url 'PRGCdatabase:hole4player1' %}"
+                    hole4player1a-url="{% url 'PRGCdatabase:load_hole4player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form42.memberid441 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form42.memberid441 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form19" method="post"
+                    hole4player2-url="{% url 'PRGCdatabase:hole4player2' %}"
+                    hole4player2a-url="{% url 'PRGCdatabase:load_hole4player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form43.memberid442 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form43.memberid442 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form20" method="post"
+                    hole4player3-url="{% url 'PRGCdatabase:hole4player3' %}"
+                    hole4player3a-url="{% url 'PRGCdatabase:load_hole4player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form44.memberid443 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form44.memberid443 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form21" method="post"
+                    hole4player4-url="{% url 'PRGCdatabase:hole4player4' %}"
+                    hole4player4a-url="{% url 'PRGCdatabase:load_hole4player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form45.memberid444 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form45.memberid444 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form22" method="post"
+                    hole4player5-url="{% url 'PRGCdatabase:hole4player5' %}"
+                    hole4player5a-url="{% url 'PRGCdatabase:load_hole4player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form46.memberid445 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form46.memberid445 }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+            <div id="menu7">
+            <div class="header3">
+                <div class="C">Hole 5</div>
+            </div>
+            <form class="form23" method="post"
+                    hole5player1-url="{% url 'PRGCdatabase:hole5player1' %}"
+                    hole5player1a-url="{% url 'PRGCdatabase:load_hole5player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form52.memberid551 }}
+                    </div>
+                 {% else %}
+                    <div class="hole1a" >
+                        {{ form52.memberid551 }}
+                    </div>
+                {% endif %}
+                </form>
+                <form class="form24" method="post"
+                    hole5player2-url="{% url 'PRGCdatabase:hole5player2' %}"
+                    hole5player2a-url="{% url 'PRGCdatabase:load_hole5player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form53.memberid552 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form53.memberid552 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form25" method="post"
+                    hole5player3-url="{% url 'PRGCdatabase:hole5player3' %}"
+                    hole5player3a-url="{% url 'PRGCdatabase:load_hole5player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form54.memberid553 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form54.memberid553 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form26" method="post"
+                    hole5player4-url="{% url 'PRGCdatabase:hole5player4' %}"
+                    hole5player4a-url="{% url 'PRGCdatabase:load_hole5player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form55.memberid554 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form55.memberid554 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form27" method="post"
+                    hole5player5-url="{% url 'PRGCdatabase:hole5player5' %}"
+                    hole5player5a-url="{% url 'PRGCdatabase:load_hole5player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form56.memberid555 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form56.memberid555 }}
+                    </div>
+                    {% endif %}
+                </form>
+        </div>
+        <div id="menu8">
+            <div class="header3">
+                <div class="C">Hole 6</div>
+            </div>
+            <form class="form28" method="post"
+                    hole6player1-url="{% url 'PRGCdatabase:hole6player1' %}"
+                    hole6player1a-url="{% url 'PRGCdatabase:load_hole6player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form62.memberid661 }}
+                    </div>
+                 {% else %}
+                    <div class="hole1a" >
+                        {{ form62.memberid661 }}
+                    </div>
+                {% endif %}
+                </form>
+                <form class="form29" method="post"
+                    hole6player2-url="{% url 'PRGCdatabase:hole6player2' %}"
+                    hole6player2a-url="{% url 'PRGCdatabase:load_hole6player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form63.memberid662 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form63.memberid662 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form30" method="post"
+                    hole6player3-url="{% url 'PRGCdatabase:hole6player3' %}"
+                    hole6player3a-url="{% url 'PRGCdatabase:load_hole6player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form64.memberid663 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form64.memberid663 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form31" method="post"
+                    hole6player4-url="{% url 'PRGCdatabase:hole6player4' %}"
+                    hole6player4a-url="{% url 'PRGCdatabase:load_hole6player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form65.memberid664 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form65.memberid664 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form32" method="post"
+                    hole6player5-url="{% url 'PRGCdatabase:hole6player5' %}"
+                    hole6player5a-url="{% url 'PRGCdatabase:load_hole6player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form66.memberid665 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form66.memberid665 }}
+                    </div>
+                    {% endif %}
+                </form>
+        </div>
+        </div>
+            <div class="button row">
+                <div class="startround1">
+                    <a href="/PRGCdatabase/group4hole4">
+                        <button type="button" id="startround4" class="btn btn1">Start Hole 4</button>
+                    </a>
+                </div>
+                <div class="startround2">
+                    <a href="/PRGCdatabase/group5hole5">
+                        <button type="button" id="startround5" class="btn btn1">Start Hole 5</button>
+                    </a>
+                </div>
+                <div class="startround3">
+                    <a href="/PRGCdatabase/group6hole6">
+                        <button type="button" id="startround6" class="btn btn1">Start Hole 6</button>
+                    </a>
+                </div>
+            </div>
+        <div id="line3">
+            <div id="menu9">
+            <div class="header3">
+                <div class="C">Hole 7</div>
+            </div>
+           <form class="form33" method="post"
+                    hole7player1-url="{% url 'PRGCdatabase:hole7player1' %}"
+                    hole7player1a-url="{% url 'PRGCdatabase:load_hole7player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+               {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form72.memberid771 }}
+                    </div>
+                {% else %}
+                    <div class="hole1a" >
+                         {{ form72.memberid771 }}
+                    </div>
+               {% endif %}
+                </form>
+                <form class="form34" method="post"
+                    hole7player2-url="{% url 'PRGCdatabase:hole7player2' %}"
+                    hole7player2a-url="{% url 'PRGCdatabase:load_hole7player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form73.memberid772 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form73.memberid772 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form35" method="post"
+                    hole7player3-url="{% url 'PRGCdatabase:hole7player3' %}"
+                    hole7player3a-url="{% url 'PRGCdatabase:load_hole7player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form74.memberid773 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form74.memberid773 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form36" method="post"
+                    hole7player4-url="{% url 'PRGCdatabase:hole7player4' %}"
+                    hole7player4a-url="{% url 'PRGCdatabase:load_hole7player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form75.memberid774 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form75.memberid774 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form37" method="post"
+                    hole7player5-url="{% url 'PRGCdatabase:hole7player5' %}"
+                    hole7player5a-url="{% url 'PRGCdatabase:load_hole7player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form76.memberid775 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form76.memberid775 }}
+                    </div>
+                    {% endif %}
+                </form>
+        </div>
+        <div id="menu10">
+            <div class="header3">
+                <div class="C">Hole 8</div>
+            </div>
+            <form class="form38" method="post"
+                    hole8player1-url="{% url 'PRGCdatabase:hole8player1' %}"
+                    hole8player1a-url="{% url 'PRGCdatabase:load_hole8player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form82.memberid881 }}
+                    </div>
+                 {% else %}
+                    <div class="hole1a" >
+                         {{ form82.memberid881 }}
+                    </div>
+                {% endif %}
+                </form>
+                <form class="form39" method="post"
+                    hole8player2-url="{% url 'PRGCdatabase:hole8player2' %}"
+                    hole8player2a-url="{% url 'PRGCdatabase:load_hole8player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form83.memberid882 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form83.memberid882 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form40" method="post"
+                    hole8player3-url="{% url 'PRGCdatabase:hole8player3' %}"
+                    hole8player3a-url="{% url 'PRGCdatabase:load_hole8player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form84.memberid883 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form84.memberid883 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form41" method="post"
+                    hole8player4-url="{% url 'PRGCdatabase:hole8player4' %}"
+                    hole8player4a-url="{% url 'PRGCdatabase:load_hole8player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form85.memberid884 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form85.memberid884 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form42" method="post"
+                    hole8player5-url="{% url 'PRGCdatabase:hole8player5' %}"
+                    hole8player5a-url="{% url 'PRGCdatabase:load_hole8player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form86.memberid885 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form86.memberid885 }}
+                    </div>
+                    {% endif %}
+                </form>
+        </div>
+        <div id="menu11">
+            <div class="header3">
+                <div class="C">Hole 9</div>
+            </div>
+           <form class="form43" method="post"
+                    hole9player1-url="{% url 'PRGCdatabase:hole9player1' %}"
+                    hole9player1a-url="{% url 'PRGCdatabase:load_hole9player1' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+               {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form92.memberid991 }}
+                    </div>
+                {% else %}
+                    <div class="hole1a" >
+                        {{ form92.memberid991 }}
+                    </div>
+               {% endif %}
+                </form>
+                <form class="form44" method="post"
+                    hole9player2-url="{% url 'PRGCdatabase:hole9player2' %}"
+                     hole9player2a-url="{% url 'PRGCdatabase:load_hole9player2' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form93.memberid992 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                         {{ form93.memberid992 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form45" method="post"
+                    hole9player3-url="{% url 'PRGCdatabase:hole9player3' %}"
+                     hole9player3a-url="{% url 'PRGCdatabase:load_hole9player3' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form94.memberid993 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form94.memberid993 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form46" method="post"
+                    hole9player4-url="{% url 'PRGCdatabase:hole9player4' %}"
+                     hole9player4a-url="{% url 'PRGCdatabase:load_hole9player4' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                    {{ form95.memberid994 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form95.memberid994 }}
+                    </div>
+                    {% endif %}
+                </form>
+                <form class="form47" method="post"
+                    hole9player5-url="{% url 'PRGCdatabase:hole9player5' %}"
+                     hole9player5a-url="{% url 'PRGCdatabase:load_hole9player5' %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    {% if request.user.is_superuser %}
+                    <div class="hole1">
+                        {{ form96.memberid995 }}
+                    </div>
+                     {% else %}
+                    <div class="hole1a" >
+                        {{ form96.memberid995 }}
+                    </div>
+                    {% endif %}
+                </form>
+
+
+        </div>
+        </div>
+            <div class="button row">
+                <div class="startround1">
+                    <a href="/PRGCdatabase/group7hole7">
+                        <button type="button" id="startround7" class="btn btn1">Start Hole 7</button>
+                    </a>
+                </div>
+                <div class="startround2">
+                    <a href="/PRGCdatabase/group8hole8">
+                        <button type="button" id="startround8" class="btn btn1">Start Hole 8</button>
+                    </a>
+                </div>
+                <div class="startround3">
+                    <a href="/PRGCdatabase/group9hole9">
+                        <button type="button" id="startround9" class="btn btn1">Start Hole 9</button>
+                    </a>
+                </div>
+            </div>
+        <div id="line4">
+
+        </div>
+        <div id="line5">
+
+        </div>
+            {% if request.user.is_superuser %}
+            <div class="back">
+                <a href="/PRGCdatabase/newgame">
+                    <button type="button" class="backpage" class="btn btn1">Back</button>
+                </a>
+            </div>
+            {% else %}
+
+            {% endif %}
+            <div class="home1">
+                <a href="/PRGCdatabase/home">
+                    <button type="button" id="selectgame" class="btn btn1">Home</button>
+                </a>
+            </div>
+        </div>
+        <div class="container3">
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+<script>
+
+function change(url) {
+    window.history.pushState('new', 'title', url);
+}
+
+$(document).ready(function() {
+
+
+/////////////////////////// Hole 1L ////////////////////////////////
+setTimeout(function(){
+            var urlC = $(".form3").attr("holeoneplayer1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form4").attr("holeoneplayer2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid2').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form5").attr("holeoneplayer3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid3').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form6").attr("holeoneplayer4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid4').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form7").attr("holeoneplayer5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid5').html(data);
+                     }
+                });
+        }, 0);
+
+
+/////////////////////// Hole 2L ////////////////////////////////
+setTimeout(function(){
+            var urlC = $(".form8").attr("hole2player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid221').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form9").attr("hole2player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid222').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form10").attr("hole2player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid223').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form11").attr("hole2player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid224').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form12").attr("hole2player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid225').html(data);
+                     }
+                });
+        }, 0);
+        
+/////////////////////// Hole 3L ////////////////////////////////
+setTimeout(function(){
+            var urlC = $(".form13").attr("hole3player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid331').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form14").attr("hole3player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid332').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form15").attr("hole3player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid333').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form16").attr("hole3player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid334').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form17").attr("hole3player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid335').html(data);
+                     }
+                });
+        }, 0);
+
+/////////////////////// Hole 4L ////////////////////////////////
+setTimeout(function(){
+            var urlC = $(".form18").attr("hole4player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid441').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form19").attr("hole4player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid442').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form20").attr("hole4player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid443').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form21").attr("hole4player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid444').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form22").attr("hole4player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid445').html(data);
+                     }
+                });
+        }, 0);
+
+/////////////////////// Hole 5L ////////////////////////////////
+
+setTimeout(function(){
+            var urlC = $(".form23").attr("hole5player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid551').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form24").attr("hole5player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid552').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form25").attr("hole5player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid553').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form26").attr("hole5player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid554').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form27").attr("hole5player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid555').html(data);
+                     }
+                });
+        }, 0);
+
+
+/////////////////////// Hole 6L ////////////////////////////////
+
+setTimeout(function(){
+            var urlC = $(".form28").attr("hole6player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid661').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form29").attr("hole6player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid662').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form30").attr("hole6player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid663').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form31").attr("hole6player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid664').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form32").attr("hole6player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid665').html(data);
+                     }
+                });
+        }, 0);
+
+
+/////////////////////// Hole 7L ////////////////////////////////
+
+setTimeout(function(){
+            var urlC = $(".form33").attr("hole7player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid771').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form34").attr("hole7player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid772').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form35").attr("hole7player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid773').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form36").attr("hole7player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid774').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form37").attr("hole7player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid775').html(data);
+                     }
+                });
+        }, 0);
+
+
+///////////////////////// Hole 8L ////////////////////////////////
+
+setTimeout(function(){
+            var urlC = $(".form38").attr("hole8player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid881').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form39").attr("hole8player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid882').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form40").attr("hole8player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid883').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form41").attr("hole8player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid884').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form42").attr("hole8player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid885').html(data);
+                     }
+                });
+        }, 0);
+
+
+/////////////////////// Hole 9L ////////////////////////////////
+
+setTimeout(function(){
+            var urlC = $(".form43").attr("hole9player1a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid991').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form44").attr("hole9player2a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid992').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form45").attr("hole9player3a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid993').html(data);
+                     }
+                });
+        }, 0);
+
+setTimeout(function(){
+            var urlC = $(".form46").attr("hole9player4a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid994').html(data);
+                     }
+                });
+        }, 0);
+
+
+setTimeout(function(){
+            var urlC = $(".form47").attr("hole9player5a-url");
+            req = $.ajax({
+                   url: urlC,
+                   data:{
+                     },
+                     success: function (data) {
+                      $('#id_memberid995').html(data);
+                     }
+                });
+        }, 0);
+
+
+
+
+});
+
+
+
+//////////////////////////////////  Hole 1 ////////////////////////////////////////////////
+
+
+$(function(){
+    $('#id_memberid').change(function(){
+                var selectBox =document.getElementById('id_memberid');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form3").attr("holeoneplayer1-url");
+                $("select option[value=" + userInput +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid: $('#id_memberid').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+
+$(function(){
+    $('#id_memberid2').change(function(){
+                var selectBox =document.getElementById('id_memberid2');
+                var userInput2 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput2);
+                var url = $(".form4").attr("holeoneplayer2-url");
+                $("select option[value=" + userInput2 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid2: $('#id_memberid2').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid3').change(function(){
+                var selectBox =document.getElementById('id_memberid3');
+                var userInput3 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput3);
+                var url = $(".form5").attr("holeoneplayer3-url");
+                $("select option[value=" + userInput3 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid3: $('#id_memberid3').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid4').change(function(){
+                var selectBox =document.getElementById('id_memberid4');
+                var userInput4 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput4);
+                var url = $(".form6").attr("holeoneplayer4-url");
+                $("select option[value=" + userInput4 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid4: $('#id_memberid4').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid5').change(function(){
+                var selectBox =document.getElementById('id_memberid5');
+                var userInput5 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput5);
+                var url = $(".form7").attr("holeoneplayer5-url");
+                $("select option[value=" + userInput5 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid5: $('#id_memberid5').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 2 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid221').change(function(){
+                var selectBox =document.getElementById('id_memberid221');
+                var userInput21 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput21);
+                var url = $(".form8").attr("hole2player1-url");
+                $("select option[value=" + userInput21 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid221: $('#id_memberid221').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid222').change(function(){
+                var selectBox =document.getElementById('id_memberid222');
+                var userInput22 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput22);
+                var url = $(".form9").attr("hole2player2-url");
+                $("select option[value=" + userInput22 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid222: $('#id_memberid222').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid223').change(function(){
+                var selectBox =document.getElementById('id_memberid223');
+                var userInput23 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput23);
+                var url = $(".form10").attr("hole2player3-url");
+                $("select option[value=" + userInput23 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid223: $('#id_memberid223').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid224').change(function(){
+                var selectBox =document.getElementById('id_memberid224');
+                var userInput24 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput24);
+                var url = $(".form11").attr("hole2player4-url");
+                $("select option[value=" + userInput24 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid224: $('#id_memberid224').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid225').change(function(){
+                var selectBox =document.getElementById('id_memberid25');
+                var userInput25 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput25);
+                var url = $(".form12").attr("hole2player5-url");
+                $("select option[value=" + userInput25 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid225: $('#id_memberid225').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 3 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid331').change(function(){
+                var selectBox =document.getElementById('id_memberid331');
+                var userInput31 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput31);
+                var url = $(".form13").attr("hole3player1-url");
+                $("select option[value=" + userInput31 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid331: $('#id_memberid331').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid332').change(function(){
+                var selectBox =document.getElementById('id_memberid332');
+                var userInput32 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput32);
+                var url = $(".form14").attr("hole3player2-url");
+                $("select option[value=" + userInput32 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid332: $('#id_memberid332').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid333').change(function(){
+                var selectBox =document.getElementById('id_memberid333');
+                var userInput33 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput33);
+                var url = $(".form15").attr("hole3player3-url");
+                $("select option[value=" + userInput33 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid333: $('#id_memberid333').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid334').change(function(){
+                var selectBox =document.getElementById('id_memberid334');
+                var userInput34 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput34);
+                var url = $(".form16").attr("hole3player4-url");
+                $("select option[value=" + userInput34 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid334: $('#id_memberid334').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid335').change(function(){
+                var selectBox =document.getElementById('id_memberid335');
+                var userInput35 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput35);
+                var url = $(".form17").attr("hole3player5-url");
+                $("select option[value=" + userInput35 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid335: $('#id_memberid335').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 4 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid441').change(function(){
+                var selectBox =document.getElementById('id_memberid441');
+                var userInput41 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput41);
+                var url = $(".form18").attr("hole4player1-url");
+                $("select option[value=" + userInput41 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid441: $('#id_memberid441').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid442').change(function(){
+                var selectBox =document.getElementById('id_memberid442');
+                var userInput42 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput42);
+                var url = $(".form19").attr("hole4player2-url");
+                $("select option[value=" + userInput42 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid442: $('#id_memberid442').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid443').change(function(){
+                var selectBox =document.getElementById('id_memberid443');
+                var userInput43 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput43);
+                var url = $(".form20").attr("hole4player3-url");
+                $("select option[value=" + userInput43 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid443: $('#id_memberid443').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid444').change(function(){
+                var selectBox =document.getElementById('id_memberid444');
+                var userInput44 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput44);
+                var url = $(".form21").attr("hole4player4-url");
+                $("select option[value=" + userInput44 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid444: $('#id_memberid444').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid445').change(function(){
+                var selectBox =document.getElementById('id_memberid445');
+                var userInput45 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput45);
+                var url = $(".form22").attr("hole4player5-url");
+                $("select option[value=" + userInput45 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid445: $('#id_memberid445').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 5 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid551').change(function(){
+                var selectBox =document.getElementById('id_memberid551');
+                var userInput51 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput51);
+                var url = $(".form23").attr("hole5player1-url");
+                $("select option[value=" + userInput51 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid551: $('#id_memberid551').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid552').change(function(){
+                var selectBox =document.getElementById('id_memberid552');
+                var userInput52 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput52);
+                var url = $(".form24").attr("hole5player2-url");
+                $("select option[value=" + userInput52 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid552: $('#id_memberid552').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid553').change(function(){
+                var selectBox =document.getElementById('id_memberid553');
+                var userInput53 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput53);
+                var url = $(".form25").attr("hole5player3-url");
+                $("select option[value=" + userInput53 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid553: $('#id_memberid553').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid554').change(function(){
+                var selectBox =document.getElementById('id_memberid554');
+                var userInput54 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput54);
+                var url = $(".form26").attr("hole5player4-url");
+                $("select option[value=" + userInput54 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid554: $('#id_memberid554').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid555').change(function(){
+                var selectBox =document.getElementById('id_memberid555');
+                var userInput55 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput55);
+                var url = $(".form27").attr("hole5player5-url");
+                $("select option[value=" + userInput55 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid555: $('#id_memberid555').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 6 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid661').change(function(){
+                var selectBox =document.getElementById('id_memberid661');
+                var userInput61 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput61);
+                var url = $(".form28").attr("hole6player1-url");
+                $("select option[value=" + userInput61 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid661: $('#id_memberid661').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid662').change(function(){
+                var selectBox =document.getElementById('id_memberid662');
+                var userInput62 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput62);
+                var url = $(".form29").attr("hole6player2-url");
+                $("select option[value=" + userInput62 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid662: $('#id_memberid662').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid663').change(function(){
+                var selectBox =document.getElementById('id_memberid663');
+                var userInput63 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput63);
+                var url = $(".form30").attr("hole6player3-url");
+                $("select option[value=" + userInput63 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid663: $('#id_memberid663').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid664').change(function(){
+                var selectBox =document.getElementById('id_memberid664');
+                var userInput64 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput64);
+                var url = $(".form31").attr("hole6player4-url");
+                $("select option[value=" + userInput64 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid664: $('#id_memberid664').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid665').change(function(){
+                var selectBox =document.getElementById('id_memberid665');
+                var userInput65 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput65);
+                var url = $(".form32").attr("hole6player5-url");
+                $("select option[value=" + userInput65 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid665: $('#id_memberid665').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 7 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid771').change(function(){
+                var selectBox =document.getElementById('id_memberid771');
+                var userInput71 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput71);
+                var url = $(".form33").attr("hole7player1-url");
+                $("select option[value=" + userInput71 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid771: $('#id_memberid771').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid772').change(function(){
+                var selectBox =document.getElementById('id_memberid772');
+                var userInput72 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput72);
+                var url = $(".form34").attr("hole7player2-url");
+                $("select option[value=" + userInput72 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid772: $('#id_memberid772').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid773').change(function(){
+                var selectBox =document.getElementById('id_memberid773');
+                var userInput73 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput73);
+                var url = $(".form35").attr("hole7player3-url");
+                $("select option[value=" + userInput73 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid773: $('#id_memberid773').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid774').change(function(){
+                var selectBox =document.getElementById('id_memberid774');
+                var userInput74 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput74);
+                var url = $(".form36").attr("hole7player4-url");
+                $("select option[value=" + userInput74 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid774: $('#id_memberid774').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid775').change(function(){
+                var selectBox =document.getElementById('id_memberid775');
+                var userInput75 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput75);
+                var url = $(".form37").attr("hole7player5-url");
+                $("select option[value=" + userInput75 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid775: $('#id_memberid775').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+
+//////////////////////////////////  Hole 8 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid881').change(function(){
+                var selectBox =document.getElementById('id_memberid881');
+                var userInput81 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput81);
+                var url = $(".form38").attr("hole8player1-url");
+                $("select option[value=" + userInput81 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid881: $('#id_memberid881').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid882').change(function(){
+                var selectBox =document.getElementById('id_memberid882');
+                var userInput82 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput82);
+                var url = $(".form39").attr("hole8player2-url");
+                $("select option[value=" + userInput82 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid882: $('#id_memberid882').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid883').change(function(){
+                var selectBox =document.getElementById('id_memberid883');
+                var userInput83 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput83);
+                var url = $(".form40").attr("hole8player3-url");
+                $("select option[value=" + userInput83 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid883: $('#id_memberid883').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid884').change(function(){
+                var selectBox =document.getElementById('id_memberid884');
+                var userInput84 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput84);
+                var url = $(".form41").attr("hole8player4-url");
+                $("select option[value=" + userInput84 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid884: $('#id_memberid884').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid885').change(function(){
+                var selectBox =document.getElementById('id_memberid885');
+                var userInput85 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput85);
+                var url = $(".form42").attr("hole8player5-url");
+                $("select option[value=" + userInput85 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid885: $('#id_memberid885').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+//////////////////////////////////  Hole 9 ////////////////////////////////////////////////
+
+$(function(){
+    $('#id_memberid991').change(function(){
+                var selectBox =document.getElementById('id_memberid991');
+                var userInput91 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput91);
+                var url = $(".form43").attr("hole9player1-url");
+                $("select option[value=" + userInput91 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid991: $('#id_memberid991').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid992').change(function(){
+                var selectBox =document.getElementById('id_memberid992');
+                var userInput92 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput92);
+                var url = $(".form44").attr("hole9player2-url");
+                $("select option[value=" + userInput92 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid992: $('#id_memberid992').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid993').change(function(){
+                var selectBox =document.getElementById('id_memberid993');
+                var userInput93 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput93);
+                var url = $(".form45").attr("hole9player3-url");
+                $("select option[value=" + userInput93 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid993: $('#id_memberid993').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid994').change(function(){
+                var selectBox =document.getElementById('id_memberid994');
+                var userInput94 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput94);
+                var url = $(".form46").attr("hole9player4-url");
+                $("select option[value=" + userInput94 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid994: $('#id_memberid994').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+$(function(){
+    $('#id_memberid995').change(function(){
+                var selectBox =document.getElementById('id_memberid995');
+                var userInput95 =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput95);
+                var url = $(".form47").attr("hole9player5-url");
+                $("select option[value=" + userInput95 +"]").hide();
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_memberid995: $('#id_memberid995').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+</script>

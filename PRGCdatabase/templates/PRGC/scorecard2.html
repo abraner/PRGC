@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/scorecard.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body>
+<div id="title2">Score Card</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+            <div id="header13">
+                <div class="A3">Golfer</div>
+                <div class="C3">HCP</div>
+                <div class="D3">10</div>
+                <div class="D3">11</div>
+                <div class="D3">12</div>
+                <div class="D3">13</div>
+                <div class="D3">14</div>
+                <div class="D3">15</div>
+                <div class="D3">16</div>
+                <div class="D3">17</div>
+                <div class="D3">18</div>
+                <div class="E3">Back 9 Total</div>
+                <div class="E3">Front 9 Total</div>
+                <div class="E3">Game Total</div>
+            </div>
+        <form id="form3" method="post">
+        <div id="menu3">
+            <form id="form1" method="post">
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+
+
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:''}}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                     {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list2 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 |default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                 <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list2a %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 |default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list3 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:''}}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list4 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:'' }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list5 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:'' }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list6 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list7 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:'' }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list8 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:'' }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list9 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole11|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole12|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole13|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole14|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole15|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole16|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole17|default_if_none:'' }}</div>
+                    <div class="hole">{{ obj.hole18|default_if_none:'' }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17|default_if_none:'' }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18|default_if_none:'' }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list10 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list11 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list12 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list13 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list14 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list15 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list16 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list17 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list18 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list19 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list20 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list21 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list22 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list23 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list24 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list25 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list26 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list27 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list28 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list29 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list30 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list31 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list32 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list33 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list34 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list35 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list36 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list37 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list38 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list39 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list40 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list41 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list42 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list43 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="score">
+                <div class="form-scratchscore">
+                    {% for obj in object_list44 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="handicap">{{ obj.handicap18 }}</div>
+                    <div class="hole">{{ obj.hole10 }}</div>
+                    <div class="hole">{{ obj.hole11 }}</div>
+                    <div class="hole">{{ obj.hole12 }}</div>
+                    <div class="hole">{{ obj.hole13 }}</div>
+                    <div class="hole">{{ obj.hole14 }}</div>
+                    <div class="hole">{{ obj.hole15 }}</div>
+                    <div class="hole">{{ obj.hole16 }}</div>
+                    <div class="hole">{{ obj.hole17 }}</div>
+                    <div class="hole">{{ obj.hole18 }}</div>
+                    <div class="hole2">{{ obj.back9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.front9total|default_if_none:''}}</div>
+                    <div class="hole2">{{ obj.total18|default_if_none:''}}</div>
+                </div>
+                 <div class="form-handicapscore">
+                     <div class="handicapscore">Handicap Score</div>
+                    <div class="handicaphole">{{ obj.handicaphole10 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole11 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole12 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole13 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole14 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole15 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole16 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole17 }}</div>
+                    <div class="handicaphole">{{ obj.handicaphole18 }}</div>
+                    <div class="handicaphole2">{{ obj.back9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.front9handicaptotal|default_if_none:''}}</div>
+                    <div class="handicaphole2">{{ obj.total18handicap|default_if_none:''}}</div>
+                    {% endfor %}
+                </div>
+                </div>
+            </form>
+        </div>
+        </form>
+            <div id="header2a">
+                {% for obj in object_listH %}
+                <div class="A1a">Hole Handicap</div>
+                <div class="D1a">{{ obj.hole10handicap }}</div>
+                <div class="D1a">{{ obj.hole11handicap }}</div>
+                <div class="D1a">{{ obj.hole12handicap }}</div>
+                <div class="D1a">{{ obj.hole13handicap }}</div>
+                <div class="D1a">{{ obj.hole14handicap }}</div>
+                <div class="D1a">{{ obj.hole15handicap }}</div>
+                <div class="D1a">{{ obj.hole16handicap }}</div>
+                <div class="D1a">{{ obj.hole17handicap }}</div>
+                <div class="D1a">{{ obj.hole18handicap }}</div>
+                <div class="E1a"></div>
+                {% endfor %}
+            </div>
+
+
+            <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:scorecard' %}">Front Nine</a>
+            </div>
+            <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:finalscoring' %}">Final Scoring</a>
+            </div>
+             <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:home' %}">Home</a>
+            </div>
+     </div>
+<div class="container3">
+        </div>
+    </div>
+</div>
+</body>

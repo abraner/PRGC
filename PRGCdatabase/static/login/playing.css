@@ -1,0 +1,75 @@
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+}
+
+#background{
+    background: lightgreen;
+    text-align: center;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 250px;
+    height: 250px;
+    border: 5px solid black;
+}
+
+#title4{
+    height:1.5em;
+    width: 100%;
+    padding-top: 40px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(2vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+#title5{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: calc(2vw + .5vh + .25vmin);
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+}
+
+label{
+    display: none;
+}
+
+
+p{
+    display: none;
+}
+
+input#id_firstname, input#id_lastname{
+    display: none;
+}
+
+#button1{
+    margin-top: 25px;
+}
+
+a.button4{
+    margin-right: 20px;
+    color: green;
+    font-weight: bold;
+    font-size: calc(2vw + .5vh + .25vmin);
+}
+
+a.button5{
+    margin-left: 20px;
+    color: red;
+    font-weight: bold;
+    font-size: calc(2vw + .5vh + .25vmin);
+}

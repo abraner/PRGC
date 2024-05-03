@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/editmember.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title2">Existing Member Info</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+        <form id="form3" method="post">
+        <div id="menu2">
+            <div id="header1">
+                <div id="A">ID</div>
+                <div id="C">First Name</div>
+                <div id="D">Last Name</div>
+                <div id="E">Handicap 9</div>
+                <div id="F">Handicap 18</div>
+                <div id="G">Chicago Pts. 9</div>
+                <div id="H">Chicago Pts. 18</div>
+
+            </div>
+
+            <form id="form1" method="post">
+                <div class="form-rowconinfo">
+                    {% for obj in object_list %}
+                    <a id="id" href="{{ obj.get_absolute2_url }}">{{ obj.memberid }}</a>
+                    <div id="firstname">{{ obj.firstname }}</div>
+                    <div id="lastname">{{ obj.lastname }}</div>
+                    <div id="add1">{{ obj.handicap }}</div>
+                    <div id="add2">{{ obj.handicap18 }}</div>
+                    <div id="city">{{ obj.chgopt9 }}</div>
+                    <div id="st">{{ obj.chpt18 }}</div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+            <div id="pag" class="pagination">
+                <span class="step-links">
+                    {% if object_list.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ object_list.previous_page_number }}">previous</a>
+                    {% endif %}
+                    <span class="object_list">
+                        Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+                    </span>
+                    {% if object_list.has_next %}
+                    <a href="?page={{ object_list.next_page_number }}">next</a>
+                    <a href="?page={{ object_list.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+
+        <form id="searchbar" class="form-inline my-2 my-lg-0">
+            <input name="search"
+                   id="search"
+                   class="form-control mr-sm-2"
+                   type="search"
+                   placeholder="Search Existing Members"
+                   aria-label="Search"
+                   >
+
+            <button id="searchbutton" class="btn-success" type="submit">Search</button>
+        </form>
+        </form>
+             <div id="home1">
+                <a id="back"  href="{% url 'PRGCdatabase:home' %}">Home</a>
+            </div>
+     </div>
+<div class="container3">
+        </div>
+    </div>
+</div>
+</body>
