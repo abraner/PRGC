@@ -1,0 +1,293 @@
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+}
+
+#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:10px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 4vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+#form2{
+    width:100%;
+    margin-left: 0px;
+    margin-right: 0px;
+
+}
+
+p {
+    display: inline-block;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+    margin-bottom: 0px;
+
+}
+
+label{
+    display: inline-block;
+    width: 200px;
+    font-size: calc( 1vw + .5vh + .25vmin);
+    text-align: right;
+}
+
+#container{
+    width:600px;
+    margin-left: auto;
+    margin-right: auto;
+    background: lightgreen;
+    border-style: solid;
+}
+
+
+input#id_home_1 {
+    display: none;
+
+}
+
+span.phone-field-ext{
+    display: none;
+}
+
+input#id_cell_1{
+    display: none;
+}
+input#id_firstname, input#id_lastname, input#id_add1, input#id_add2, input#id_city{
+    width: 14vw;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+}
+
+input#id_st{
+    width: 1.5vw;
+    margin-right:25%;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+}
+
+input#id_zipcode{
+    width: 3vw;
+    margin-right:25%;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+}
+input#id_cell_0, input#id_home_0{
+    width: 7.5vw;
+    margin-right:0%;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+     -moz-appearance: textfield;
+}
+
+input#id_handicap, input#id_chgopt9,
+input#id_chpt18, input#id_handicap18{
+    width: 1.5vw;
+    margin-right:0%;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+     -moz-appearance: textfield;
+}
+
+input#id_email, input#id_email2{
+    width: 40%;
+    margin-right:5%;
+    margin-top:0px;
+    font-size: calc(.65vw + .65vh + .25vmin);
+    padding-left:5px;
+}
+
+
+input#id_work1_1, input#id_work2_1, input#id_cell_1, input#id_cell2_1, input#id_home_1, .phone-field-ext{
+    display:none;
+}
+
+button#btn1.btn-success{
+    border: 2px solid black;
+    border-radius: 2px;
+    background: #b08f26;
+    width: 50%;
+    height: 4vh;
+    font-size: calc(.75vw + .5vh + .25vmin);
+    color: black;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight:bold;
+    cursor: pointer;
+    margin-top: 2vh;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom: 15px;
+    transition: 0.6s;
+    position: relative;
+    overflow: hidden;
+
+}
+button#btn1.btn-success{
+    color: #000000;
+}
+
+button#btn1.btn-success:hover{
+    color: white;
+    background: #5a3510;
+}
+
+#button{
+    width: 100%;
+    text-align: center;
+}
+
+.button1{
+    width: 100%;
+    text-align: center;
+}
+
+
+
+button#home.btn.btn1 {
+  width: 300px;
+  padding-top: 0px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  color: black;
+  text-align: center;
+  font-size: 1.5vw;
+  font-style: italic;
+  font-family: "Times New Roman";
+  text-shadow: 2px 2px 5px grey;
+  border-radius: 10px;
+}
+
+@media only screen and (max-width:  400px) {
+
+#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:10px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 8vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+#form2{
+    width:300px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+p {
+    display: inline-block;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:0px;
+    margin-bottom: 20px;
+
+}
+
+label{
+    display: inline-block;
+    width: 90px;
+    font-size: 15px;
+    margin-left: 10px;
+
+}
+
+#container{
+    width:300px;
+    margin-left: auto;
+    margin-right: auto;
+    background: lightgreen;
+    border-style: solid;
+}
+
+
+input#id_home_1 {
+    display: none;
+
+}
+
+span.phone-field-ext{
+    display: none;
+}
+
+input#id_cell_1{
+    display: none;
+}
+
+
+button#btn1.btn-success{
+    border: 2px solid #C0C0C0;
+    border-radius: 2px;
+    background: green;
+    width: 40%;
+    display: inline-block;
+    font-size: calc(0.75vw + 0.75vh + .25vmin);
+    color: white;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight:bold;
+    cursor: pointer;
+    margin-top: 0.5%;
+    margin-left:35.0%;
+    margin-right:35.0%;
+    margin-bottom: 4.0%;
+    transition: 0.6s;
+    position: relative;
+    overflow: hidden;
+    padding: 7px;
+
+
+}
+
+.button1{
+    margin-top: 17px;
+    width:100%;
+    text-align: center;
+
+}
+
+button#home.btn.btn1{
+    width: 80%;
+    padding:7px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+
+
+
+
+}

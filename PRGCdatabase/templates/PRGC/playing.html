@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/playing.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.png');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+            <div id="background">
+                {% for obj in object_list %}
+                <div id="title4">Is {{ obj.firstname }} {{ obj.lastname }} playing today?</div>
+                {% endfor %}
+                <form id="form2" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </form>
+                <div id="button1">
+                    <a class="button4" href="{% url 'PRGCdatabase:yesplaying' instance.memberid %}">Yes</a>
+                    <a class="button5" href="{% url 'PRGCdatabase:noplaying' instance.memberid %}">No</a>
+                </div>
+            </div>
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+
+</script>

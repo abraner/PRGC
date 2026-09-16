@@ -1,0 +1,168 @@
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+}
+label{
+
+}
+
+
+div.container{
+    width:100%;
+    margin-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+
+div#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+div#name{
+    width: 100%;
+    height:1.5em;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 4vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+a {
+    display: inline-block;
+    margin-top: 0px;
+    height: 0px;
+    width: 100%;
+}
+
+button.selectgame, button.deletegame, button.sethole, button.newmember, button.editmember, button.guest
+, button.editguest, button.admin, button.logout, button.startnineholes{
+    width: 33%;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:green;
+    text-align:center;
+    font-size: 3vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    border-radius: 2px ;
+
+}
+
+
+
+div#logout{
+    height:1.5em;
+    width: 100%;
+    padding-top:50px;
+    margin-left:auto;
+    margin-right:auto;
+    color:green;
+    text-align:center;
+    font-size: 5vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    border-radius: 2px ;
+}
+
+
+
+.button1{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+
+
+}
+.button2{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+/* --- iPhone 15 Media Query --- */
+@media screen and (max-device-width: 503px) and (-webkit-min-device-pixel-ratio: 2) {
+
+
+body{
+  font: 16px/1.5 time;
+  padding:0;
+  margin:0;
+  height:852px;
+}
+
+
+div#title{
+    height:1.5em;
+    width: 100%;
+    padding-top:50px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 0px;
+    color:white;
+    text-align:center;
+    font-size: 8vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+div#name{
+    width: 100%;
+    height:1.5em;
+    padding-top:0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:white;
+    text-align:center;
+    font-size: 8vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    text-shadow: 2px 2px 5px black;
+
+}
+
+
+
+button.selectgame, button.deletegame, button.sethole, button.newmember, button.editmember, button.guest
+, button.editguest, button.admin, button.logout, button.startnineholes{
+    width: 70%;
+    padding-top:0px;
+    margin-top: 0px;
+    margin-left:auto;
+    margin-right:auto;
+    color:green;
+    text-align:center;
+    font-size: 8vw;
+    font-style: italic;
+    font-family: "Times New Roman";
+    font-weight: bold;
+    border-radius: 2px ;
+    margin-top: 21px;
+}
+
+}
