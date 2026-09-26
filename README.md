@@ -49,6 +49,8 @@ Supported formats:
 Use **Set Active Game Format** and pick today’s format.  
 The dashboard pairing tools change based on scramble / Team Chicago vs individual formats.
 
+**Live Squad Rosters** stay at the bottom of the admin dashboard for every format. Each card shows the squad number, captain, teammates, starting hole, and a **Dismantle Team** button. If no squads exist yet, that section says so.
+
 ### 3. Check players in
 1. Mark members as **Playing Today**.  
 2. For scramble / Team Chicago: mark **captains** and set **cart / riding partners** if you use auto-pairing.  
@@ -62,7 +64,7 @@ The dashboard pairing tools change based on scramble / Team Chicago vs individua
 4. Assign each squad a **starting hole** (shotgun).  
 5. Dismantle a squad if you need to redo one team.
 
-**Individual formats:** players usually don’t need squads; they score under their own name.
+**Individual formats:** players usually score under their own name. Any squads that exist for the round still appear in **Live Squad Rosters** at the bottom of the dashboard.
 
 ### 5. During play
 - Players open **`/play/`** and enter scores.  
