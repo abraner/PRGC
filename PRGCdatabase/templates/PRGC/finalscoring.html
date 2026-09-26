@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/finalscore.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body>
+<div id="title2">Final Scoring</div>
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+        <div id="menu3">
+            <form id="form1" method="post">
+                <div id="header1">
+                    <div class="C">Place</div>
+                    <div class="A">Golfer</div>
+                    <div class="E">Scratch Total</div>
+                    <div class="E">HCP Total</div>
+                    <div class="F">Pay Out</div>
+                </div>
+                 <div class="form-rowconinfo">
+                    {% for obj in object_list %}
+                    <div id="place">{{ obj.place|default_if_none:'' }}</div>
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="scratch">{{ obj.total18 }}</div>
+                    <div class="handicap">{{ obj.total18handicap }}</div>
+                     <div id="payout">{{ obj.payout }}</div>
+                    {% endfor %}
+                </div>
+
+            </form>
+            <form id="form2" method="post">
+                <div id="header2">
+                    <div class="A1">Golfer</div>
+                    <div class="E1">Skin Hole</div>
+                    <div class="E1">Score</div>
+                    <div class="F1">Payout</div>
+                </div>
+                 <div class="form-rowconinfo">
+                    {% for obj in object_list2 %}
+                    <div class="golfer">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="scratch">{{ obj.skinhole}}</div>
+                    <div class="handicap">{{ obj.score }}</div>
+                     <div class="payout">{{ obj.payout}}</div>
+                    {% endfor %}
+                </div>
+            </form>
+            <form id="form3" method="post">
+                    <div class="golfcourse">
+                        <div class="G">Golf Course Money</div>
+                        <div class="I">Closest to Hole Money</div>
+                        <div class="I">Closest to Hole Money 4 Ways</div>
+                        <div class="I">Total Skins Money</div>
+                        <div class="I">Each Skins</div>
+                        {% for obj in object_list4 %}
+                    <div class="golfmoney">{{ obj.golfcourse}}</div>
+                    <div class="closest">{{ obj.closest}}</div>
+                    <div class="fourway">{{ obj.fourholes}}</div>
+                    <div class="fourway">{{ obj.skins}}</div>
+                    <div class="fourway">{{ obj.eachskins}}</div>
+                    {% endfor %}
+
+                    </div>
+                <div class="golfcourse1">
+                    {% for obj in object_list3 %}
+                    <div id="counta">{{ obj.count}}</div>
+                    {% endfor %}
+                </div>
+                 <div class="home1">
+                <a class="cal"  href="{% url 'PRGCdatabase:finalscoring' %}">Calculate</a>
+            </div>
+            </form>
+        </div>
+
+            <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:scorecard' %}">Front Nine</a>
+            </div>
+            <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:scorecard2' %}">Back Nine</a>
+            </div>
+             <div class="home1">
+                <a class="back"  href="{% url 'PRGCdatabase:home' %}">Home</a>
+            </div>
+     </div>
+<div class="container3">
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+<script>
+$(document).ready(function() {
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 10){
+        link = "{% url 'PRGCdatabase:players10' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 11){
+        link = "{% url 'PRGCdatabase:players11' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 12){
+        link = "{% url 'PRGCdatabase:players12' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 13){
+        link = "{% url 'PRGCdatabase:players13' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 14){
+        link = "{% url 'PRGCdatabase:players14' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+
+setTimeout(function(){
+    {% for obj in object_list3 %}
+    if ({{ obj.count }} == 15){
+        link = "{% url 'PRGCdatabase:players15' %}";
+                        $.ajax({
+                          type:'POST',
+                          url: link,
+                          data:{
+                               csrfmiddlewaretoken: '{{ csrf_token }}'
+                          },
+                        });
+}
+{% endfor %}
+
+        }, 400);
+
+
+
+
+
+
+
+
+
+
+});
+
+</script>

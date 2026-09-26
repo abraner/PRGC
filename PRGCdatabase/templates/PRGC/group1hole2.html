@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/hole.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/hole2.JPG');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+<div id="title">Hole #2</div>
+<div id="title2">Par 4</div>
+<div id="title3">262 Yards</div>
+{% for obj in object_list6 %}
+<div id="handicap">
+    <div id="title5">Hole Handicap</div><div id="title6">{{ obj.hole2handicap }}</div>
+</div>
+{% endfor %}
+
+
+<div id="workarea1">
+    <div class="container">
+        <div class="container1">
+        </div>
+        <div class="container2">
+
+            <div id="menu3">
+                <div class="header3">
+                    <div class="A">Golfers</div>
+                    <div class="B">CH</div>
+                    <div class="C">Score</div>
+                    <div class="D">Net</div>
+
+                </div>
+                <form class="form1" method="post"
+                    score1-url="{% url 'PRGCdatabase:start1hole2player1' %}"
+                      load_net6-url="{% url 'PRGCdatabase:load_net6' %}"
+                >
+                    {% for obj in object_list1 %}
+                    <div class="firstname">{{ obj.firstname }} {{ obj.lastname }}</div>
+                    <div class="ch">{{ obj.handicap18|default:"" }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                 {{ form.name_of_field }}
+                    <div class="player1hole1">
+                    {{ form.score1 }}
+                    </div>
+                    <div class="net">
+                        <div id="id_handicaphole16"></div>
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form2" method="post"
+                    score2-url="{% url 'PRGCdatabase:start1hole2player2' %}"
+                      load_net7-url="{% url 'PRGCdatabase:load_net7' %}"
+                >
+                     {% for obj in object_list2 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    <div class="ch">{{ obj.handicap18|default:"" }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player2hole1">
+                    {{ form2.score2 }}
+                    </div>
+                    <div class="net">
+                        <div id="id_handicaphole17"></div>
+                    </div>
+
+                </form>
+                <div class=break>
+                </div>
+                <form class="form3" method="post"
+                    score3-url="{% url 'PRGCdatabase:start1hole2player3' %}"
+                      load_net8-url="{% url 'PRGCdatabase:load_net8' %}"
+                >
+                    {% for obj in object_list3 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    <div class="ch">{{ obj.handicap18|default:"" }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player3hole1">
+                    {{ form3.score3 }}
+                    </div>
+                    <div class="net">
+                        <div id="id_handicaphole18"></div>
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form4" method="post"
+                    score4-url="{% url 'PRGCdatabase:start1hole2player4' %}"
+                      load_net9-url="{% url 'PRGCdatabase:load_net9' %}"
+                >
+                    {% for obj in object_list4 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    <div class="ch">{{ obj.handicap18|default:"" }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player4hole1">
+                    {{ form4.score4 }}
+                    </div>
+                    <div class="net">
+                        <div id="id_handicaphole19"></div>
+                    </div>
+                </form>
+                <div class=break>
+                </div>
+                <form class="form5" method="post"
+                    score5-url="{% url 'PRGCdatabase:start1hole2player5' %}"
+                      load_net10-url="{% url 'PRGCdatabase:load_net10' %}"
+                >
+                    {% for obj in object_list5 %}
+                    <div class="firstname">{{ obj.firstname|default_if_none:'' }} {{ obj.lastname|default_if_none:'' }}</div>
+                    <div class="ch">{{ obj.handicap18|default:"" }}</div>
+                    {% endfor %}
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div class="player5hole1">
+                    {{ form5.score5 }}
+                    </div>
+                    <div class="net">
+                        <div id="id_handicaphole20"></div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="gohole2">
+                <a href="/PRGCdatabase/group1hole3">
+                    <button type="button" id="hole1" class="btn btn1">Go to Hole 3</button>
+                </a>
+            </div>
+            <div class="scorecard">
+                <a href="/PRGCdatabase/scorecard">
+                    <button type="button" id="scorecard" class="btn btn1">View Score Card</button>
+                </a>
+            </div>
+            <div class="back">
+                <a href="/PRGCdatabase/group1hole1">
+                    <button type="button" id="back" class="btn btn1">Back One Hole</button>
+                </a>
+            </div>
+            <div class="home">
+                <a href="/PRGCdatabase/login/">
+                    <button type="button" id="home" class="btn btn1">Log Out</button>
+                </a>
+            </div>
+        </div>
+        <div class="container3">
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+
+<script>
+setTimeout(function(){
+      var urlC = $(".form1").attr("load_net6-url");
+      req = $.ajax({
+             url: urlC,
+             data:{
+               },
+               success: function (data) {
+                 $("#id_handicaphole16").html(data);
+               }
+          });
+ }, 0);
+
+    setTimeout(function(){
+      var urlC = $(".form2").attr("load_net7-url");
+      req = $.ajax({
+             url: urlC,
+             data:{
+               },
+               success: function (data) {
+                 $("#id_handicaphole17").html(data);
+               }
+          });
+ }, 0);
+
+
+ setTimeout(function(){
+      var urlC = $(".form3").attr("load_net8-url");
+      req = $.ajax({
+             url: urlC,
+             data:{
+               },
+               success: function (data) {
+                 $("#id_handicaphole18").html(data);
+               }
+          });
+ }, 0);
+
+  setTimeout(function(){
+      var urlC = $(".form4").attr("load_net9-url");
+      req = $.ajax({
+             url: urlC,
+             data:{
+               },
+               success: function (data) {
+                 $("#id_handicaphole19").html(data);
+               }
+          });
+ }, 0);
+
+ setTimeout(function(){
+      var urlC = $(".form5").attr("load_net10-url");
+      req = $.ajax({
+             url: urlC,
+             data:{
+               },
+               success: function (data) {
+                 $("#id_handicaphole20").html(data);
+               }
+          });
+ }, 0);
+
+    $(function(){
+    $('#id_score1').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score1');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form1").attr("score1-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score1: $('#id_score1').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+    $('#id_score1').change(function(){
+        setTimeout(function(){
+            var urlC = $(".form1").attr("load_net6-url");
+            req = $.ajax({
+                url: urlC,
+                data:{
+                 },
+                success: function (data) {
+                    $("#id_handicaphole16").html(data);
+                }
+            });
+        }, 400);
+    });
+});
+
+$(function(){
+    $('#id_score2').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score2');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form2").attr("score2-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score2: $('#id_score2').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+
+    $('#id_score2').change(function(){
+        setTimeout(function(){
+            var urlC = $(".form2").attr("load_net7-url");
+            req = $.ajax({
+                url: urlC,
+                data:{
+                 },
+                success: function (data) {
+                    $("#id_handicaphole17").html(data);
+                }
+            });
+        }, 400);
+    });
+
+});
+
+$(function(){
+    $('#id_score3').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score3');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form3").attr("score3-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score3: $('#id_score3').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+
+
+    $('#id_score3').change(function(){
+        setTimeout(function(){
+            var urlC = $(".form3").attr("load_net8-url");
+            req = $.ajax({
+                url: urlC,
+                data:{
+                 },
+                success: function (data) {
+                    $("#id_handicaphole18").html(data);
+                }
+            });
+        }, 400);
+    });
+});
+
+$(function(){
+    $('#id_score4').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score4');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form4").attr("score4-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score4: $('#id_score4').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+    $('#id_score4').change(function(){
+        setTimeout(function(){
+            var urlC = $(".form4").attr("load_net9-url");
+            req = $.ajax({
+                url: urlC,
+                data:{
+                 },
+                success: function (data) {
+                    $("#id_handicaphole19").html(data);
+                }
+            });
+        }, 400);
+    });
+});
+$(function(){
+    $('#id_score5').change(function(){
+        setTimeout(function(){
+                var selectBox =document.getElementById('id_score5');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(userInput);
+                var url = $(".form5").attr("score5-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_score5: $('#id_score5').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+        }, 100);
+    });
+    $('#id_score5').change(function(){
+        setTimeout(function(){
+            var urlC = $(".form5").attr("load_net10-url");
+            req = $.ajax({
+                url: urlC,
+                data:{
+                 },
+                success: function (data) {
+                    $("#id_handicaphole20").html(data);
+                }
+            });
+        }, 400);
+    });
+});
+
+</script>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../static/login/starthole.css">
+    <title>Peace River Golf Course Home Page</title>
+</head>
+
+<body  style="background-image: url('../../../../img/main.png');
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+             background-size: cover;">
+            <div id="background">
+
+                {% for obj in object_list %}
+                <div id="title4"> {{ obj.firstname }} {{ obj.lastname }}</div>
+                <div id="title5">is starting on hole</div>
+
+                {% endfor %}
+                <form id="form2" method="post"
+                holeselection-url="{% url 'PRGCdatabase:holeselection' instance.memberid %}"
+                >
+                    {% csrf_token %}
+                    {{ form.name_of_field }}
+                    <div id="starthole">
+                        {{ form.starthole }}
+
+                    </div>
+                </form>
+               <div class="button1"  >
+      <a href="/PRGCdatabase/ninegroupassign">
+          <button type="button" id="home" class="btn btn1">Accept</button>
+      </a>
+  </div>
+            </div>
+<div class="rm-modal" style="display:none">
+    <div class="modal-content">
+        <div id="toomany">
+            <h1>There are too many golfers starting on hole 1.</h1>
+            <h1>Choose another hole.</h1>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+$(function(){
+    $('#id_starthole').change(function(){
+                $(".button1").show()
+                var selectBox =document.getElementById('id_starthole');
+                var userInput =selectBox.options[selectBox.selectedIndex].value;
+                console.log(selectBox);
+                var url = $("#form2").attr("holeselection-url");
+                    $.ajax({
+                        type:'POST',
+                       url: url,
+                       data:{
+                            id_starthole: $('#id_starthole').val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                         },
+                    });
+
+
+    });
+});
+
+
+</script>
+</body>
+</html>
