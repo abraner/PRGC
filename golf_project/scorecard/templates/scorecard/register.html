@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Member Profile</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #008000;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .registration-container {
+            max-width: 480px;
+            margin: 40px auto;
+            background: #B3DEB6;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #111;
+        }
+        p {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+        /* Style django input fields cleanly */
+        input[type="text"], input[type="password"], input[type="number"], input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+        }
+        .help-text {
+            color: #777;
+            font-size: 0.8em;
+            display: block;
+            margin-top: 4px;
+        }
+        .error-text {
+            color: #dc3545;
+            font-size: 0.85em;
+            display: block;
+            margin-top: 4px;
+        }
+        .btn-submit {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        .footer-link {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .footer-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="registration-container">
+    <h2>Register Member Profile</h2>
+    <p>Enter details to set up your account and tournament quotas.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Loop through each Django form field -->
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+
+                {% if field.help_text %}
+                    <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <span class="error-text">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">
+            Create Account & Player Profile
+        </button>
+    </form>
+
+    <div class="footer-link">
+        Already have an account? <a href="{% url 'scorecard:login_view' %}">Log in here</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRGC Live Scramble Scorecard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #008000; padding: 15px; margin: 0; color: #1e293b; }
+        .card { max-width: 500px; margin: 0 auto; background: #B3DEB6; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 15px; gap: 10px; }
+        .team-banner { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
+        .hole-display { text-align: center; margin: 20px 0; }
+        .hole-title { font-size: 28px; font-weight: bold; color: #1b5e20; margin: 0; }
+        .hole-meta { color: #64748b; font-size: 14px; margin-top: 4px; font-weight: bold; }
+        .input-block { display: flex; justify-content: center; align-items: center; margin: 25px 0; gap: 15px; }
+        .stroke-box { width: 120px; height: 60px; font-size: 32px; font-weight: bold; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; color: #0f172a; transition: border-color 0.2s; box-sizing: border-box; background: #fff; }
+        .stroke-box:focus { border-color: #2e7d32; outline: none; }
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
+        .btn { display: block; text-align: center; text-decoration: none; padding: 12px; font-weight: bold; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; transition: background 0.2s; }
+        .btn-nav { background: #475569; color: white; }
+        .btn-finish { background: #1b5e20; color: white; width: 100%; grid-column: span 2; margin-top: 4px; }
+        .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; height: 30px; box-sizing: border-box; }
+        .msg { background: #fff3cd; border: 1px solid #ffe082; color: #856404; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
+        .running-to-par {
+            margin-top: 12px; padding: 10px 12px; border-radius: 6px; font-weight: bold; font-size: 15px;
+            text-align: center; letter-spacing: 0.3px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569;
+        }
+        .running-to-par.under { background: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
+        .running-to-par.over { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+        .running-to-par.even { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h3 style="margin:0; color:#1b5e20;">⛳ Scramble Live Card</h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge" style="background:#e8f5e9; color:#2e7d32; border: 1px solid #c8e6c9;">
+                Hole {{ hole_number }} of 9
+            </span>
+            <a href="{% url 'scorecard:logout' %}"
+               style="text-decoration: none; padding: 0 10px; background: #c62828; color: white; border-radius: 4px; font-weight: bold; font-size: 11px; height: 30px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: none; box-sizing: border-box; cursor: pointer;"
+               onclick="return confirm('Are you sure you want to log out of your scorecard session today?');">
+                🚪 Log Out
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'error' in message.tags %}
+            <div class="msg">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if is_staff_viewer and all_squads %}
+    <div style="margin-bottom: 12px;">
+        <label style="font-size: 12px; font-weight: bold; color: #475569;">Staff: view squad</label>
+        <select onchange="if(this.value){ window.location='{% url 'scorecard:player_scorecard_scramble' hole_number %}?squad='+this.value; }"
+                style="width:100%; margin-top:4px; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-weight:bold;">
+            {% for s in all_squads %}
+                <option value="{{ s.id }}" {% if squad and s.id == squad.id %}selected{% endif %}>
+                    Squad #{{ s.squad_number }} — {{ s.scorekeeper.name|default:"No captain" }} (Hole {{ s.starting_hole.hole_number|default:"?" }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+
+    {% if squad %}
+    <div class="team-banner" style="font-size: 15px; line-height: 1.5;">
+        <div style="font-weight: bold; color: #0f172a; font-size: 18px; margin-bottom: 8px;">
+            🚙 Squad #{{ squad.squad_number }} · Hole {{ squad.starting_hole.hole_number|default:"TBD" }} Start
+        </div>
+        <div style="margin-bottom: 6px; font-size: 16px;">
+            <strong>Captain:</strong> 👑 {{ squad.scorekeeper.name|default:"Unassigned" }}
+        </div>
+        <div style="color: #475569; font-size: 15px;">
+            <strong>Teammates:</strong>
+            {% if teammates %}
+                {% for p in teammates %}{{ p.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            {% else %}
+                None
+            {% endif %}
+        </div>
+        {% if not is_scorecard_editable %}
+        <div style="margin-top: 8px; font-size: 12px; color: #c62828; font-weight: bold;">
+            View only — captain enters the team score.
+        </div>
+        {% endif %}
+        <div id="running-to-par-wrap" class="running-to-par even">
+            To Par: <span id="running-to-par">—</span>
+        </div>
+    </div>
+    {% else %}
+    <div class="msg">
+        No scramble squad found for your account. Ask the admin to check you in and assign you to a captain’s team.
+    </div>
+    {% endif %}
+
+    <div class="hole-display">
+        <div class="hole-title">Hole {{ hole_number }}</div>
+        <div class="hole-meta">Par {{ current_hole.par|default:"4" }}</div>
+    </div>
+
+    {% if squad %}
+    <form method="POST" action="">
+        {% csrf_token %}
+
+        <div class="input-block">
+            <select name="score" id="team-score-select" class="stroke-box"
+                    {% if not is_scorecard_editable %}disabled style="background: #e2e8f0; cursor: not-allowed;"{% endif %}
+                    style="appearance: none; -webkit-appearance: none; text-align-last: center; cursor: pointer;">
+                <option value="" {% if not current_team_score %}selected{% endif %}>—</option>
+                <option value="1" {% if current_team_score == 1 or current_team_score == "1" %}selected{% endif %}>1</option>
+                <option value="2" {% if current_team_score == 2 or current_team_score == "2" %}selected{% endif %}>2</option>
+                <option value="3" {% if current_team_score == 3 or current_team_score == "3" %}selected{% endif %}>3</option>
+                <option value="4" {% if current_team_score == 4 or current_team_score == "4" %}selected{% endif %}>4</option>
+                <option value="5" {% if current_team_score == 5 or current_team_score == "5" %}selected{% endif %}>5</option>
+                <option value="6" {% if current_team_score == 6 or current_team_score == "6" %}selected{% endif %}>6</option>
+                <option value="7" {% if current_team_score == 7 or current_team_score == "7" %}selected{% endif %}>7</option>
+                <option value="8" {% if current_team_score == 8 or current_team_score == "8" %}selected{% endif %}>8</option>
+                <option value="9" {% if current_team_score == 9 or current_team_score == "9" %}selected{% endif %}>9</option>
+                <option value="10" {% if current_team_score == 10 or current_team_score == "10" %}selected{% endif %}>10+</option>
+            </select>
+        </div>
+
+        <div class="nav-grid">
+            <button type="submit" name="action" value="prev" class="btn btn-nav"{% if is_final_hole %} style="grid-column: span 2;"{% endif %}>◀ {% if is_scorecard_editable %}Save & {% endif %}Prev</button>
+            {% if not is_final_hole %}
+            <button type="submit" name="action" value="next" class="btn btn-nav">{% if is_scorecard_editable %}Save & {% endif %}Next ▶</button>
+            {% endif %}
+            {% if is_final_hole %}
+            <button type="submit" name="action" value="finish" class="btn btn-finish">🏆 Finish Round</button>
+            {% endif %}
+        </div>
+    </form>
+    {% endif %}
+
+</div>
+
+{% if squad %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var holePar = parseInt("{{ current_hole.par|default:4 }}", 10) || 4;
+    var priorToPar = parseInt("{{ prior_to_par|default:0 }}", 10) || 0;
+    var priorHolesScored = parseInt("{{ prior_holes_scored|default:0 }}", 10) || 0;
+    var scoreSelect = document.getElementById("team-score-select");
+    var display = document.getElementById("running-to-par");
+    var wrap = document.getElementById("running-to-par-wrap");
+
+    function formatToPar(n) {
+        if (n === 0) return "E";
+        return n > 0 ? ("+" + n) : String(n);
+    }
+
+    function updateRunningToPar() {
+        if (!scoreSelect || !display || !wrap) return;
+
+        var total = priorToPar;
+        var counted = priorHolesScored;
+        var strokes = parseInt(scoreSelect.value, 10);
+        if (!isNaN(strokes) && strokes > 0) {
+            total += strokes - holePar;
+            counted += 1;
+        }
+
+        wrap.classList.remove("under", "over", "even");
+        if (counted === 0) {
+            display.textContent = "—";
+            wrap.classList.add("even");
+            return;
+        }
+
+        display.textContent = formatToPar(total);
+        if (total < 0) wrap.classList.add("under");
+        else if (total > 0) wrap.classList.add("over");
+        else wrap.classList.add("even");
+    }
+
+    if (scoreSelect) {
+        scoreSelect.addEventListener("change", updateRunningToPar);
+    }
+    updateRunningToPar();
+});
+</script>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRGC Tournament Admin Control Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #008000; padding: 20px; margin: 0; }
+        .dashboard-container { max-width: 950px; margin: 0px auto; background: #B3DEB6; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); box-sizing: border-box; }
+        h2 { color: #1b5e20; margin-top: 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        .dashboard-flex-grid { display: flex; gap: 30px; align-items: flex-start; justify-content: space-between; margin-top: 20px; }
+        .panel-left { flex: 1.2; min-width: 0; }
+
+        /* 🟢 FIXED: Left panel handles independent heights while keeping layout rows square and flat */
+        .panel-right { flex: 1; min-width: 0; background: #B3DEB6; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); box-sizing: border-box; }
+
+        @media (max-width: 800px) {
+            .dashboard-flex-grid { flex-direction: column; gap: 20px; }
+            .panel-right { width: 100%; }
+        }
+        .section-title { font-size: 15px; font-weight: bold; color: #2c3e50; margin: 0 0 15px 0; border-bottom: 2px solid #2e7d32; padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 6px; color: #37474f; font-size: 14px; }
+        .btn-action { display: block; width: 100%; text-align: center; text-decoration: none; padding: 12px; font-weight: bold; border-radius: 6px; font-size: 14px; box-sizing: border-box; cursor: pointer; color: white; margin-bottom: 11px; border: none; transition: background 0.2s; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #e0e0e0; text-align: left; font-size: 14px; }
+        th { background-color: #f5f5f5; color: #555; font-weight: bold; }
+        .player-row:hover { background: #f9f9f9; }
+
+        /* 🟢 NEW CSS RULE: Adds a clean custom scrollbar layout for modern mobile/desktop web browsers */
+        .scrollable-list-panel::-webkit-scrollbar { width: 6px; }
+        .scrollable-list-panel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .scrollable-list-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .scrollable-list-panel::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Header Controls -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 15px;">
+        <h2 style="margin: 0; border-bottom: none; padding-bottom: 0;">🏌️ Outing Control Panel Dashboard</h2>
+
+        <a href="/logout/" style="text-decoration: none; padding: 6px 12px; background: #c62828; color: white; border-radius: 4px; font-weight: bold; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: background 0.2s;" onmouseover="this.style.background='#b71c1c'" onmouseout="this.style.background='#c62828'" onclick="return confirm('Are you sure you want to log out of the control panel?');">
+            🚪 Log Out
+        </a>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 12px 18px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px; gap: 15px;">
+        <span style="color: #555; font-size: 14px; font-weight: bold;">Active Session: <span style="color: #2e7d32;">#{{ round.id }}</span></span>
+
+        <a href="{% url 'scorecard:tournament_leaderboard' %}?next=admin" class="btn btn-primary" style="text-decoration: none; padding: 8px 16px; background: #2e7d32; color: white; border-radius: 6px; font-weight: bold; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s;" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'">
+            🏆️ View Live Leaderboard
+        </a>
+    </div>
+
+    <div class="dashboard-flex-grid">
+        <!-- LEFT PANEL COLUMN CONTAINER -->
+        <div class="panel-left">
+            <div class="section-title">⚙️ Round Configurations</div>
+
+            <!-- SELF-CONTAINED GAME FORMAT SELECTOR FORM -->
+            <form method="POST" action="{% url 'scorecard:admin_dashboard' %}" style="margin-bottom: 25px;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="change_format">
+
+                <div class="form-group">
+                    <label>Set Active Game Format:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="game-format-selector" name="game_format" onchange="this.form.submit()" class="form-control" style="width: 100%; height: 40px; font-weight: bold; padding: 5px; border-radius: 6px; border: 1px solid #ccc; background-color: #fff; cursor: pointer;">
+                            <option value="" {% if not round.game_format %}selected{% endif %}>--------- Select Game Format ---------</option>
+                            <option value="18_GROSS_NET" {% if round.game_format == '18_GROSS_NET' %}selected{% endif %}>🏆 18-Hole Individual Gross/Net</option>
+                            <option value="9_HOLE_SCRAMBLE" {% if round.game_format == '9_HOLE_SCRAMBLE' %}selected{% endif %}>🏆 9-Hole Scramble (Captain Entry)</option>
+                            <option value="18_HOLE_MENS_LEAGUE" {% if round.game_format == '18_HOLE_MENS_LEAGUE' %}selected{% endif %}>🏌️‍♂️ 18-Hole Men's League</option>
+                            <option value="9_TEAM_CHICAGO" {% if round.game_format == '9_TEAM_CHICAGO' %}selected{% endif %}>⛳ 9-Hole Team Chicago Format</option>
+                            <option value="9_WOMENS_LEAGUE" {% if round.game_format == '9_WOMENS_LEAGUE' %}selected{% endif %}>🏌️‍♀️ 9-Hole Women's League</option>
+                            <option value="chicago_points_18" {% if round.game_format == '18_IND_CHICAGO' or round.game_format == 'chicago_points_18' %}selected{% endif %}>⛳ 18-Hole Individual Chicago Points</option>
+                        </select>
+                    </div>
+                </div>
+            <!-- GAME FORMAT SELECTOR FORM (Your existing dropdown structure) -->
+            </form>
+
+            <!-- ━ 🟢 SELF-CONTAINED AUTOMATED PAIRING ENGAGE TRIGGER ━ -->
+            {% if is_pairing_format %}
+            <div style="margin-top: -10px; margin-bottom: 25px; background: #f4fbf4; border: 1px solid #2e7d32; border-radius: 8px; padding: 15px; box-sizing: border-box; font-family: Arial, sans-serif;">
+                <label style="color: #1b5e20; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; font-weight: bold;">
+                    ⚡ Auto-Fill Grouping Engine
+                </label>
+                <p style="margin: 0 0 12px 0; color: #555; font-size: 11.5px; line-height: 1.3; font-style: italic;">
+                    {% if is_team_chicago %}
+                    Keeps cart partners together and fills captain tees so each team's total Chicago points targets stay as even as possible.
+                    {% else %}
+                    Shuffles all unassigned checked-in players on the right panel and distributes them evenly across your active captain tees.
+                    {% endif %}
+                </p>
+
+                <form id="auto-group-form" method="POST" action="{% url 'scorecard:generate_random_scramble_squads' round.id|default:'0' %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <!-- 💡 SELF-CONTAINED INLINE JAVASCRIPT DIRECTLY RESOLVES REFERENCE ERRORS -->
+                    <button type="submit" class="btn-action" style="background: #2e7d32; margin-bottom: 0; box-shadow: 0 2px 4px rgba(46,125,50,0.15);"
+                            onclick="this.form.action = this.form.action.split('?')[0] + '?team_size=' + (new URLSearchParams(window.location.search).get('team_size') || '4');">
+                        🎲 Auto-Group Remaining Players
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+
+            <div class="section-title" style="margin-top: 25px;">📁 Shortcuts Menu</div>
+                        <!-- 📁 Shortcuts Menu (Your existing links remain pristine) -->
+                       <!-- 📁 Shortcuts Menu -->
+                        <!-- 📁 Shortcuts Menu (Your existing button links remain pristine) -->
+            <a href="{% url 'scorecard:all_members' %}" class="btn-action" style="background:#455a64;">👥 View All Members Check-In</a>
+            <a href="{% url 'scorecard:manual_squad' %}" class="btn-action" style="background:#e65100;">🛠️ Manually Build a Squad</a>
+            <a href="{% url 'scorecard:register_view' %}" class="btn-action" style="background:#1565c0;">➕ Register New Member</a>
+            <a href="/admin/" class="btn-action" style="background:#6a1b9a; box-shadow: 0 2px 4px rgba(106,27,154,0.15);">
+                ⚙️ Open Django Admin Panel
+            </a>
+
+            {% if is_pairing_format %}
+            <a href="/admin-dashboard/clear-carts/" class="btn-action" style="background: #e65100; font-weight: bold; margin-bottom: 12px; display: block; text-align: center; text-decoration: none; padding: 12px; border-radius: 6px; color: white;" onclick="return confirm('Are you sure you want to completely clear out all saved cart pairings and assignments for today\'s tournament round? This cannot be undone.');">
+                💥 Clear All Cart Pairings & Reset Assignments
+            </a>
+            {% endif %}
+
+            <!-- ━ 🟢 SELF-CONTAINED AUTOMATED GAME RESET ENGINE FORM TRIGGER ━ -->
+            <form method="POST" action="{% url 'scorecard:reset_scramble_tournament_action' %}" style="display: block; margin-top: 15px;" onsubmit="return confirm('🚨 WARNING: This action will completely ERASE today\'s active tournament round, delete all live squads, wipe out scorecard entries, and uncheck all players. This cannot be undone! Proceed?');">
+                {% csrf_token %}
+                <button type="submit" class="btn-action" style="background: #c62828; font-weight: bold; width: 100%; border: none; box-shadow: 0 2px 4px rgba(198,40,40,0.2);">
+                    🗑️ Erase Round & Start Fresh Game
+                </button>
+            </form>
+        </div> <!-- Closes .panel-left cleanly -->
+
+
+
+               <!-- RIGHT PANEL COLUMN CONTAINER: Locked side-by-side viewport frame size -->
+        <div class="panel-right">
+
+            <!-- 👥 LAYOUT A: PAIRING MODE (Scramble / Team Chicago) -->
+            {% if is_pairing_format %}
+                <!-- 👑 TITLE HEADER WITH INTEGRATED CAPTAIN BADGE COUNTER -->
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <span>{% if is_team_chicago %}⛳ Team Chicago Field List{% else %}🚙 Scramble Field List{% endif %}</span>
+                    <span style="font-size: 12px; color: #1e293b; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; border: 1px solid #cbd5e1; text-transform: none; letter-spacing: 0px; font-weight: normal; font-family: Arial, sans-serif;">
+                        Captains Required: <strong style="color: #2563eb; font-weight: bold; font-size: 13px;">{{ captains_needed }}</strong>
+                    </span>
+                </div>
+
+                <!-- 📊 LIVE FIELD COUNTER STATUS WIDGET WITH TEAM SIZING CONTROLS -->
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; line-height: 1.5; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <div style="font-weight: bold; color: #1e293b; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;">
+                        📋 {% if is_team_chicago %}Team Chicago Roster Blueprint{% else %}Scramble Roster Blueprint{% endif %}
+                    </div>
+
+                    <!-- Team Size Selector Input Dropdown Hook -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: #fff; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <span style="font-weight: bold; color: #475569;">Target Players Per Team:</span>
+                        <select id="scramble-size-config" onchange="adjustTeamSizeConfig(this.value)" style="padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; font-weight: bold; color: #2e7d32; cursor: pointer;">
+                            <option value="3" {% if squad_size == 3 %}selected{% endif %}>3 Players</option>
+                            <option value="4" {% if squad_size == 4 %}selected{% endif %}>4 Players</option>
+                            <option value="5" {% if squad_size == 5 %}selected{% endif %}>5 Players</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px; color: #475569;">
+                        <span>Unassigned Field Players Remaining:</span>
+                        <strong style="color: #0f172a;">{{ checked_in_players.count }} Members</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-top: 4px; border-top: 1px dashed #e2e8f0; margin-top: 4px;">
+                        <span style="font-weight: bold; color: #334155;">Captains Currently Hooked on Tees:</span>
+                        <strong style="{% if current_captains_count == captains_needed %}color: #16a34a;{% else %}color: #dc2626;{% endif %} font-size: 14px;">
+                            {{ current_captains_count }} / {{ captains_needed }}
+                        </strong>
+                    </div>
+                </div>
+
+                <p style="font-size: 11px; color: #64748b; margin-top: -5px; margin-bottom: 15px; font-style: italic; line-height: 1.3;">
+                    Check a player as Captain (👑) to open their Tee Selector. Assigning a starting hole takes them off this list and creates their left-panel group grid!
+                    {% if is_team_chicago %} Auto-group then balances remaining players by Chicago points while keeping cart partners together.{% endif %}
+                </p>
+
+
+                                <!-- Scrollable Table Block Container -->
+                <div class="scrollable-list-panel" style="max-height: 380px; overflow-y: auto; padding-right: 5px; box-sizing: border-box;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="position: sticky; top: 0; background: #f5f5f5; z-index: 10;">Role / Player Name{% if is_team_chicago %} / Chgo Pts{% endif %}</th>
+                                <th style="position: sticky; top: 0; background: #f5f5f5; z-index: 10;">Tee Hole / Cart Link Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in checked_in_players %}
+                                <tr class="player-row" id="player-row-{{ player.id }}">
+                                    <td style="padding: 8px 0; vertical-align: middle;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <input type="checkbox"
+                                                   id="captain-chk-{{ player.id }}"
+                                                   onclick="toggleCaptainStatus('{{ player.id }}')"
+                                                   style="width: 16px; height: 16px; cursor: pointer; accent-color: #2e7d32;"
+                                                   {% if player.is_captain %}checked{% endif %}>
+
+                                            <span style="font-weight: bold; color: #1b5e20; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;">
+                                                <span id="captain-crown-{{ player.id }}" style="display: {% if player.is_captain %}inline{% else %}none{% endif %}; color: #c5a059;">👑</span>
+                                                {{ player.name }}
+                                                {% if is_team_chicago %}
+                                                <span style="font-size: 11px; color: #64748b; font-weight: bold; margin-left: 4px;">({{ player.team_chicago_quota }})</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <!-- ⛳ DYNAMIC LIVE HOLE SELECTOR BLOCK INTERCEPT -->
+                                        <div id="hole-selector-wrapper-{{ player.id }}" style="display: {% if player.is_captain %}flex{% else %}none{% endif %}; margin-bottom: 5px; gap: 5px;">
+                                            <select onchange="assignScrambleHole('{{ player.id }}', this.value)" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #1b5e20; background: #f4fbf4; font-size: 12px; font-weight: bold; color: #1b5e20; cursor: pointer;">
+                                                <option value="">— Select Starting Tee —</option>
+                                                {% for hole in available_holes %}
+                                                    <option value="{{ hole.hole_number }}">⛳ Hole {{ hole.hole_number }} (Par {{ hole.par }})</option>
+                                                {% empty %}
+                                                    <option value="" disabled>🚫 All 9 Holes Occupied</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <!-- STANDARD CART SELECTOR (Hidden if Captain mode opens up) -->
+                                        <div id="cart-selector-wrapper-{{ player.id }}" style="display: {% if player.is_captain %}none{% else %}block{% endif %};">
+                                            <form method="POST" action="{% url 'scorecard:admin_dashboard' %}" style="margin:0; display: flex; gap: 5px;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="assign_cart">
+                                                <input type="hidden" name="player_id" value="{{ player.id }}">
+                                                <select name="partner_id" onchange="this.form.submit()" style="width: 100%; padding: 6px; border-radius: 4px; border: 1px solid #cbd5e1; background: #fff; font-size: 12px; cursor: pointer;">
+                                                    <option value="">— Ride Solo / Clear —</option>
+                                                    {% for partner in checked_in_players %}
+                                                        {% if partner.id != player.id %}
+                                                            <option value="{{ partner.id }}" {% if player.riding_partner.id == partner.id %}selected{% endif %}>
+                                                                {% if partner.is_captain %}👑{% else %}🤝{% endif %} {{ partner.name }}{% if is_team_chicago %} ({{ partner.team_chicago_quota }}){% endif %}
+                                                            </option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2" style="text-align: center; color: #16a34a; font-weight: bold; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 25px; font-size: 13px;">
+                                        ✅ All checked-in players have been successfully {% if is_team_chicago %}grouped{% else %}scrambled{% endif %} and placed onto active team rosters!
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            <!-- ⛳ LAYOUT B: FOR ALL OTHER GAME FORMATS -->
+            {% else %}
+                <div class="section-title">📊 Checked-In Active Players List</div>
+                <p style="font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 15px; font-style: italic;">
+                    Roster of all members currently active and checked in for today's round.
+                </p>
+
+                <div class="scrollable-list-panel" style="max-height: 440px; overflow-y: auto; padding-right: 5px; box-sizing: border-box;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="position: sticky; top: 0; background: #f5f5f5; z-index: 10;">Player Name</th>
+                                <th style="text-align: right; position: sticky; top: 0; background: #f5f5f5; z-index: 10;">
+                                    {% if round.game_format == 'chicago_points_18' or round.game_format == '18_IND_CHICAGO' %}
+                                        18-Hole Chgo Pts
+                                    {% else %}
+                                        Handicap
+                                    {% endif %}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in checked_in_players %}
+                                <tr class="player-row">
+                                    <td style="font-weight: bold; color: #1b5e20; padding: 12px 10px;">
+                                        {% if player.is_captain %}👑{% else %}👤{% endif %} {{ player.name }}
+                                    </td>
+                                    <td style="text-align: right; font-weight: bold; color: #475569; padding: 12px 10px;">
+                                        {% if round.game_format == 'chicago_points_18' or round.game_format == '18_IND_CHICAGO' %}
+                                            {{ player.chicago_points_18|default:"0" }}
+                                        {% else %}
+                                            {{ player.handicap|default:"0" }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2" style="text-align: center; color: #94a3b8; font-style: italic; padding: 25px;">
+                                        No players checked in for this tournament round session yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+        </div> <!-- Closes .panel-right -->
+    </div> <!-- Closes .dashboard-flex-grid -->
+    <!-- ━ ⛳ LIVE TEAM SQUAD ROSTERS (Scramble / Team Chicago) ━ -->
+    {% if is_pairing_format and active_squads %}
+    <div style="width: 100%; clear: both; margin-top: 35px; margin-bottom: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
+        <div class="section-title">{% if is_team_chicago %}⛳ Live Team Chicago Squad Rosters{% else %}🏌️‍♂️ Live 9-Hole Scramble Team Rosters{% endif %}</div>
+        <p style="font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 20px; font-style: italic;">
+            {% if is_team_chicago %}
+            Current teams with combined Chicago points targets and shotgun starts.
+            {% else %}
+            Current active team configurations and shotgun starts mapped across holes.
+            {% endif %}
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; box-sizing: border-box;">
+            {% for squad in active_squads %}
+            <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); overflow: hidden; display: flex; flex-direction: column;">
+                <!-- Team Header Bar -->
+                <div style="background: #f1f5f9; padding: 10px 15px; font-weight: bold; font-size: 14px; color: #1e293b; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Squad #{{ squad.squad_number }}</span>
+                    <span style="font-size: 12px; background: #e8f5e9; border: 1px solid #c8e6c9; color: #2e7d32; padding: 2px 8px; border-radius: 4px; font-weight: bold;">
+                        ⛳ Hole {{ squad.starting_hole.hole_number|default:"TBD" }}
+                    </span>
+                </div>
+
+                <!-- Team Members Roster Body -->
+                <div style="padding: 15px; flex-grow: 1; display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Team Leader Anchor Row -->
+                    <div style="background: #fffdf5; border: 1px solid #fde68a; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold; color: #92400e; font-size: 13px;">
+                            👑 {{ squad.scorekeeper.name|default:"Unassigned Captain" }}
+                        </span>
+                        <span style="font-size: 11px; background: #fef3c7; color: #b45309; padding: 1px 6px; border-radius: 4px; font-weight: bold;">
+                            {% if is_team_chicago %}
+                            Captain ({{ squad.scorekeeper.team_chicago_quota }} pts)
+                            {% else %}
+                            Captain (HCP: {{ squad.scorekeeper.handicap|default:"0" }})
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+                        {% for player in squad.players.all %}
+                            {% if player.id != squad.scorekeeper.id %}
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #334155;">
+                                <span>👤 {{ player.name }}</span>
+                                <span style="font-size: 11px; color: #64748b; font-weight: bold;">
+                                    {% if is_team_chicago %}
+                                    {{ player.team_chicago_quota }} pts
+                                    {% else %}
+                                    HCP: {{ player.handicap|default:"0" }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    {% if is_team_chicago %}
+                    <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; color: #1b5e20;">
+                        <span>Team Quota Total</span>
+                        <span>{{ squad.team_quota_total|default:0 }} pts</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="background: #fafafa; padding: 10px 15px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                    <form action="{% url 'scorecard:dismantle_squad_action' squad.id %}" method="POST" style="margin: 0;" onsubmit="return confirm('Dismantle Squad #{{ squad.squad_number }}?');">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: 1px solid #fca5a5; color: #dc2626; cursor: pointer; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='none'">
+                            💥 Dismantle Team
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div> <!-- Closes .dashboard-container -->
+
+<script>
+function adjustTeamSizeConfig(sizeValue) {
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('team_size', sizeValue);
+    window.location.href = currentUrl.toString();
+}
+
+function assignScrambleHole(playerId, holeNum) {
+    fetch("{% url 'scorecard:assign_scramble_hole_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ player_id: playerId, hole_number: holeNum })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location.reload();
+        } else {
+            alert("Error setting starting hole: " + data.error);
+        }
+    })
+    .catch(error => console.error("AJAX Error:", error));
+}
+
+function toggleCaptainStatus(playerId) {
+    const checkbox = document.getElementById(`captain-chk-${playerId}`);
+    const crown = document.getElementById(`captain-crown-${playerId}`);
+    const holeWrapper = document.getElementById(`hole-selector-wrapper-${playerId}`);
+    const cartWrapper = document.getElementById(`cart-selector-wrapper-${playerId}`);
+
+    fetch("{% url 'scorecard:toggle_captain_status_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ player_id: playerId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            checkbox.checked = data.is_captain;
+            if (data.is_captain) {
+                crown.style.display = "inline";
+                holeWrapper.style.display = "flex";
+                cartWrapper.style.display = "none";
+            } else {
+                crown.style.display = "none";
+                holeWrapper.style.display = "none";
+                cartWrapper.style.display = "block";
+                window.location.reload();
+            }
+        } else {
+            alert("Error updating captain status: " + data.error);
+            checkbox.checked = !checkbox.checked;
+        }
+    })
+    .catch(error => {
+        console.error("AJAX Error:", error);
+        checkbox.checked = !checkbox.checked;
+    });
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

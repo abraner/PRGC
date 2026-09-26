@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Registered Members</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 25px; }
+        .list-container { max-width: 950px; margin: 0 auto; background: #B3DEB6; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
+        th { background-color: #f5f5f5; color: #333; font-weight: bold; }
+        tr:hover { background-color: #fafafa; }
+        .btn-back { display: inline-block; background: #2e7d32; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; text-decoration: none; }
+        .btn-back:hover { background: #1b5e20; }
+        .member-id-badge { background: #e0f2f1; color: #004d40; padding: 3px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+
+        /* Interactive styling additions */
+        .btn-inline-edit { padding: 5px 10px; background: #ffb300; color: #333; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 13px; margin-right: 5px;}
+        .btn-inline-delete { padding: 5px 10px; background: #d32f2f; color: white; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 13px; }
+        .checkbox-container { display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .playing-checkbox { transform: scale(1.3); cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="list-container">
+    <div class="header-row">
+        <h2 style="margin: 0; color: #2c3e50;">👥 Registered Scoring Members</h2>
+        <a href="{% url 'scorecard:admin_dashboard' %}" class="btn-back">⬅️ Back to Dashboard</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: center; width: 110px;">Playing Today</th>
+                <th>Member ID</th>
+                <th>Name</th>
+                <th>18H Hcp</th>
+                <th>18H Chicago</th>
+                <th>9H Team Chicago</th>
+                <th>Ladies Hcp</th>
+                <th style="width: 140px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td style="text-align: center;">
+                    <div class="checkbox-container">
+                        <input type="checkbox"
+                               class="playing-checkbox"
+                               data-player-id="{{ player.id }}"
+                               {% if player.is_playing_today %}checked{% endif %}
+                               onchange="updatePlayingStatus(this)">
+                    </div>
+                </td>
+                <td><span class="member-id-badge">{{ player.member_id|default:"N/A" }}</span></td>
+                                <!-- 🟢 Dynamic Name Colorization: Captain names turn green! -->
+                <td>
+                    <strong style="{% if player.is_captain %}color: #1b5e20;{% else %}color: #2c3e50;{% endif %}">
+                        {{ player.name }}
+                    </strong>
+                    {% if player.is_captain %}
+                        <span style="background: #e8f5e9; color: #1b5e20; padding: 1px 5px; border-radius: 3px; font-size: 10px; font-weight: bold; display: inline-block; margin-left: 5px; text-transform: uppercase; letter-spacing: 0.3px;">
+                            Captain
+                        </span>
+                    {% endif %}
+                </td>
+
+                <td>{{ player.handicap }}</td>
+                <td>{{ player.chicago_points_18 }}</td>
+                <td>{{ player.team_chicago_quota }}</td>
+                <td>{{ player.ladies_league_handicap|default:"-" }}</td>
+                <td>
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <a href="{% url 'scorecard:edit_player' player.id %}" class="btn-inline-edit" style="text-decoration: none;">✏️ Edit</a>
+
+        <!-- NEW: Secure Deletion Form Wrapper Panel -->
+        <form action="{% url 'scorecard:delete_player' player.id %}" method="POST" onsubmit="return confirm('⚠️ Permanent Action: Are you sure you want to completely remove {{ player.name }} from the system roster? This cannot be undone.');" style="margin: 0; padding: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn-inline-delete" style="border: none; cursor: pointer; padding: 5px 10px;">❌</button>
+        </form>
+    </div>
+</td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function updatePlayingStatus(checkbox) {
+    const playerId = checkbox.getAttribute('data-player-id');
+    const isChecked = checkbox.checked;
+
+    // Added the scorecard: prefix here
+    fetch("{% url 'scorecard:toggle_playing_ajax' %}", {
+
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            player_id: playerId,
+            is_playing: isChecked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            alert('Could not update profile status. Please retry.');
+            checkbox.checked = !isChecked; // Revert change if saving failed
+        }
+    })
+    .catch(error => {
+        console.error('Error updating status:', error);
+        alert('Server connectivity issue encountered.');
+        checkbox.checked = !isChecked; // Revert change
+    });
+}
+
+
+function updatePlayingStatus(checkbox) {
+    const playerId = checkbox.getAttribute('data-player-id');
+    const isChecked = checkbox.checked;
+
+    // Hardcoded browser path string mapping
+    fetch("/admin-dashboard/toggle-playing/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            // NEW: Injects Django's session validation key right into the request headers
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            player_id: playerId,
+            is_playing: isChecked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            alert('Could not update profile status. Please retry.');
+            checkbox.checked = !isChecked; // Revert checkbox if backend failed
+        }
+    })
+    .catch(error => {
+        console.error('Error updating status:', error);
+        alert('Server connectivity issue encountered.');
+        checkbox.checked = !isChecked; // Revert checkbox
+    });
+}
+
+
+
+
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Round Completed!</title>
+    <style>
+        body { font-family: sans-serif; background: #008000; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin:0; }
+        .card { background: #B3DEB6; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 480px; text-align: center; }
+        .header { background: #1b5e20; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .player-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #eee; align-items: center; }
+        .player-name { font-weight: bold; color: #2c3e50; text-align: left; }
+        .score-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 5px; font-size: 14px; }
+        .gross-badge { background: #cfd8dc; color: #37474f; }
+        .net-badge { background: #e8f5e9; color: #2e7d32; font-size: 16px; }
+        .btn-logout { display: block; background: #37474f; color: white; text-decoration: none; padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h2 style="margin:0;">🎉 Round Complete!</h2>
+        <p style="margin:5px 0 0 0; font-size:14px;">Squad #{{ squad.squad_number }} Card Review</p>
+    </div>
+
+    <p style="color:#555; font-size:14px;">Review final Gross and Handicap-Adjusted Net scores:</p>
+
+    {% for item in summary %}
+        <div class="player-row">
+            <div class="player-name">
+                {{ item.player.name }}
+                <div style="font-size: 11px; color:#757575; font-weight:normal;">Course Hcp: {{ item.player.handicap }}</div>
+            </div>
+            <div>
+                <span class="score-badge gross-badge">G: {{ item.total_strokes }}</span>
+                <span class="score-badge net-badge">N: {{ item.total_net }}</span>
+            </div>
+        </div>
+    {% endfor %}
+
+    <a href="{% url 'scorecard:logout' %}" class="btn-logout">Sign Out & Finish</a>
+</div>
+
+</body>
+</html>

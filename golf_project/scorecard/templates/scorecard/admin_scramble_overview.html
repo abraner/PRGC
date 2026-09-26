@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scramble Squads Control Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background: #008000; margin: 0; padding: 20px; color: #263238; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .top-bar { background: #263238; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* Squad Sheet Grid Cards */
+        .squad-card { background: #B3DEB6; border-radius: 8px; border-left: 5px solid #455a64; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 20px; margin-bottom: 15px; }
+        .squad-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #cfd8dc; padding-bottom: 10px; margin-bottom: 15px; }
+        .hole-badge { background: #263238; color: white; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 13px; }
+
+        /* Cart Assignment Modules */
+        .cart-box { background: #f8f9fa; border: 1px dashed #b0bec5; border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .cart-tag { font-size: 11px; font-weight: bold; text-transform: uppercase; background: #cfd8dc; padding: 2px 6px; border-radius: 4px; color: #455a64; }
+
+        .player-pill { font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; margin-right: 15px; }
+        .captain-crown { color: #f57f17; font-weight: bold; }
+
+        .alert-banner { background: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; }
+        .btn-action { background: #455a64; color: white; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; }
+        .btn-action:hover { background: #263238; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-bar">
+        <div>
+            <h2 style="margin: 0 0 5px 0;">Scramble Squads Control Dashboard</h2>
+            <small>Active Round Format: <strong>{{ round.game_format }}</strong></small>
+        </div>
+        <a href="/admin-dashboard/" class="btn-action" style="background: #37474f;">⚙️ Main Admin Panel</a>
+    </div>
+
+    <!-- UNASSIGNED PLAYERS SAFETY ALERT -->
+    {% if unassigned_count > 0 %}
+    <div class="alert-banner">
+        ⚠️ ALERT: There are {{ unassigned_count }} checked-in players left behind without a squad assignment!
+        <ul style="margin: 5px 0 0 0; font-weight: normal; font-size: 13px;">
+            {% for player in unassigned_players %}
+                <li>{{ player.name }} (Cart Mate: {{ player.riding_partner.name|default:"None" }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- SQUAD GRIDS ITERATION LOOP -->
+    {% for team in compiled_squads %}
+    <div class="squad-card">
+        <div class="squad-header">
+            <div>
+                <span style="font-size: 18px; font-weight: bold; color: #37474f;">Squad Group Row #{{ forloop.counter }}</span>
+                <span style="margin-left: 10px; font-size: 13px; color: #78909c;">Headcount: <strong>{{ team.headcount }} Players</strong></span>
+            </div>
+            <span class="hole-badge">⛳ Tee Off Hole #{{ team.starting_hole }}</span>
+        </div>
+
+        <h4 style="margin: 0 0 10px 0; color: #546e7a; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Cart Pair Assignments:</h4>
+
+        {% for cart in team.cart_groups %}
+        <div class="cart-box">
+            <div>
+                {% for player in cart.players %}
+                <span class="player-pill">
+                    {% if player.is_captain %}
+                        <span class="captain-crown">⭐ {{ player.name }} (Captain)</span>
+                    {% else %}
+                        👤 {{ player.name }}
+                    {% endif %}
+                    <span style="font-size: 11px; color: #90a4ae;">(Hcp: {{ player.handicap }})</span>
+                </span>
+                {% endfor %}
+            </div>
+            <span class="cart-tag">{{ cart.type }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <div style="background: white; padding: 40px; text-align: center; border-radius: 8px; color: #78909c; font-style: italic;">
+        No scramble squads have been generated inside the database grid yet.<br><br>
+        <!-- 🟢 Updated to a stable hardcoded URL path inside admin_scramble_overview.html -->
+        <!-- 🟢 Updated to a stable hardcoded URL path inside admin_scramble_overview.html -->
+        <a href="/generate-scramble-squads/{{ round.id|default:'0' }}/"
+            class="btn-action"
+            style="background: #2e7d32; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;"
+            onclick="return confirm('Generate random scramble squads now?');">
+            ⚡ Auto-Generate Scramble Squads
+        </a>
+
+
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

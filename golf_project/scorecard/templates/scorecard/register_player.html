@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Scoring Member</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #008000;
+            margin: 0;
+            padding: 20px;
+        }
+        .registration-panel {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #B3DEB6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #64748b;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+        /* Styles the Django auto-rendered form inputs */
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #0f172a;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #1565c0;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
+        }
+
+        /* FIXES THE HIDDEN CHECKBOXES BY RESETTING WIDTH & PADDING */
+        .form-group input[type="checkbox"] {
+            width: auto;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .error-text {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .actions-wrapper {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-submit {
+            background: #1565c0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: #0d47a1;
+        }
+        .btn-cancel {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .btn-cancel:hover {
+            text-decoration: underline;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+
+<div class="registration-panel">
+    <h2>Register Playing Member</h2>
+    <p class="subtitle">Enter the player parameters below to create a scoring profile.</p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {# Loop through the fields provided by your view's form context #}
+        {% for field in form %}
+            <!-- 🟢 FIXED: Strict template filter intercepts and blocks 'is_player' and 'is_captain' checkboxes from rendering -->
+            {% if field.name != "is_player" and field.name != "is_captain" %}
+
+                {% if field.field.widget.input_type == "checkbox" %}
+                    <!-- CLEAN LAYOUT FOR CHECKBOX ROWS -->
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        {{ field }}
+                        <label for="{{ field.id_for_label }}" style="margin-bottom: 0; font-weight: 500; cursor: pointer;">{{ field.label }}</label>
+                        {% if field.errors %}
+                            <div class="error-text">
+                                {% for error in field.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <!-- STANDARD LAYOUT FOR TEXT AND NUMBER INPUTS -->
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error-text">
+                                {% for error in field.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+            {% endif %}
+        {% endfor %}
+
+        <div class="actions-wrapper">
+            <button type="submit" class="btn-submit">
+                Save Playing Member
+            </button>
+            <a href="{% url 'scorecard:admin_dashboard' %}" class="btn-cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
+
+
+

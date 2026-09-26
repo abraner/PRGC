@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Live Scoring - Hole {{ current_hole.hole_number }}</title>
+    <style>
+        body { font-family: sans-serif; background: #008000; margin: 0; padding: 15px; }
+        .card { background: #B3DEB6; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: 0 auto; box-sizing: border-box; }
+
+        /* 🎨 DYNAMIC BACKGROUND SHIFTER: Slate Charcoal for Scramble, Deep Emerald Green for Team Chicago */
+        .header {
+            background: {% if is_scramble_game %}#263238{% else %}#004d40{% endif %};
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .squad-summary-card { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .squad-stat-label { font-size: 11px; color: #166534; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3px; display: block; margin-bottom: 2px; }
+        .squad-stat-val { font-size: 18px; font-weight: bold; color: #14532d; }
+
+        .player-row { border-bottom: 1px solid #e0e0e0; padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
+
+        /* 🟢 Dynamic colors: Regular players get slate blue, captains stand out in deep grass green */
+        .player-name { font-weight: bold; font-size: 16px; color: #2c3e50; }
+        .captain-text { color: #1b5e20 !important; }
+
+        .quota-edit-group {
+            font-size: 12px;
+            color: {% if is_scramble_game %}#263238{% else %}#004d40{% endif %};
+            font-weight: bold;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .quota-input {
+            width: 45px;
+            height: 24px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid {% if is_scramble_game %}#263238{% else %}#004d40{% endif %};
+            border-radius: 4px;
+            background-color: {% if is_scramble_game %}#eceff1{% else %}#e0f2f1{% endif %};
+            color: {% if is_scramble_game %}#263238{% else %}#004d40{% endif %};
+        }
+
+        .input-group { display: flex; gap: 10px; }
+        .num-input { width: 75px; height: 45px; text-align: center; font-size: 18px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; }
+        .net-display { width: 65px !important; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; }
+        .navigation-links { margin-top: 25px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
+        .btn-logout { background: #c62828; color: white; text-decoration: none; padding: 6px 12px; font-weight: bold; font-size: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s; }
+        .btn-logout:hover { background: #b71c1c; }
+
+        .btn-nav { font-size: 15px; font-weight: bold; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s; }
+        .btn-prev { background: #78909c; color: white; }
+        .btn-prev:hover { background: #607d8b; }
+        .btn-next { background: #2e7d32; color: white; }
+        .btn-next:hover { background: #1b5e20; }
+        .btn-finish { background: #1565c0; color: white; }
+        .btn-finish:hover { background: #0d47a1; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- 🟢 TOP VIEWPORT USER HEADER & LOGOUT ACTION -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #e0e0e0;">
+        <div style="font-size: 13px; font-weight: bold; color: #455a64;">
+            🏌️ User: <span style="color: #263238;">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+
+        <a href="/logout/" class="btn-logout" onclick="return confirm('Are you sure you want to log out of your player scorecard session?');">
+            🚪 Log Out
+        </a>
+    </div>
+
+    <div class="header">
+        <h2 style="margin:0 0 5px 0;">Hole {{ current_hole.hole_number }}</h2>
+        <p style="margin:0 0 5px 0;">Par {{ current_hole.par }} | Handicap Index: {{ current_hole.handicap_index }}</p>
+
+        <small style="font-weight: bold; letter-spacing: 0.3px; text-transform: uppercase; font-size: 11px;">
+            {% if is_scramble_game %}
+                🏆 9-Hole Scramble (Captain Scoring Only)
+            {% else %}
+                ⛳ 9-Hole Team Chicago Format
+            {% endif %}
+        </small>
+
+        {% if is_scramble_game %}
+            <div style="margin-top: 12px; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;
+                        {% if squad_cumulative_to_par < 0 %}
+                            background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7;
+                        {% elif squad_cumulative_to_par == 0 %}
+                            background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
+                        {% else %}
+                            background: #ffebee; color: #c62828; border: 1px solid #ef9a9a;
+                        {% endif %}">
+                Squad Total:
+                <span>
+                    {% if squad_cumulative_to_par < 0 %}
+                        {{ squad_cumulative_to_par }} (Under Par)
+                    {% elif squad_cumulative_to_par == 0 %}
+                        E (Even Par)
+                    {% else %}
+                        +{{ squad_cumulative_to_par }} (Over Par)
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
+    </div>
+
+        <!-- SQUAD SUMMARY CARD BANNER (Hidden during Scramble matches to prevent point confusion) -->
+        <!-- SQUAD SUMMARY CARD BANNER (Hidden during Scramble matches to prevent point confusion) -->
+        <!-- SQUAD SUMMARY CARD BANNER -->
+        <!-- SQUAD SUMMARY CARD BANNER -->
+       {% if not is_scramble_game %}
+    <div class="squad-summary-card">
+        <!-- 🎯 Column 1: Group Target (33% Width) -->
+        <div style="text-align: center; width: 33%;">
+            <span class="squad-stat-label">Group Target</span>
+            <span class="squad-stat-val" id="squad-total-quota">{{ squad_total_points_needed }}</span>
+        </div>
+
+        <!-- 💰 Column 2: Group Points (33% Width) -->
+        <div style="text-align: center; width: 33%; border-left: 1px solid #bbf7d0; border-right: 1px solid #bbf7d0;">
+            <span class="squad-stat-label">Group Points</span>
+            <span class="squad-stat-val" id="squad-total-earned"
+                  style="color: {% if squad_running_total_earned < squad_total_points_needed %}#c62828{% elif squad_running_total_earned > squad_total_points_needed %}#2e7d32{% else %}#212121{% endif %};">
+                {{ squad_running_total_earned }}
+            </span>
+        </div>
+
+        <!-- 📊 Column 3: NEW Group Net +/- Differential (33% Width) -->
+        <div style="text-align: center; width: 33%;">
+            <span class="squad-stat-label">Group Net +/-</span>
+            <span class="squad-stat-val" id="squad-team-differential"
+                  style="font-weight: bold; color: {% if squad_running_total_earned < squad_total_points_needed %}#c62828{% elif squad_running_total_earned > squad_total_points_needed %}#2e7d32{% else %}#212121{% endif %};">
+
+                <!-- 🟢 Django Template Fallback Math runs on page-load -->
+                {% if squad_running_total_earned == squad_total_points_needed %}
+                    0
+                {% else %}
+                    <!-- Safely computes: earned points minus needed targets via widthratio tricks -->
+                    {% widthratio squad_running_total_earned 1 1 as earned_str %}
+                    {% widthratio squad_total_points_needed 1 1 as needed_str %}
+
+                    <!-- Fallback renders via JavaScript dynamically, placeholders safely handle startup views -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const e = parseInt("{{ squad_running_total_earned|default:0 }}", 10);
+                            const t = parseInt("{{ squad_total_points_needed|default:0 }}", 10);
+                            const diff = e - t;
+                            document.getElementById("squad-team-differential").textContent = diff > 0 ? "+" + diff : diff;
+                        });
+                    </script>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+
+
+    <!-- 💰 Section 2 Dynamic Score Dropdowns & Live Calculation Engine -->
+    <form method="POST" action="" style="margin: 0; padding: 0;">
+        {% csrf_token %}
+
+        {% for item in player_scores %}
+            <div class="player-row" id="player-row-{{ item.player.id }}" data-player="{{ item.player.id }}" data-hole="{{ current_hole.id }}" data-round="{{ round.id }}" data-quota-target="{{ item.chicago_target }}" data-prior-points="{{ item.prior_points }}">
+
+                <div class="player-name {% if item.player.is_captain %}captain-text{% endif %}">
+                    {{ item.player.name }}
+                    {% if item.player.is_captain %}
+                        <span style="font-size: 10px; background-color: #e8f5e9; color: #1b5e20; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: bold; text-transform: uppercase;">⭐ Captain</span>
+                    {% endif %}
+
+                    {% if not is_scramble_game %}
+                    <div class="quota-edit-group">
+                        <label>Points Needed:</label>
+                        <input type="number" readonly class="quota-input" style="font-weight: bold; color: #1b5e20;" value="{{ item.chicago_target|default:0 }}">
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <div style="text-align: center;">
+                        <small style="display: block; color: #555; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Strokes</small>
+
+                        <!-- 🟢 FIXED: Removed the corrupting text character from the name attribute so form submissions save perfectly! -->
+                        <select name="score_{{ item.player.id }}" class="num-input strokes-dropdown" data-player-id="{{ item.player.id }}" style="background-color: #fff; cursor: pointer;">
+                            <option value="">—</option>
+                            <option value="1" {% if item.score.strokes == 1 %}selected{% endif %}>1</option>
+                            <option value="2" {% if item.score.strokes == 2 %}selected{% endif %}>2</option>
+                            <option value="3" {% if item.score.strokes == 3 %}selected{% endif %}>3</option>
+                            <option value="4" {% if item.score.strokes == 4 %}selected{% endif %}>4</option>
+                            <option value="5" {% if item.score.strokes == 5 %}selected{% endif %}>5</option>
+                            <option value="6" {% if item.score.strokes == 6 %}selected{% endif %}>6</option>
+                            <option value="7" {% if item.score.strokes == 7 %}selected{% endif %}>7</option>
+                            <option value="8" {% if item.score.strokes == 8 %}selected{% endif %}>8</option>
+                            <option value="9" {% if item.score.strokes == 9 %}selected{% endif %}>9</option>
+                            <option value="10" {% if item.score.strokes == 10 %}selected{% endif %}>10</option>
+                            <option value="11" {% if item.score.strokes == 11 %}selected{% endif %}>11</option>
+                            <option value="12" {% if item.score.strokes == 12 %}selected{% endif %}>12</option>
+                        </select>
+                    </div>
+
+                                        {% if not is_scramble_game %}
+                    <div style="text-align: center;">
+                        <small style="display: block; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Chgo. Points</small>
+
+                        <!-- Running total so far (prior holes + this hole when strokes entered) -->
+                        <input type="text" id="chicago-display-{{ item.player.id }}" class="net-display" readonly
+                               style="font-weight: 800; text-align: center; border: 1px solid #c5e1a5; background-color: #f1f8e9;
+                                      color: {% if item.current_points < item.chicago_target %}#c62828{% elif item.current_points > item.chicago_target %}#2e7d32{% else %}#212121{% endif %};"
+                               value="{{ item.current_points|default:0 }}">
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        {% endfor %}
+
+        <div class="navigation-links">
+            <button type="submit" name="nav_direction" value="prev" class="btn-nav btn-prev">
+                ⬅️ Previous Hole
+            </button>
+
+            {% if is_final_hole %}
+                <button type="submit" name="nav_direction" value="finish" class="btn-nav btn-finish">
+                    🏁 Finish round
+                </button>
+            {% else %}
+                <button type="submit" name="nav_direction" value="next" class="btn-nav btn-next">
+                    Next Hole ➡️
+                </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- 🟢 REAL-TIME ACCUMULATIVE CHICAGO TEAM CALCULATOR ENGINE -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // ⛳ 1. Grab the core hole par setting directly from your Django context database token
+    const holePar = parseInt("{{ current_hole.par|default:4 }}", 10);
+    const dropdowns = document.querySelectorAll(".strokes-dropdown");
+
+    // 📊 2. Function aggregates all individual boxes to update both Group Points and Group Net +/- instantly
+    function updateLiveSquadTotals() {
+        const displayBoxes = document.querySelectorAll(".net-display");
+        const squadEarnedBanner = document.getElementById("squad-total-earned");
+        const squadDiffBanner = document.getElementById("squad-team-differential");
+
+        // Fetch the group's global point milestone directly from the target box text
+        const targetQuota = parseInt(document.getElementById("squad-total-quota").textContent || "0", 10);
+
+        let combinedSquadPoints = 0;
+        displayBoxes.forEach(function(box) {
+            const val = parseInt(box.value, 10);
+            if (!isNaN(val)) {
+                combinedSquadPoints += val;
+            }
+        });
+
+        // Update Column 2: Group Points text and font color indicators
+        if (squadEarnedBanner) {
+            squadEarnedBanner.textContent = combinedSquadPoints;
+
+            if (combinedSquadPoints < targetQuota) {
+                squadEarnedBanner.style.setProperty("color", "#c62828", "important"); // 🔴 Red behind target
+            } else if (combinedSquadPoints > targetQuota) {
+                squadEarnedBanner.style.setProperty("color", "#2e7d32", "important"); // 🟢 Green ahead of target
+            } else {
+                squadEarnedBanner.style.setProperty("color", "#212121", "important"); // ⚫ Black even
+            }
+        }
+
+        // 🧮 Update Column 3: NEW Group Net +/- Differential calculation engine
+        if (squadDiffBanner) {
+            const netTeamDiff = combinedSquadPoints - targetQuota;
+
+            // Append a literal plus text symbol for positive tiers
+            squadDiffBanner.textContent = netTeamDiff > 0 ? "+" + netTeamDiff : netTeamDiff;
+
+            // 🎨 LIVE DIFFERENTIAL COLOR SHIFTER ROUTINE
+            if (netTeamDiff < 0) {
+                squadDiffBanner.style.setProperty("color", "#c62828", "important");   // 🔴 Red trailing
+            } else if (netTeamDiff > 0) {
+                squadDiffBanner.style.setProperty("color", "#2e7d32", "important");   // 🟢 Green winning
+            } else {
+                squadDiffBanner.style.setProperty("color", "#212121", "important");   // ⚫ Black even (0)
+            }
+        }
+    }
+
+    // 3. Attach change event links to all player score selector menus
+    dropdowns.forEach(function(selectElement) {
+        selectElement.addEventListener("change", function() {
+            const playerId = this.getAttribute("data-player-id");
+            const displayBox = document.getElementById("chicago-display-" + playerId);
+
+            const playerRow = document.getElementById("player-row-" + playerId);
+            const priorPoints = parseInt(playerRow.getAttribute("data-prior-points") || "0", 10);
+
+            const pointsNeededInput = playerRow.querySelector(".quota-input");
+            const personalQuotaTarget = parseInt(pointsNeededInput ? pointsNeededInput.value : "0", 10);
+
+            const grossScore = parseInt(this.value, 10);
+
+            let currentHolePoints = 0;
+            if (!isNaN(grossScore) && grossScore > 0) {
+                const relationToPar = grossScore - holePar;
+                if (relationToPar <= -2) { currentHolePoints = 8; }       // Eagle or better
+                else if (relationToPar === -1) { currentHolePoints = 4; } // Birdie
+                else if (relationToPar === 0) { currentHolePoints = 2; }  // Par
+                else if (relationToPar === 1) { currentHolePoints = 1; }  // Bogey
+                else { currentHolePoints = 0; }                          // Double Bogey+
+            }
+
+            // Running total: points from prior holes + this hole's award
+            const netAccumulativeTotal = priorPoints + currentHolePoints;
+
+            if (displayBox) {
+                // Always show running total (prior alone until strokes are entered for this hole)
+                displayBox.value = (!isNaN(grossScore) && grossScore > 0) ? netAccumulativeTotal : priorPoints;
+
+                const compareTotal = (!isNaN(grossScore) && grossScore > 0) ? netAccumulativeTotal : priorPoints;
+                if (compareTotal < personalQuotaTarget) {
+                    displayBox.style.setProperty("color", "#c62828", "important");
+                } else if (compareTotal > personalQuotaTarget) {
+                    displayBox.style.setProperty("color", "#2e7d32", "important");
+                } else {
+                    displayBox.style.setProperty("color", "#212121", "important");
+                }
+            }
+
+            // 🟢 FORCE TOTAL RE-CALCULATION PASS: Updates team headers and team net color codes instantly!
+            updateLiveSquadTotals();
+        });
+
+        // Seed Chgo. Points from prior holes (and any saved strokes) on page load
+        selectElement.dispatchEvent(new Event("change"));
+    });
+});
+</script>
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
