@@ -20,6 +20,7 @@ def _mysql_rename_if_needed(schema_editor, table, old_name, new_name, column_sql
 
 
 def rename_legacy_columns(apps, schema_editor):
+    """For databases created before field renames landed in 0001."""
     _mysql_rename_if_needed(
         schema_editor, 'scorecard_hole', 'index', 'handicap_index',
         'integer NOT NULL DEFAULT 1',
@@ -55,29 +56,8 @@ class Migration(migrations.Migration):
                 ('kp_winners', models.CharField(blank=True, default='', help_text='Enter names of closest to the hole winners', max_length=255)),
             ],
         ),
-        # Safe renames: update Django state always; only touch DB if old column still exists
-        migrations.SeparateDatabaseAndState(
-            state_operations=[
-                migrations.RenameField(
-                    model_name='hole',
-                    old_name='index',
-                    new_name='handicap_index',
-                ),
-                migrations.RenameField(
-                    model_name='holescore',
-                    old_name='points',
-                    new_name='gross_value',
-                ),
-                migrations.RenameField(
-                    model_name='holescore',
-                    old_name='strokes',
-                    new_name='net_value',
-                ),
-            ],
-            database_operations=[
-                migrations.RunPython(rename_legacy_columns, migrations.RunPython.noop),
-            ],
-        ),
+        # DB-only legacy renames (state already uses final names from 0001)
+        migrations.RunPython(rename_legacy_columns, migrations.RunPython.noop),
         migrations.RemoveField(
             model_name='golfround',
             name='active_players',

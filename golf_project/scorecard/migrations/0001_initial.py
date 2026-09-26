@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('hole_number', models.IntegerField()),
                 ('par', models.IntegerField(default=4)),
-                ('index', models.IntegerField(default=1)),
+                # Final name (was briefly 'index' in older deployments)
+                ('handicap_index', models.IntegerField(default=1)),
             ],
             options={
                 'ordering': ['hole_number'],
@@ -46,8 +47,9 @@ class Migration(migrations.Migration):
             name='HoleScore',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('strokes', models.IntegerField(default=0)),
-                ('points', models.IntegerField(default=0)),
+                # Final names (were briefly strokes/points in older deployments)
+                ('net_value', models.IntegerField(default=0)),
+                ('gross_value', models.IntegerField(default=0)),
                 ('hole', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player_scores', to='scorecard.hole')),
                 ('round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='scores', to='scorecard.golfround')),
                 ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='hole_scores', to='scorecard.player')),
