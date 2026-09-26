@@ -30,7 +30,16 @@ SECRET_KEY = os.environ.get(
 # Local runserver only serves Django Admin CSS/JS when DEBUG is True.
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'abraner.pythonanywhere.com',
+]
+
+# Needed for HTTPS admin/login POSTs on PythonAnywhere (Django 4+)
+CSRF_TRUSTED_ORIGINS = [
+    'https://abraner.pythonanywhere.com',
+]
 
 
 # Application definition

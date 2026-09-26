@@ -5,6 +5,35 @@ from django.conf import settings
 from django.db import migrations, models
 
 
+def _mysql_rename_if_needed(schema_editor, table, old_name, new_name, column_sql):
+    """Rename a MySQL column only when the old name still exists."""
+    connection = schema_editor.connection
+    with connection.cursor() as cursor:
+        cursor.execute(f"SHOW COLUMNS FROM `{table}` LIKE %s", [old_name])
+        has_old = cursor.fetchone() is not None
+        cursor.execute(f"SHOW COLUMNS FROM `{table}` LIKE %s", [new_name])
+        has_new = cursor.fetchone() is not None
+        if has_old and not has_new:
+            cursor.execute(
+                f"ALTER TABLE `{table}` CHANGE COLUMN `{old_name}` `{new_name}` {column_sql}"
+            )
+
+
+def rename_legacy_columns(apps, schema_editor):
+    _mysql_rename_if_needed(
+        schema_editor, 'scorecard_hole', 'index', 'handicap_index',
+        'integer NOT NULL DEFAULT 1',
+    )
+    _mysql_rename_if_needed(
+        schema_editor, 'scorecard_holescore', 'points', 'gross_value',
+        'integer NOT NULL DEFAULT 0',
+    )
+    _mysql_rename_if_needed(
+        schema_editor, 'scorecard_holescore', 'strokes', 'net_value',
+        'integer NOT NULL DEFAULT 0',
+    )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -26,20 +55,28 @@ class Migration(migrations.Migration):
                 ('kp_winners', models.CharField(blank=True, default='', help_text='Enter names of closest to the hole winners', max_length=255)),
             ],
         ),
-        migrations.RenameField(
-            model_name='hole',
-            old_name='index',
-            new_name='handicap_index',
-        ),
-        migrations.RenameField(
-            model_name='holescore',
-            old_name='points',
-            new_name='gross_value',
-        ),
-        migrations.RenameField(
-            model_name='holescore',
-            old_name='strokes',
-            new_name='net_value',
+        # Safe renames: update Django state always; only touch DB if old column still exists
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RenameField(
+                    model_name='hole',
+                    old_name='index',
+                    new_name='handicap_index',
+                ),
+                migrations.RenameField(
+                    model_name='holescore',
+                    old_name='points',
+                    new_name='gross_value',
+                ),
+                migrations.RenameField(
+                    model_name='holescore',
+                    old_name='strokes',
+                    new_name='net_value',
+                ),
+            ],
+            database_operations=[
+                migrations.RunPython(rename_legacy_columns, migrations.RunPython.noop),
+            ],
         ),
         migrations.RemoveField(
             model_name='golfround',
