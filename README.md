@@ -1,6 +1,6 @@
 # PRGC Live Golf Scorecard
 
-Django web app for **Pine Ridge Golf Club** outing scoring: check-in, pairing, live hole-by-hole score entry, leaderboards, and end-of-round handicap/quota updates.
+Django web app for **Peace River Golf Course** outing scoring: check-in, pairing, live hole-by-hole score entry, leaderboards, and end-of-round handicap/quota updates.
 
 **Live site (typical):** `https://abraner.pythonanywhere.com`  
 **Code:** `golf_project/` (Django project + `scorecard` app)  
