@@ -304,17 +304,19 @@
 
         </div> <!-- Closes .panel-right -->
     </div> <!-- Closes .dashboard-flex-grid -->
-    <!-- ━ ⛳ LIVE TEAM SQUAD ROSTERS (Scramble / Team Chicago) ━ -->
-    {% if is_pairing_format and active_squads %}
+    <!-- ━ ⛳ LIVE SQUAD ROSTERS (all formats) ━ -->
     <div style="width: 100%; clear: both; margin-top: 35px; margin-bottom: 10px; box-sizing: border-box; font-family: Arial, sans-serif;">
-        <div class="section-title">{% if is_team_chicago %}⛳ Live Team Chicago Squad Rosters{% else %}🏌️‍♂️ Live 9-Hole Scramble Team Rosters{% endif %}</div>
+        <div class="section-title">🏌️‍♂️ Live Squad Rosters</div>
         <p style="font-size: 12px; color: #64748b; margin-top: -10px; margin-bottom: 20px; font-style: italic;">
             {% if is_team_chicago %}
             Current teams with combined Chicago points targets and shotgun starts.
+            {% elif is_scramble %}
+            Current scramble teams and shotgun starts mapped across holes.
             {% else %}
-            Current active team configurations and shotgun starts mapped across holes.
+            Current squads for this round, including captains, teammates, and starting holes.
             {% endif %}
         </p>
+        {% if active_squads %}
 
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; box-sizing: border-box;">
             {% for squad in active_squads %}
@@ -379,8 +381,10 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <p style="font-size: 13px; color: #64748b; font-style: italic; margin: 0;">No squads built for this round yet.</p>
+        {% endif %}
     </div>
-    {% endif %}
 </div> <!-- Closes .dashboard-container -->
 
 <script>
