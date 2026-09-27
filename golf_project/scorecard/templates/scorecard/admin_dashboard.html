@@ -91,7 +91,7 @@
                     {% if is_team_chicago %}
                     Keeps cart partners together and fills captain tees so each team's total Chicago points targets stay as even as possible.
                     {% else %}
-                    Shuffles all unassigned checked-in players on the right panel and distributes them evenly across your active captain tees.
+                    Keeps cart partners together and fills the remaining seats on your captain tees.
                     {% endif %}
                 </p>
 
@@ -207,6 +207,8 @@
                                                 {{ player.name }}
                                                 {% if is_team_chicago %}
                                                 <span style="font-size: 11px; color: #64748b; font-weight: bold; margin-left: 4px;">({{ player.team_chicago_quota }})</span>
+                                                {% elif is_scramble %}
+                                                <span style="font-size: 11px; color: #64748b; font-weight: bold; margin-left: 4px;">(HCP {{ player.handicap|default:"0" }})</span>
                                                 {% endif %}
                                             </span>
                                         </div>
@@ -334,13 +336,13 @@
                     <!-- Team Leader Anchor Row -->
                     <div style="background: #fffdf5; border: 1px solid #fde68a; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight: bold; color: #92400e; font-size: 13px;">
-                            👑 {{ squad.scorekeeper.name|default:"Unassigned Captain" }}
+                            👑 {{ squad.scorekeeper.name|default:"Unassigned Scorekeeper" }}
                         </span>
                         <span style="font-size: 11px; background: #fef3c7; color: #b45309; padding: 1px 6px; border-radius: 4px; font-weight: bold;">
                             {% if is_team_chicago %}
-                            Captain ({{ squad.scorekeeper.team_chicago_quota }} pts)
+                            Scorekeeper ({{ squad.scorekeeper.team_chicago_quota }} pts)
                             {% else %}
-                            Captain (HCP: {{ squad.scorekeeper.handicap|default:"0" }})
+                            Scorekeeper (HCP: {{ squad.scorekeeper.handicap|default:"0" }})
                             {% endif %}
                         </span>
                     </div>

@@ -264,28 +264,20 @@ def format_skins_winners_html(skins_found, skins_pool=0):
 
 def adjust_9_team_chicago_quota_for_player(player, played_scores):
     """
-    After a 9-hole Team Chicago round, adjust the player's 18-hole Chicago quota
-    (source of truth). 9-hole points needed is always ceil(chicago_points_18 / 2).
-    Moves 18-hole quota by the same half-differential rule used elsewhere.
+    After a 9-hole Team Chicago round, adjust team_chicago_points_9 for next round.
+    Points required this round are that stored field. Next-round value moves by
+    half of today's points earned minus that quota.
     """
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
     if not scores:
         return None
 
     points_earned = chicago_points_from_scores(scores)
-    current_9 = _team_chicago_quota(player)
+    current_9 = int(player.team_chicago_points_9 or 0)
     differential = points_earned - current_9
-
-    hcp = int(player.handicap or 0)
-    current_18 = int(player.chicago_points_18 or 0)
-    if current_18 <= 0:
-        current_18 = max(39 - hcp, 2)
-
-    # Half the 9-hole differential applied to the 18-hole source quota
-    new_18 = max(2, min(54, current_18 + (differential // 2)))
-    player.chicago_points_18 = new_18
-    player.team_chicago_points_9 = max(1, math.ceil(new_18 / 2))
-    player.save(update_fields=['chicago_points_18', 'team_chicago_points_9'])
+    new_9 = max(1, current_9 + (differential // 2))
+    player.team_chicago_points_9 = new_9
+    player.save(update_fields=['team_chicago_points_9'])
     return current_9, player.team_chicago_points_9, differential
 
 
@@ -519,9 +511,19 @@ def admin_dashboard(request):
                     _team_chicago_quota(p) for p in squad.players.all()
                 )
 
+    # Right-side roster: scramble and the 18-hole players table follow handicap (low to high).
+    # 18-hole Chicago shows Chicago points in that column, so it follows that number.
+    if fmt in ('chicago_points_18', '18_IND_CHICAGO'):
+        checked_in_order = ('chicago_points_18', 'name')
+    elif is_team_chicago:
+        checked_in_order = ('name',)
+    else:
+        checked_in_order = ('handicap', 'name')
+
     # 👥 UPGRADED DYNAMIC VIEWS FILTER: Exclude ANY player who already has a squad slot!
-    checked_in_players = Player.objects.filter(is_playing_today=True).exclude(id__in=assigned_player_ids).order_by(
-        'name')
+    checked_in_players = Player.objects.filter(is_playing_today=True).exclude(
+        id__in=assigned_player_ids
+    ).order_by(*checked_in_order)
     all_players = Player.objects.all().order_by('name')
     available_holes = Hole.objects.filter(hole_number__lte=9).exclude(id__in=taken_hole_ids).order_by('hole_number')
 
@@ -1152,6 +1154,12 @@ def player_scorecard(request, hole_number=None):
     elif fmt_key == '18_gross_net':
         leaderboard_url = '/leaderboard/?format=18_gross_net'
 
+    # Mid-round scorecard link: standings only, and a way back to this hole.
+    standings_url = leaderboard_url
+    if hole_number:
+        joiner = '&' if '?' in leaderboard_url else '?'
+        standings_url = f"{leaderboard_url}{joiner}standings=1&from_hole={int(hole_number)}"
+
     context = {
         'current_hole': hole,
         'hole_number': hole_number,
@@ -1169,6 +1177,7 @@ def player_scorecard(request, hole_number=None):
         'squad_total_points_needed': squad_total_points_needed,
         'squad_running_total_earned': squad_running_total_earned,
         'leaderboard_url': leaderboard_url,
+        'standings_url': standings_url,
     }
 
     if active_round and (is_scramble_game or game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]):
@@ -1370,6 +1379,18 @@ def update_player_quota(request, player_id):
 
     except (ValueError, TypeError, json.JSONDecodeError):
         return JsonResponse({'status': 'error', 'message': 'Invalid data provided.'}, status=400)
+
+
+def _scorecard_standings_return(request):
+    """Player opened standings from a scorecard hole. Return that hole, or None."""
+    if request.GET.get('standings') != '1':
+        return False, '/play/hole/', None
+    from_hole = str(request.GET.get('from_hole', '')).strip()
+    if from_hole.isdigit():
+        hole_num = int(from_hole)
+        if 1 <= hole_num <= 18:
+            return True, f'/play/hole/{hole_num}/', hole_num
+    return True, '/play/hole/', None
 
 
 # @login_required
@@ -1756,6 +1777,8 @@ def tournament_leaderboard(request):
         if skins_found:
             skins_per_skin_value = int(round(float(calculated_skins_pool or 0) / len(skins_found), 0))
 
+    standings_only, scorecard_return_url, scorecard_return_hole = _scorecard_standings_return(request)
+
     context = {
         'round': active_round,
         'net_leaderboard': net_leaderboard,
@@ -1791,6 +1814,9 @@ def tournament_leaderboard(request):
         # Pre-calculated full dollar variable passes safely to HTML
         'pin_payout_each': pin_split_integer,
         'metrics_finalized': bool(active_round and getattr(active_round, 'metrics_finalized', False)),
+        'standings_only': standings_only,
+        'scorecard_return_url': scorecard_return_url,
+        'scorecard_return_hole': scorecard_return_hole,
     }
     return render(request, 'scorecard/leaderboard.html', context)
 
@@ -1913,11 +1939,8 @@ def finalize_tournament_round(request, round_id):
 
 
 def _team_chicago_quota(player):
-    """
-    9-hole Team Chicago points needed for a player:
-    half of their 18-hole Chicago Points, rounded up.
-    """
-    return player.team_chicago_quota
+    """9-hole Team Chicago points required: team_chicago_points_9 on the player."""
+    return int(player.team_chicago_points_9 or 0)
 
 
 def _auto_fill_team_chicago_squads(active_squads, remaining_pool, squad_size):
@@ -2004,6 +2027,91 @@ def _auto_fill_team_chicago_squads(active_squads, remaining_pool, squad_size):
     return spread
 
 
+def _partner_still_waiting(player, remaining_by_id):
+    """Cart partner who has not been placed on a squad yet."""
+    if not player:
+        return None
+    partner = player.riding_partner
+    if partner and partner.id in remaining_by_id:
+        return remaining_by_id[partner.id]
+    for other in remaining_by_id.values():
+        if other.riding_partner_id == player.id:
+            return other
+    return None
+
+
+def _auto_fill_scramble_squads(active_squads, remaining_pool, squad_size):
+    """
+    Fill captain-seeded scramble squads. Cart partners stay on the same squad.
+    A captain's partner joins that captain. Other pairs are placed as a block.
+    """
+    remaining_by_id = {p.id: p for p in remaining_pool}
+    remaining_ids = set(remaining_by_id.keys())
+
+    squad_state = []
+    for squad in active_squads:
+        members = list(squad.players.all())
+        squad_state.append({
+            'squad': squad,
+            'count': len(members),
+            'member_ids': {m.id for m in members},
+        })
+
+    def add_players_to_state(state, players):
+        state['squad'].players.add(*players)
+        for p in players:
+            state['count'] += 1
+            state['member_ids'].add(p.id)
+            remaining_ids.discard(p.id)
+            remaining_by_id.pop(p.id, None)
+
+    # Captain's requested cart partner rides with that captain, even if the squad
+    # goes one past the target size.
+    for state in squad_state:
+        partner = _partner_still_waiting(state['squad'].scorekeeper, remaining_by_id)
+        if partner:
+            add_players_to_state(state, [partner])
+
+    used = set()
+    blocks = []
+    for pid in list(remaining_ids):
+        if pid in used or pid not in remaining_by_id:
+            continue
+        player = remaining_by_id[pid]
+        partner = _partner_still_waiting(player, remaining_by_id)
+        if partner and partner.id not in used and partner.id != player.id:
+            blocks.append([player, partner])
+            used.add(player.id)
+            used.add(partner.id)
+        else:
+            blocks.append([player])
+            used.add(player.id)
+
+    # Pairs first so a two-seat block is not left with only single openings
+    blocks.sort(key=lambda b: (-len(b), min(p.id for p in b)))
+
+    leftovers = []
+    for block in blocks:
+        block_size = len(block)
+        candidates = [s for s in squad_state if s['count'] + block_size <= squad_size]
+        if not candidates:
+            leftovers.append(block)
+            continue
+        target = min(candidates, key=lambda s: (s['count'], s['squad'].squad_number or 0))
+        add_players_to_state(target, block)
+
+    # Keep a pair together even if that squad goes past the target size
+    for block in leftovers:
+        still_waiting = [p for p in block if p.id in remaining_by_id]
+        if not still_waiting:
+            continue
+        target = min(squad_state, key=lambda s: (s['count'], s['squad'].squad_number or 0))
+        add_players_to_state(target, still_waiting)
+
+    for state in squad_state:
+        state['squad'].save()
+
+
 @staff_member_required
 def generate_random_scramble_squads(request, round_id):
     if not request.user.is_authenticated or not request.user.is_staff:
@@ -2047,23 +2155,12 @@ def generate_random_scramble_squads(request, round_id):
                 f"balancing Chicago points (team quota spread: {spread} pts)."
             )
         else:
-            random.shuffle(remaining_pool)
-
-            # 6. Fill up existing squads WITHOUT touching their captains or hole assignments
-            for squad in active_squads:
-                while squad.players.count() < squad_size and remaining_pool:
-                    squad.players.add(remaining_pool.pop(0))
-                squad.save()
-
-            # 7. Symmetrical spillover loop for any lingering trailing headcounts
-            while remaining_pool:
-                for squad in active_squads:
-                    if remaining_pool:
-                        squad.players.add(remaining_pool.pop(0))
-                        squad.save()
-
-            messages.success(request,
-                             f"⚡ Auto-Grouping Successful! Filled existing squads using a target of {squad_size} players per team while preserving your hole assignments.")
+            _auto_fill_scramble_squads(active_squads, remaining_pool, squad_size)
+            messages.success(
+                request,
+                f"⚡ Auto-Grouping Successful! Filled squads targeting {squad_size} players each, "
+                f"keeping cart pairs together and preserving starting holes."
+            )
     return redirect('/admin-dashboard/')
 
 
@@ -2338,8 +2435,13 @@ def manual_squad_create_view(request):
             squad = form.save(commit=False)
             squad.round = active_round
 
-            existing_squads_count = Squad.objects.filter(round=active_round).count()
-            squad.squad_number = existing_squads_count + 1
+            existing_numbers = set(
+                Squad.objects.filter(round=active_round).values_list('squad_number', flat=True)
+            )
+            squad_number = 1
+            while squad_number in existing_numbers:
+                squad_number += 1
+            squad.squad_number = squad_number
 
             if not squad.starting_hole:
                 squad.starting_hole = Hole.objects.filter(

@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-import math
 
 
 class Player(models.Model):
@@ -25,20 +24,11 @@ class Player(models.Model):
 
     @property
     def team_chicago_quota(self):
-        """9-hole Team Chicago points needed: half of 18-hole Chicago, rounded up."""
-        cp18 = int(self.chicago_points_18 or 0)
-        if cp18 <= 0:
-            hcp = int(self.handicap or 0)
-            cp18 = max(39 - hcp, 2)
-        return max(1, math.ceil(cp18 / 2))
+        """Points required for 9-hole Team Chicago: the stored 9-hole field."""
+        return int(self.team_chicago_points_9 or 0)
 
     # 💡 CLEANED: Removed duplicate save/str methods that were cluttering your file
     def save(self, *args, **kwargs):
-        # Keep stored 9-hole field synced from half of 18-hole Chicago (round up)
-        self.team_chicago_points_9 = self.team_chicago_quota
-        update_fields = kwargs.get('update_fields')
-        if update_fields is not None:
-            kwargs['update_fields'] = list(set(update_fields) | {'team_chicago_points_9'})
         is_new = self.id is None
         super().save(*args, **kwargs)
         if is_new:

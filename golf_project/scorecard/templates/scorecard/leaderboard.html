@@ -70,7 +70,11 @@
 
     <!-- 🛠️ Navigation Menu Bar Shortcuts -->
     <div class="nav-bar">
-        {% if request.user.is_staff %}
+        {% if standings_only %}
+            <a href="{{ scorecard_return_url }}" class="btn-shortcut" style="background: #2e7d32;">
+                {% if scorecard_return_hole %}📝 Return to Hole {{ scorecard_return_hole }}{% else %}📝 Return to Scorecard{% endif %}
+            </a>
+        {% elif request.user.is_staff %}
             <a href="/admin-dashboard/" class="btn-shortcut">
                 ⚙️ Return to Admin Control Panel
             </a>
@@ -120,6 +124,7 @@
                 {% endif %}
             {% endif %}
         {% endif %}
+        {% if not standings_only %}
         <span style="font-size: 13px; font-weight: bold; color: #666;">
             Active Outing Round Session: <span style="color: #1b5e20;">#{{ round.id }}</span>
         </span>
@@ -127,7 +132,9 @@
            onclick="return confirm('Log out now?');">
             🚪 Log Out
         </a>
+        {% endif %}
     </div>
+    {% if not standings_only %}
     <!-- 💰 Outing Financial Matrix Summary Card -->
     <div class="financial-card">
         <span style="font-size: 13px; font-weight: bold; color: #2c3e50; text-transform: uppercase; letter-spacing: 0.5px; display: block; border-bottom: 2px solid #2e7d32; padding-bottom: 4px; margin-bottom: 12px;">
@@ -246,6 +253,7 @@
         </div>
     </div>
     {% endif %}
+    {% endif %}
 <!-- 📊 TOURNAMENT LEADERBOARD DISPLAY DATA TABLE CONTAINER -->
     <div class="table-responsive">
         <table>
@@ -279,7 +287,9 @@
                             To Par
                         {% endif %}
                     </th>
+                    {% if not standings_only %}
                     <th style="text-align: right; color: #1b5e20;">Payout</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -387,6 +397,7 @@
                         {% endif %}
                     </td>
 
+                    {% if not standings_only %}
                     <!-- Full-Dollar Rounded Cash Prize Distribution Cells -->
                     <td style="text-align: right; font-weight: bold; color: #1b5e20; font-size: 15px;">
                         {% if row.payout > 0 %}
@@ -395,10 +406,11 @@
                             <span style="color: #b0bec5; font-weight: normal;">—</span>
                         {% endif %}
                     </td>
+                    {% endif %}
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
+                    <td colspan="{% if standings_only %}6{% else %}7{% endif %}" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
                         No active scores have been recorded for this tournament round yet. Use scorecards to populate row metrics!
                     </td>
                 </tr>

@@ -201,7 +201,14 @@ class ManualSquadForm(forms.ModelForm):
         # 4. Assign the filtered datasets back to the input widgets dynamically
         self.fields['players'].queryset = available_players.order_by('name')
         self.fields['scorekeeper'].queryset = available_players.order_by('name')
-        self.fields['starting_hole'].queryset = Hole.objects.all().order_by('hole_number')
+
+        available_holes = Hole.objects.all().order_by('hole_number')
+        if active_round:
+            taken_hole_ids = Squad.objects.filter(round=active_round).values_list(
+                'starting_hole_id', flat=True
+            )
+            available_holes = available_holes.exclude(id__in=taken_hole_ids)
+        self.fields['starting_hole'].queryset = available_holes
 
         # Re-labels the field text on screen to read "Designated Captain" natively!
         self.fields['scorekeeper'].label = "Designated Captain"
