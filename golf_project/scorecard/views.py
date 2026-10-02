@@ -1754,9 +1754,12 @@ def tournament_leaderboard(request):
 
         net_leaderboard = ordered_list
 
-    # Compute all raw integer baselines to remove math filters from HTML blocks
+    # Compute all raw integer baselines to remove math filters from HTML blocks.
+    # Men's league closest-to-the-hole is split four ways.
     raw_pin_pool = float(calculated_closest_pin_pool) if calculated_closest_pin_pool else 0.0
-    pin_split_integer = int(round(raw_pin_pool / 2, 0)) if raw_pin_pool > 0 else 0
+    mens_pin_split = is_mens_league or clean_fmt_check in ("18_hole_mens_league", "mens_league")
+    pin_divisor = 4 if mens_pin_split else 2
+    pin_split_integer = int(round(raw_pin_pool / pin_divisor, 0)) if raw_pin_pool > 0 else 0
 
     if clean_fmt_check in ["18_gross_net", "9_hole_scramble", "team_chicago_points_9", "9_team_chicago",
                            "9_womens_league"]:
