@@ -145,4 +145,74 @@ class PayoutSetting(models.Model):
         return f"Payout Rules: Fee ${self.entry_fee} | Course ${self.course_cut_per_player}"
 
 
+class Cost(models.Model):
+    """One row of entry costs and the golf course amount, edited in Django admin."""
+
+    mens_league_18 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=12.00,
+        verbose_name="18-Hole Men's League cost",
+    )
+    gross_net_18 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=6.00,
+        verbose_name="18-Hole Individual Gross/Net cost",
+    )
+    scramble_9 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=6.00,
+        verbose_name="9-Hole Scramble cost",
+    )
+    team_chicago_9 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=6.00,
+        verbose_name="9-Hole Team Chicago Points cost",
+    )
+    womens_league_9 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=6.00,
+        verbose_name="9-Hole Women's League cost",
+    )
+    chicago_18 = models.DecimalField(
+        max_digits=6, decimal_places=2, default=12.00,
+        verbose_name="18-Hole Individual Chicago Points cost",
+    )
+    golf_course_amount = models.DecimalField(
+        max_digits=6, decimal_places=2, default=2.00,
+        verbose_name="Golf course amount",
+    )
+
+    class Meta:
+        verbose_name = "Cost"
+        verbose_name_plural = "Cost"
+
+    def __str__(self):
+        return "Game costs"
+
+    @classmethod
+    def amounts_for_format(cls, fmt):
+        """Return (game cost, golf course amount) for the active game format."""
+        row = cls.objects.order_by('pk').first()
+        if row is None:
+            row = cls.objects.create()
+        key = str(fmt or '').strip()
+        field = _COST_FIELD_BY_FORMAT.get(key) or _COST_FIELD_BY_FORMAT.get(key.lower(), 'mens_league_18')
+        return getattr(row, field), row.golf_course_amount
+
+
+# Model choice values and the older leaderboard names for the same games.
+_COST_FIELD_BY_FORMAT = {
+    '18_HOLE_MENS_LEAGUE': 'mens_league_18',
+    '18_hole_mens_league': 'mens_league_18',
+    'mens_league': 'mens_league_18',
+    '18_GROSS_NET': 'gross_net_18',
+    '18_gross_net': 'gross_net_18',
+    '9_HOLE_SCRAMBLE': 'scramble_9',
+    '9_hole_scramble': 'scramble_9',
+    '9_TEAM_CHICAGO': 'team_chicago_9',
+    '9_team_chicago': 'team_chicago_9',
+    'team_chicago_points_9': 'team_chicago_9',
+    '9_WOMENS_LEAGUE': 'womens_league_9',
+    '9_womens_league': 'womens_league_9',
+    '18_IND_CHICAGO': 'chicago_18',
+    '18_ind_chicago': 'chicago_18',
+    'chicago_points_18': 'chicago_18',
+}
+
+
 

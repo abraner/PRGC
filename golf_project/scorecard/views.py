@@ -12,7 +12,7 @@ from django.db.models import Sum, Q, Min
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import User
-from .models import Player, GolfRound, Hole, Squad, HoleScore, PayoutSetting
+from .models import Player, GolfRound, Hole, Squad, HoleScore, PayoutSetting, Cost
 from .forms import ScoringMemberRegistrationForm, ManualSquadForm, PayoutRulesForm
 from collections import defaultdict
 
@@ -1446,6 +1446,10 @@ def tournament_leaderboard(request):
         if clean_fmt_check in ["18_hole_mens_league", "mens_league"]:
             is_mens_league = True
 
+        game_cost, course_amount = Cost.amounts_for_format(clean_fmt_check)
+        entry_fee_val = float(game_cost)
+        course_cut_val = float(course_amount)
+
         # DEFENSIVE HEADCOUNT FILTER: Only pull players with an active score record in THIS round
         assigned_player_ids = HoleScore.objects.filter(
             round=active_round,
@@ -1688,15 +1692,12 @@ def tournament_leaderboard(request):
 
         # 📈 MONEY MATRIX INITIALIZATION
         if total_individual_count > 0:
+            # Closest-to-the-hole and skins stay a per-player rate times the field size.
             if clean_fmt_check in ["18_gross_net", "9_hole_scramble", "team_chicago_points_9", "9_team_chicago",
                                    "9_womens_league"]:
-                entry_fee_val = 6.00
-                course_cut_val = 2.00
                 closest_to_hole_rate = 0.00
                 skins_rate = 0.00
             else:
-                entry_fee_val = 12.00
-                course_cut_val = 2.00
                 closest_to_hole_rate = 2.00
                 skins_rate = 3.00
 
@@ -1761,11 +1762,8 @@ def tournament_leaderboard(request):
     pin_divisor = 4 if mens_pin_split else 2
     pin_split_integer = int(round(raw_pin_pool / pin_divisor, 0)) if raw_pin_pool > 0 else 0
 
-    if clean_fmt_check in ["18_gross_net", "9_hole_scramble", "team_chicago_points_9", "9_team_chicago",
-                           "9_womens_league"]:
-        entry_fee_label = "6.00"
-    else:
-        entry_fee_label = "12.00"
+    entry_fee_label = f"{float(entry_fee_val):.2f}"
+    course_cut_label = f"{float(course_cut_val):.2f}"
 
     # Men's league: auto-compute net skins for the Round Skins Winners panel
     skins_found = []
@@ -1806,6 +1804,7 @@ def tournament_leaderboard(request):
         'closest_pin_pool_int': int(round(raw_pin_pool, 0)),
         'skins_pool_int': int(round(float(calculated_skins_pool or 0), 0)),
         'entry_fee_display': entry_fee_label,
+        'course_cut_display': course_cut_label,
 
         # Financial strings pass cleanly formatted to whole dollar integers
         'total_pot': f"{int(round(calculated_total_pot, 0))}",
