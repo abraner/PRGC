@@ -50,3 +50,29 @@ class CostAmountTests(TestCase):
         self.assertEqual(response.context['total_pot'], '8')
         self.assertEqual(response.context['course_money'], '1')
         self.assertContains(response, 'Course Cut ($1.00)')
+
+    def test_individual_chicago_pool_is_entry_minus_course_and_pays_out(self):
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        row = Cost.objects.first()
+        row.chicago_18 = Decimal('12.00')
+        row.golf_course_amount = Decimal('2.00')
+        row.save()
+
+        players = [
+            Player.objects.create(name=name, chicago_points_18=36)
+            for name in ('Ada', 'Bea', 'Cia', 'Dee')
+        ]
+        active_round = GolfRound.objects.create(game_format='18_IND_CHICAGO', is_active=True)
+        hole = Hole.objects.create(hole_number=1, par=4)
+        for player, strokes in zip(players, (2, 3, 4, 5)):
+            HoleScore.objects.create(round=active_round, player=player, hole=hole, gross_value=strokes)
+
+        response = self.client.get('/leaderboard/?format=18_ind_chicago')
+        self.assertEqual(response.context['total_pot'], '48')
+        self.assertEqual(response.context['course_money'], '8')
+        self.assertEqual(response.context['net_pool'], '40')
+        self.assertEqual(response.context['skins_pool'], '0')
+        self.assertEqual(response.context['closest_pin_pool'], '0')
+        payouts = sorted((row['payout'] for row in response.context['net_leaderboard']), reverse=True)
+        self.assertEqual(payouts, [20, 12, 8, 0])

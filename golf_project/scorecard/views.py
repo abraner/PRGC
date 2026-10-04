@@ -1692,14 +1692,14 @@ def tournament_leaderboard(request):
 
         # 📈 MONEY MATRIX INITIALIZATION
         if total_individual_count > 0:
-            # Closest-to-the-hole and skins stay a per-player rate times the field size.
-            if clean_fmt_check in ["18_gross_net", "9_hole_scramble", "team_chicago_points_9", "9_team_chicago",
-                                   "9_womens_league"]:
-                closest_to_hole_rate = 0.00
-                skins_rate = 0.00
-            else:
+            # Men's league is the only game with closest-to-the-hole and skins.
+            # Chicago pays the whole remainder after the golf course amount.
+            if clean_fmt_check in ("18_hole_mens_league", "mens_league"):
                 closest_to_hole_rate = 2.00
                 skins_rate = 3.00
+            else:
+                closest_to_hole_rate = 0.00
+                skins_rate = 0.00
 
             calculated_total_pot = total_individual_count * entry_fee_val
             calculated_course_money = total_individual_count * course_cut_val
