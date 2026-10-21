@@ -82,8 +82,9 @@ On the leaderboard, staff get an update button (once per round; then it locks):
 | Women's League | Update Ladies Handicaps | `ladies_league_handicap` |
 | Men's League / 18 Gross-Net | Update Player Handicaps | `handicap` |
 
-Handicap rule used for men’s / 18 individual:  
-`new = old + (net − par) × 0.8` (clamped 0–36).
+Men's league and 18-hole individual gross/net share one handicap: average of the last five 18-hole gross scores, minus 60, times 80% (rounded, floored at 0). Both formats write into the same score history. Fewer than five full rounds uses however many are on file. Men's league play, skins, and the saved handicap are capped at 20. Gross/net is not capped.
+
+Women's league handicap: average of the last five 9-hole gross scores, minus 30, times 80% (rounded, floored at 0). 30 is half of the men's baseline of 60. Fewer than five full rounds uses however many are on file.
 
 ### 7. Reset for the next outing
 Use the dashboard **reset / clear round** actions carefully (clears the active round session and check-in flags). Prefer finishing quota/handicap updates first when prompted.
@@ -163,3 +164,5 @@ Open `http://127.0.0.1:8000/login/`.
 | Double bogey+ | 0 |
 
 9-hole Team Chicago **points needed** ≈ half of 18-hole Chicago quota, rounded up.
+
+Next-round Chicago quotas, both 18-hole individual and 9-hole team, move from today's points-versus-quota. ±1 does not change the quota. ±2 or ±3 moves it by 1, and ±4 or ±5 by 2. From 6 points over, only the plus side continues (+6 or +7 is +3, +8 or +9 is +4, and so on). A miss of 6 or more still lowers the quota by 2.

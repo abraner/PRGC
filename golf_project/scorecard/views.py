@@ -12,7 +12,10 @@ from django.db.models import Sum, Q, Min
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import User
-from .models import Player, GolfRound, Hole, Squad, HoleScore, PayoutSetting, Cost
+from .models import (
+    Player, GolfRound, Hole, Squad, HoleScore, PayoutSetting, Cost,
+    MensLeagueRoundScore, WomensLeagueRoundScore,
+)
 from .forms import ScoringMemberRegistrationForm, ManualSquadForm, PayoutRulesForm
 from collections import defaultdict
 
@@ -35,10 +38,22 @@ def chicago_points_from_scores(played_scores):
     return total
 
 
+def chicago_quota_step(differential):
+    """
+    Quota change from today's points minus the quota.
+    ±1 makes no change. ±2 or ±3 moves it by 1, and ±4 or ±5 by 2.
+    From 6 points over upward, only the plus side continues: +6 or +7 is +3,
+    +8 or +9 is +4, and so on. A miss of 6 or more still lowers the quota by 2.
+    """
+    step = int(differential / 2)
+    if differential < 0:
+        return max(step, -2)
+    return step
+
+
 def adjust_18_chicago_quota_for_player(player, played_scores):
     """
     Update player.chicago_points_18 for next round from today's +/- vs quota.
-    Moves quota by half the differential (same rule as finalize_tournament_round).
     Returns (old_quota, new_quota, differential) or None if no scores.
     """
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
@@ -50,7 +65,7 @@ def adjust_18_chicago_quota_for_player(player, played_scores):
     current_quota = player.chicago_points_18 if (
                 player.chicago_points_18 and player.chicago_points_18 > 0) else max(39 - hcp, 2)
     differential = points_earned - current_quota
-    new_quota = max(2, min(54, current_quota + (differential // 2)))
+    new_quota = max(2, min(54, current_quota + chicago_quota_step(differential)))
     player.chicago_points_18 = new_quota
     player.save(update_fields=['chicago_points_18'])
     return current_quota, new_quota, differential
@@ -71,38 +86,52 @@ def apply_18_chicago_quota_updates(active_round):
     return updated
 
 
-def adjust_ladies_handicap_for_player(player, played_scores):
+def womens_league_handicap_from_scores(gross_scores):
     """
-    Update player.ladies_league_handicap for next round from today's net vs par.
-    Same rule as reset_tournament_action: -1 if net < -1 to par, +1 if net > +2 to par.
-    Returns (old_hcp, new_hcp, net_differential) or None if no scores.
+    9-hole women's league handicap from up to the last five 9-hole grosses.
+    handicap = 80% of (average − 30), rounded half up, floored at 0.
+    30 is half of the men's 18-hole baseline of 60.
+    """
+    recent = [int(score) for score in list(gross_scores)[:5]]
+    if not recent:
+        return None
+    average = sum(recent) / len(recent)
+    raw = 0.8 * (average - 30)
+    return max(0, int(math.floor(raw + 0.5)))
+
+
+def adjust_ladies_handicap_for_player(player, played_scores, active_round):
+    """
+    Record today's 9-hole women's league gross, then set ladies_league_handicap
+    from the last five recorded grosses: 80% of (average − 30). Fewer than five
+    rounds uses however many full rounds are on file. A card short of 9 holes is ignored.
     """
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
-    if not scores:
+    scored = [s for s in scores if s.gross_value]
+    if len(scored) < 9:
         return None
 
-    total_gross = sum(s.gross_value for s in scores if s.gross_value)
-    total_par = sum(s.hole.par for s in scores)
-    current_hcp = player.ladies_league_handicap or 0
-    # 9-hole outing: apply half of stored ladies handicap as stroke allowance
-    actual_net_strokes = total_gross - (current_hcp / 2.0)
-    net_differential = actual_net_strokes - total_par
-
-    if net_differential < -1:
-        adjusted_hcp = current_hcp - 1
-    elif net_differential > 2:
-        adjusted_hcp = current_hcp + 1
-    else:
-        adjusted_hcp = current_hcp
-
-    new_hcp = max(0, int(round(adjusted_hcp)))
+    total_gross = sum(int(s.gross_value) for s in scored)
+    WomensLeagueRoundScore.objects.update_or_create(
+        player=player,
+        golf_round=active_round,
+        defaults={
+            'gross_score': total_gross,
+            'played_on': active_round.date_played,
+        },
+    )
+    recent_grosses = WomensLeagueRoundScore.objects.filter(player=player).order_by(
+        '-played_on', '-id'
+    ).values_list('gross_score', flat=True)[:5]
+    old_hcp = int(player.ladies_league_handicap or 0)
+    new_hcp = womens_league_handicap_from_scores(recent_grosses)
     player.ladies_league_handicap = new_hcp
     player.save(update_fields=['ladies_league_handicap'])
-    return current_hcp, new_hcp, net_differential
+    return old_hcp, new_hcp, total_gross
 
 
 def apply_womens_handicap_updates(active_round):
-    """Adjust next-round ladies_league_handicap for every player who scored in this round."""
+    """Recalculate ladies_league_handicap for every player with a full 9-hole card."""
     updated = []
     player_ids = HoleScore.objects.filter(
         round=active_round, gross_value__gt=0
@@ -110,34 +139,64 @@ def apply_womens_handicap_updates(active_round):
 
     for player in Player.objects.filter(id__in=player_ids):
         played = HoleScore.objects.filter(round=active_round, player=player, gross_value__gt=0)
-        result = adjust_ladies_handicap_for_player(player, played)
+        result = adjust_ladies_handicap_for_player(player, played, active_round)
         if result:
             updated.append((player, result))
     return updated
 
 
-def adjust_mens_handicap_for_player(player, played_scores):
+MENS_LEAGUE_MAX_HANDICAP = 20
+
+
+def mens_league_handicap_from_scores(gross_scores):
     """
-    Update player.handicap for next round from today's net vs course par.
-    Rule: new_hcp = old_hcp + (net_score - par) * 0.8, clamped 0–36.
+    Men's league handicap from up to the last five 18-hole grosses.
+    handicap = 80% of (average − 60), rounded half up, floored at 0.
+    Men's league play and updates are then capped at MENS_LEAGUE_MAX_HANDICAP.
+    """
+    recent = [int(score) for score in list(gross_scores)[:5]]
+    if not recent:
+        return None
+    average = sum(recent) / len(recent)
+    raw = 0.8 * (average - 60)
+    return max(0, int(math.floor(raw + 0.5)))
+
+
+def adjust_mens_handicap_for_player(player, played_scores, active_round):
+    """
+    Record today's 18-hole gross on MensLeagueRoundScore, then set player.handicap
+    from the last five recorded grosses: 80% of (average − 60). Men's league and
+    18-hole individual gross/net share that history. Fewer than five rounds uses
+    however many full rounds are on file. A card short of 18 holes is ignored.
     """
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
-    if not scores:
+    scored = [s for s in scores if s.gross_value]
+    if len(scored) < 18:
         return None
 
-    total_gross = sum(int(s.gross_value) for s in scores if s.gross_value)
-    course_par = sum(int(s.hole.par) for s in scores)
+    total_gross = sum(int(s.gross_value) for s in scored)
+    MensLeagueRoundScore.objects.update_or_create(
+        player=player,
+        golf_round=active_round,
+        defaults={
+            'gross_score': total_gross,
+            'played_on': active_round.date_played,
+        },
+    )
+    recent_grosses = MensLeagueRoundScore.objects.filter(player=player).order_by(
+        '-played_on', '-id'
+    ).values_list('gross_score', flat=True)[:5]
     old_hcp = int(player.handicap or 0)
-    net_score = total_gross - old_hcp
-    score_differential = net_score - course_par
-    new_hcp = max(0, min(36, int(round(old_hcp + (score_differential * 0.8)))))
+    new_hcp = mens_league_handicap_from_scores(recent_grosses)
+    if str(active_round.game_format or '') == '18_HOLE_MENS_LEAGUE':
+        new_hcp = min(new_hcp, MENS_LEAGUE_MAX_HANDICAP)
     player.handicap = new_hcp
     player.save(update_fields=['handicap'])
-    return old_hcp, new_hcp, score_differential
+    return old_hcp, new_hcp, total_gross
 
 
 def apply_mens_handicap_updates(active_round):
-    """Recalculate and save handicap for every player who scored in this men's league round."""
+    """Recalculate handicaps from full 18-hole cards, men's league or gross/net."""
     updated = []
     player_ids = HoleScore.objects.filter(
         round=active_round, gross_value__gt=0
@@ -145,15 +204,17 @@ def apply_mens_handicap_updates(active_round):
 
     for player in Player.objects.filter(id__in=player_ids):
         played = HoleScore.objects.filter(round=active_round, player=player, gross_value__gt=0)
-        result = adjust_mens_handicap_for_player(player, played)
+        result = adjust_mens_handicap_for_player(player, played, active_round)
         if result:
             updated.append((player, result))
     return updated
 
 
-def handicap_strokes_on_hole(player, hole):
+def handicap_strokes_on_hole(player, hole, max_handicap=None):
     """USGA-style strokes received on a hole from full 18-hole handicap."""
     hcp = int(player.handicap or 0)
+    if max_handicap is not None:
+        hcp = min(hcp, int(max_handicap))
     idx = int(hole.handicap_index or 18)
     if hcp <= 0:
         return 0
@@ -165,7 +226,7 @@ def handicap_strokes_on_hole(player, hole):
     return strokes
 
 
-def compute_round_skins(active_round, use_net=True):
+def compute_round_skins(active_round, use_net=True, max_handicap=None):
     """
     Solo low-score skins by hole (ties = no skin that hole).
     Men's league uses net (gross − handicap strokes); otherwise gross.
@@ -185,7 +246,7 @@ def compute_round_skins(active_round, use_net=True):
 
         scored = []
         for record in hole_scores:
-            strokes = handicap_strokes_on_hole(record.player, hole) if use_net else 0
+            strokes = handicap_strokes_on_hole(record.player, hole, max_handicap=max_handicap) if use_net else 0
             net = int(record.gross_value) - strokes
             scored.append({
                 'record': record,
@@ -264,9 +325,8 @@ def format_skins_winners_html(skins_found, skins_pool=0):
 
 def adjust_9_team_chicago_quota_for_player(player, played_scores):
     """
-    After a 9-hole Team Chicago round, adjust team_chicago_points_9 for next round.
-    Points required this round are that stored field. Next-round value moves by
-    half of today's points earned minus that quota.
+    After a 9-hole Team Chicago round, adjust team_chicago_points_9 for next round
+    by chicago_quota_step(points earned − quota).
     """
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
     if not scores:
@@ -275,7 +335,7 @@ def adjust_9_team_chicago_quota_for_player(player, played_scores):
     points_earned = chicago_points_from_scores(scores)
     current_9 = int(player.team_chicago_points_9 or 0)
     differential = points_earned - current_9
-    new_9 = max(1, current_9 + (differential // 2))
+    new_9 = max(1, current_9 + chicago_quota_step(differential))
     player.team_chicago_points_9 = new_9
     player.save(update_fields=['team_chicago_points_9'])
     return current_9, player.team_chicago_points_9, differential
@@ -624,7 +684,7 @@ def reset_tournament_action(request):
 
                     # 🟢 CHOOSE CALCULATION METHOD & DB FIELD BASED ON ACTIVE FORMAT
                     if old_active_round.game_format == "9_WOMENS_LEAGUE":
-                        adjust_ladies_handicap_for_player(player, played_scores)
+                        adjust_ladies_handicap_for_player(player, played_scores, old_active_round)
 
                     elif old_active_round.game_format in ("18_IND_CHICAGO", "chicago_points_18"):
                         adjust_18_chicago_quota_for_player(player, played_scores)
@@ -633,7 +693,7 @@ def reset_tournament_action(request):
                         adjust_9_team_chicago_quota_for_player(player, played_scores)
 
                     elif old_active_round.game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
-                        adjust_mens_handicap_for_player(player, played_scores)
+                        adjust_mens_handicap_for_player(player, played_scores, old_active_round)
 
                     else:
                         # Fallback stroke-play step adjustment
@@ -814,8 +874,16 @@ def register_view(request):
     return render(request, 'scorecard/register_player.html', {'form': form})
 
 
+def _member_last_name_key(player):
+    """Sort key for a 'First Last' name. A single name sorts as the last name."""
+    parts = (player.name or '').strip().split(' ', 1)
+    if len(parts) == 2:
+        return (parts[1].casefold(), parts[0].casefold())
+    return ((parts[0] if parts else '').casefold(), '')
+
+
 def view_all_members(request):
-    players = Player.objects.all().order_by('name')
+    players = sorted(Player.objects.all(), key=_member_last_name_key)
     return render(request, 'scorecard/all_members.html', {'players': players})  # <-- Sent as 'players'
 
 
@@ -854,6 +922,7 @@ def edit_player_view(request, player_id):
     if request.method == 'POST':
         # Pass instance=player so it updates the existing record instead of creating a new one
         form = ScoringMemberRegistrationForm(request.POST, instance=player)
+        _hide_edit_player_fields(form)
         if form.is_valid():
             form.save()
             return redirect('scorecard:all_members')
@@ -867,8 +936,15 @@ def edit_player_view(request, player_id):
             'first_name': first_name,
             'last_name': last_name
         })
+        _hide_edit_player_fields(form)
 
     return render(request, 'scorecard/edit_player.html', {'form': form, 'player': player})
+
+
+def _hide_edit_player_fields(form):
+    """Edit profile does not collect these registration-only controls."""
+    for name in ('handicap_9_hole', 'is_player', 'is_captain'):
+        form.fields.pop(name, None)
 
 
 def resolve_player_for_user(user):
@@ -920,6 +996,7 @@ def player_scorecard(request, hole_number=None):
     is_final_hole = False
     is_chicago_game = False
     is_womens_league = False
+    is_mens_league = False
     is_scramble_game = False
     game_format = ""
     is_scorecard_editable = True
@@ -959,6 +1036,7 @@ def player_scorecard(request, hole_number=None):
                                           "9_TEAM_CHICAGO", "9_WOMENS_LEAGUE"]
         is_team_chicago = game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]
         is_womens_league = game_format == "9_WOMENS_LEAGUE"
+        is_mens_league = game_format == "18_HOLE_MENS_LEAGUE"
         is_scramble_game = game_format == "9_HOLE_SCRAMBLE"
 
         current_player = resolve_player_for_user(request.user)
@@ -1077,6 +1155,8 @@ def player_scorecard(request, hole_number=None):
                 for player in squad_players:
                     existing_score = HoleScore.objects.filter(round=active_round, hole=hole, player=player).first()
                     active_display_hcp = player.ladies_league_handicap or 0 if is_womens_league else player.handicap or 0
+                    if is_mens_league:
+                        active_display_hcp = min(int(active_display_hcp or 0), MENS_LEAGUE_MAX_HANDICAP)
 
                     chicago_target = 0
                     prior_points_earned = 0
@@ -1172,6 +1252,7 @@ def player_scorecard(request, hole_number=None):
         'is_final_hole': is_final_hole,
         'is_chicago_game': is_chicago_game,
         'is_womens_league': is_womens_league,
+        'is_mens_league': is_mens_league,
         'is_scramble_game': is_scramble_game,
         'is_scorecard_editable': is_scorecard_editable,
         'squad_total_points_needed': squad_total_points_needed,
@@ -1207,7 +1288,11 @@ def skins_verification_panel(request):
     active_round = GolfRound.objects.filter(is_active=True).first()
     fmt = str(active_round.game_format or '').strip().lower() if active_round else ''
     use_net = fmt in ('18_hole_mens_league', 'mens_league')
-    skins_found = compute_round_skins(active_round, use_net=use_net)
+    skins_found = compute_round_skins(
+        active_round,
+        use_net=use_net,
+        max_handicap=MENS_LEAGUE_MAX_HANDICAP if use_net else None,
+    )
 
     context = {
         'round': active_round,
@@ -1277,9 +1362,8 @@ def finish_round_update_quotas(request):
     Staff end-of-round action from the leaderboard.
     - 18-hole Chicago: updates chicago_points_18 from today's +/- to quota
     - 9-hole Team Chicago: updates 18-hole Chicago from today's 9-hole +/- 
-    - 18-hole Men's League: recalculates player.handicap from net vs par
-    - 18-hole Individual Gross/Net: same handicap update into player.handicap
-    - 9-hole Women's: updates ladies_league_handicap from today's net vs par
+    - 18-hole Men's League and Individual Gross/Net: handicap = 80% of (average of the last five 18-hole grosses − 60), shared history
+    - 9-hole Women's: ladies handicap = 80% of (average of the last five 9-hole grosses − 30)
     Locked by GolfRound.metrics_finalized so it cannot run twice.
     """
     if not request.user.is_staff:
@@ -1332,7 +1416,7 @@ def finish_round_update_quotas(request):
         messages.success(
             request,
             f"Men's league handicaps updated for {len(updated)} player(s) "
-            f"(new_hcp = old_hcp + (net − par) × 0.8)."
+            f"(80% of (average of the last five 18-hole scores − 60))."
         )
         return redirect('scorecard:tournament_leaderboard')
 
@@ -1343,17 +1427,18 @@ def finish_round_update_quotas(request):
         messages.success(
             request,
             f"18-Hole Individual handicaps updated for {len(updated)} player(s) "
-            f"and saved to the Handicap field (new_hcp = old_hcp + (net − par) × 0.8)."
+            f"(80% of (average of the last five 18-hole scores − 60))."
         )
         return redirect('/leaderboard/?format=18_gross_net')
 
     if fmt == "9_womens_league":
-        apply_womens_handicap_updates(active_round)
+        updated = apply_womens_handicap_updates(active_round)
         active_round.metrics_finalized = True
         active_round.save(update_fields=['metrics_finalized'])
         messages.success(
             request,
-            "Ladies league handicaps updated for next round based on today's net scores."
+            f"Ladies league handicaps updated for {len(updated)} player(s) "
+            f"(80% of (average of the last five 9-hole scores − 30))."
         )
         return redirect('/leaderboard/?format=9_womens_league')
 
@@ -1624,7 +1709,9 @@ def tournament_leaderboard(request):
                 display_net = "-"
                 sort_net_metric = g_sum if holes_played > 0 else 999
                 to_par_str = "E"
-                hcp = player.handicap or 0
+                hcp = int(player.handicap or 0)
+                if is_mens_league:
+                    hcp = min(hcp, MENS_LEAGUE_MAX_HANDICAP)
 
                 if is_mens_league or (clean_fmt_check == "18_gross_net"):
                     n_sum = g_sum - hcp
@@ -1680,6 +1767,7 @@ def tournament_leaderboard(request):
                 base_list.append({
                     'is_team_row': False,
                     'player': player,
+                    'playing_handicap': hcp,
                     'holes_played': holes_played,
                     'strokes': display_gross if holes_played > 0 else "-",
                     'net_score': display_net,
@@ -1771,7 +1859,9 @@ def tournament_leaderboard(request):
     skins_payout_rows = []
     skins_per_skin_value = 0
     if active_round and (is_mens_league or clean_fmt_check in ("18_hole_mens_league", "mens_league")):
-        skins_found = compute_round_skins(active_round, use_net=True)
+        skins_found = compute_round_skins(
+            active_round, use_net=True, max_handicap=MENS_LEAGUE_MAX_HANDICAP
+        )
         skins_winners_html, skins_payout_rows = format_skins_winners_html(
             skins_found, skins_pool=calculated_skins_pool
         )
@@ -1898,8 +1988,8 @@ def finalize_tournament_round(request, round_id):
                     total_chicago_points += 1
 
             # BRANCH A: MEN'S LEAGUE & 18-HOLE INDIVIDUAL GROSS/NET
-            if game_format in ["18_HOLE_MENS_LEAGUE", "18_GROSS_NET"]:
-                adjust_mens_handicap_for_player(player, played_scores)
+            if game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
+                adjust_mens_handicap_for_player(player, played_scores, active_round)
 
             # BRANCH B: 18-HOLE CHICAGO POINTS GAMES
             elif game_format in ["18_IND_CHICAGO", "chicago_points_18"]:
@@ -1907,7 +1997,7 @@ def finalize_tournament_round(request, round_id):
 
             # BRANCH C: 9-HOLE LADIES LEAGUE FORMAT
             elif game_format == "9_WOMENS_LEAGUE":
-                adjust_ladies_handicap_for_player(player, played_scores)
+                adjust_ladies_handicap_for_player(player, played_scores, active_round)
 
             # BRANCH D: 9-HOLE TEAM CHICAGO FORMAT
             elif game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]:
@@ -2370,17 +2460,23 @@ def reset_scramble_tournament_action(request):
                         request,
                         "9-Hole Team Chicago quotas updated for next round based on today's +/- to quota."
                     )
-                elif fmt in ("18_hole_mens_league", "mens_league", "18_gross_net"):
+                elif fmt in ("18_hole_mens_league", "mens_league"):
                     apply_mens_handicap_updates(active_round)
                     messages.success(
                         request,
-                        "Men's league handicaps updated for next round based on today's net vs par."
+                        "Men's league handicaps updated from the last five 18-hole scores."
+                    )
+                elif fmt == "18_gross_net":
+                    apply_mens_handicap_updates(active_round)
+                    messages.success(
+                        request,
+                        "18-hole individual handicaps updated from the last five 18-hole scores."
                     )
                 elif fmt == "9_womens_league":
                     apply_womens_handicap_updates(active_round)
                     messages.success(
                         request,
-                        "Ladies league handicaps updated for next round based on today's net scores."
+                        "Ladies league handicaps updated from the last five 9-hole scores."
                     )
 
             # Symmetrical database cascading lookups will automatically clear HoleScores and Squads

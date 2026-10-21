@@ -58,7 +58,7 @@
                         <input type="number" min="0" max="54" class="hcp-input" style="border-color: #1b5e20; background-color: #f0f7f4; font-weight: bold; color: #1b5e20;" value="{{ item.chicago_target }}">
                     {% else %}
                         <label>Hcp:</label>
-                        <input type="number" min="0" max="54" class="hcp-input" value="{{ item.display_hcp }}">
+                        <input type="number" min="0" max="{% if is_mens_league %}20{% else %}54{% endif %}" class="hcp-input" value="{{ item.display_hcp }}">
                     {% endif %}
                 </span>
             </div>
@@ -129,6 +129,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // DETECT ACTIVE FORMAT STATE VIA BACKEND STRINGS
     var isWomensLeague = "{{ is_womens_league }}" === "True" ||
                          "{{ round.game_format }}" === "9_WOMENS_LEAGUE";
+    var isMensLeague = "{{ is_mens_league }}" === "True" ||
+                       "{{ round.game_format }}" === "18_HOLE_MENS_LEAGUE";
     // Women's league shows Handicap (not Chicago quota) — keep Net off the Chicago points scale
     var isChicagoGame = !isWomensLeague && (
                         "{{ is_chicago_game }}" === "True" ||
@@ -170,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var quotaTarget = parseInt(row.getAttribute("data-quota-target")) || 0;
         var priorPoints = parseInt(row.getAttribute("data-prior-points")) || 0;
         var handicap = parseInt(hcpInput.value) || 0;
+        if (isMensLeague && handicap > 20) handicap = 20;
         var grossStrokes = parseInt(strokeInput.value);
 
         if (strokeInput.value !== "" && !isNaN(grossStrokes)) {

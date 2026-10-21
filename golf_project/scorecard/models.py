@@ -112,6 +112,52 @@ class Squad(models.Model):
                 self.scorekeeper.save(update_fields=['is_captain'])
 
 
+class MensLeagueRoundScore(models.Model):
+    """One finished 18-hole gross from men's league or individual gross/net."""
+
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='mens_league_scores')
+    golf_round = models.ForeignKey(
+        GolfRound, on_delete=models.SET_NULL, null=True, blank=True, related_name='mens_league_scores'
+    )
+    gross_score = models.PositiveIntegerField()
+    played_on = models.DateTimeField()
+
+    class Meta:
+        ordering = ['-played_on', '-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['player', 'golf_round'],
+                name='unique_player_mens_league_round',
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.player.name} — {self.gross_score} ({self.played_on:%Y-%m-%d})"
+
+
+class WomensLeagueRoundScore(models.Model):
+    """One finished 9-hole women's league gross, kept after the round session is cleared."""
+
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='womens_league_scores')
+    golf_round = models.ForeignKey(
+        GolfRound, on_delete=models.SET_NULL, null=True, blank=True, related_name='womens_league_scores'
+    )
+    gross_score = models.PositiveIntegerField()
+    played_on = models.DateTimeField()
+
+    class Meta:
+        ordering = ['-played_on', '-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['player', 'golf_round'],
+                name='unique_player_womens_league_round',
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.player.name} — {self.gross_score} ({self.played_on:%Y-%m-%d})"
+
+
 class HoleScore(models.Model):
     round = models.ForeignKey(GolfRound, on_delete=models.CASCADE, related_name="scores")
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="hole_scores")

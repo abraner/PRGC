@@ -85,7 +85,7 @@
                     </span>
                 {% else %}
                     <a href="{% url 'scorecard:finish_round' %}" class="btn-shortcut" style="background: #1b5e20;"
-                       onclick="return confirm('Update each player\'s 18-Hole Chgo Pts for next round based on today\'s +/− to quota? This should be done once after the round is complete.');">
+                       onclick="return confirm('Move each player\'s 18-Hole Chicago quota by today\'s +/−? ±1 stays the same. The quota can drop by at most 2. From 6 over, only the plus side keeps climbing.');">
                         📈 Update Next-Round Quotas
                     </a>
                 {% endif %}
@@ -96,7 +96,7 @@
                     </span>
                 {% else %}
                     <a href="{% url 'scorecard:finish_round' %}" class="btn-shortcut" style="background: #1b5e20;"
-                       onclick="return confirm('Update each player\'s 9-Hole Team Chgo Pts for next round based on today\'s +/− to quota? This should be done once after the round is complete.');">
+                       onclick="return confirm('Move each player\'s 9-Hole Team Chicago quota by today\'s +/−? ±1 stays the same. The quota can drop by at most 2. From 6 over, only the plus side keeps climbing.');">
                         📈 Update Next-Round Quotas
                     </a>
                 {% endif %}
@@ -107,18 +107,29 @@
                     </span>
                 {% else %}
                     <a href="{% url 'scorecard:finish_round' %}" class="btn-shortcut" style="background: #880e4f;"
-                       onclick="return confirm('Update each participating player\'s Ladies League Handicap for next round based on today\'s net vs par? This should be done once after the round is complete.');">
+                       onclick="return confirm('Set each full-card player\'s Ladies League Handicap to 80% of (average of their last five 9-hole scores − 30)? This should be done once after the round is complete.');">
                         📈 Update Ladies Handicaps
                     </a>
                 {% endif %}
-            {% elif is_mens_league or round.game_format == "18_HOLE_MENS_LEAGUE" or request.GET.format == "18_gross_net" or round.game_format == "18_GROSS_NET" %}
+            {% elif is_mens_league or round.game_format == "18_HOLE_MENS_LEAGUE" %}
                 {% if metrics_finalized %}
                     <span class="btn-shortcut" style="background: #9e9e9e; cursor: not-allowed; opacity: 0.85;" title="Already updated for this round">
                         ✓ Handicaps Updated
                     </span>
                 {% else %}
                     <a href="{% url 'scorecard:finish_round' %}" class="btn-shortcut" style="background: #1b5e20;"
-                       onclick="return confirm('Recalculate and save each participating player\'s handicap from today\'s net vs par (× 0.8)? This updates the Handicap field in Players and should be done once after the round is complete.');">
+                       onclick="return confirm('Set each full-card player\'s handicap to 80% of (average of their last five 18-hole scores − 60)? This should be done once after the round is complete.');">
+                        📈 Update Player Handicaps
+                    </a>
+                {% endif %}
+            {% elif request.GET.format == "18_gross_net" or round.game_format == "18_GROSS_NET" %}
+                {% if metrics_finalized %}
+                    <span class="btn-shortcut" style="background: #9e9e9e; cursor: not-allowed; opacity: 0.85;" title="Already updated for this round">
+                        ✓ Handicaps Updated
+                    </span>
+                {% else %}
+                    <a href="{% url 'scorecard:finish_round' %}" class="btn-shortcut" style="background: #1b5e20;"
+                       onclick="return confirm('Set each full-card player\'s handicap to 80% of (average of their last five 18-hole scores − 60)? This should be done once after the round is complete.');">
                         📈 Update Player Handicaps
                     </a>
                 {% endif %}
@@ -327,7 +338,7 @@
                                 {% elif request.GET.format == "9_womens_league" or round.game_format == "9_WOMENS_LEAGUE" %}
                                     Handicap: {{ row.player.ladies_league_handicap|default:"0" }}
                                 {% else %}
-                                    Handicap: {{ row.player.handicap|default:"0" }}
+                                    Handicap: {{ row.playing_handicap|default:row.player.handicap|default:"0" }}
                                 {% endif %}
                             </span>
                         {% endif %}

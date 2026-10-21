@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 # 🟢 1. Make sure Hole is imported alongside your other models
-from .models import Hole, Player, Squad, GolfRound, PayoutSetting, Cost
+from .models import Hole, Player, Squad, GolfRound, PayoutSetting, Cost, MensLeagueRoundScore, WomensLeagueRoundScore
 
 # Open Django Admin in the same tab; "View site" returns to the tournament control panel
 admin.site.site_url = '/admin-dashboard/'
@@ -31,6 +31,20 @@ admin.site.register(Player)
 admin.site.register(Squad)
 admin.site.register(GolfRound)
 admin.site.register(PayoutSetting)
+
+
+@admin.register(MensLeagueRoundScore)
+class MensLeagueRoundScoreAdmin(admin.ModelAdmin):
+    list_display = ('player', 'gross_score', 'played_on', 'golf_round')
+    list_filter = ('played_on',)
+    search_fields = ('player__name',)
+
+
+@admin.register(WomensLeagueRoundScore)
+class WomensLeagueRoundScoreAdmin(admin.ModelAdmin):
+    list_display = ('player', 'gross_score', 'played_on', 'golf_round')
+    list_filter = ('played_on',)
+    search_fields = ('player__name',)
 
 
 @admin.register(Cost)
