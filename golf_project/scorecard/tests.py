@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -134,6 +135,98 @@ class ChicagoQuotaStepTests(TestCase):
         player.refresh_from_db()
         self.assertEqual((old_quota, differential, new_quota), (8, 8, 12))
         self.assertEqual(player.team_chicago_points_9, 12)
+
+    def test_direct_points_are_not_converted_from_strokes(self):
+        player = Player.objects.create(name='Hope', team_chicago_points_9=0)
+        active = GolfRound.objects.create(game_format='9_TEAM_CHICAGO', is_active=True)
+        # 4 on a par 3 would be a bogey (1 point) if this were still strokes.
+        hole = Hole.objects.create(hole_number=1, par=3)
+        HoleScore.objects.create(
+            round=active, player=player, hole=hole, gross_value=4, net_value=1
+        )
+
+        old_quota, new_quota, differential = adjust_9_team_chicago_quota_for_player(
+            player, HoleScore.objects.filter(round=active, player=player)
+        )
+        self.assertEqual((old_quota, differential, new_quota), (0, 4, 2))
+
+    def test_zero_points_still_count_as_a_played_hole(self):
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        player = Player.objects.create(name='Ivy', chicago_points_18=10)
+        active = GolfRound.objects.create(game_format='18_IND_CHICAGO', is_active=True)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 4)]
+        for hole, points in zip(holes, (8, 0, 2)):
+            HoleScore.objects.create(
+                round=active, player=player, hole=hole, gross_value=points, net_value=1
+            )
+
+        response = self.client.get('/leaderboard/?format=18_ind_chicago')
+        row = response.context['net_leaderboard'][0]
+        self.assertEqual(row['holes_played'], 3)
+        self.assertEqual(row['strokes'], 10)
+        self.assertEqual(row['net_score'], '10 Pts')
+
+    def test_scorecard_save_stores_points_for_chicago_and_strokes_otherwise(self):
+        player = Player.objects.create(name='Jan')
+        hole = Hole.objects.create(hole_number=1, par=4)
+        chicago = GolfRound.objects.create(game_format='18_IND_CHICAGO', is_active=True)
+
+        saved = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': player.id,
+                'hole_id': hole.id,
+                'round_id': chicago.id,
+                'gross_value': 0,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(saved.status_code, 200)
+        row = HoleScore.objects.get(round=chicago, player=player, hole=hole)
+        self.assertEqual((row.gross_value, row.net_value), (0, 1))
+
+        rejected = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': player.id,
+                'hole_id': hole.id,
+                'round_id': chicago.id,
+                'gross_value': 3,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(rejected.status_code, 400)
+        row.refresh_from_db()
+        self.assertEqual(row.gross_value, 0)
+
+        cleared = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': player.id,
+                'hole_id': hole.id,
+                'round_id': chicago.id,
+                'gross_value': None,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(cleared.status_code, 200)
+        self.assertFalse(HoleScore.objects.filter(round=chicago, player=player, hole=hole).exists())
+
+        stroke_round = GolfRound.objects.create(game_format='18_GROSS_NET', is_active=False)
+        stroke_saved = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': player.id,
+                'hole_id': hole.id,
+                'round_id': stroke_round.id,
+                'gross_value': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(stroke_saved.status_code, 200)
+        stroke_row = HoleScore.objects.get(round=stroke_round, player=player, hole=hole)
+        self.assertEqual((stroke_row.gross_value, stroke_row.net_value), (5, 0))
 
 
 class MensLeagueHandicapTests(TestCase):

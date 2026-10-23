@@ -281,7 +281,13 @@
                         {% endif %}
                     </th>
                     <th style="text-align: center;">Holes</th>
-                    <th style="text-align: center;">Gross</th>
+                    <th style="text-align: center;">
+                        {% if request.GET.format == "9_team_chicago" or round.game_format == "team_chicago_points_9" or round.game_format == "9_TEAM_CHICAGO" or request.GET.format == "chicago_points_18" or round.game_format == "chicago_points_18" or round.game_format == "18_IND_CHICAGO" or request.GET.format == "18_ind_chicago" %}
+                            Points
+                        {% else %}
+                            Gross
+                        {% endif %}
+                    </th>
                     <th style="text-align: center;">
                         {% if request.GET.format == "9_team_chicago" or round.game_format == "team_chicago_points_9" or round.game_format == "9_TEAM_CHICAGO" or request.GET.format == "chicago_points_18" or round.game_format == "chicago_points_18" or round.game_format == "18_IND_CHICAGO" or request.GET.format == "18_ind_chicago" %}
                             Chgo Points

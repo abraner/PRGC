@@ -164,8 +164,8 @@ class HoleScore(models.Model):
     hole = models.ForeignKey(Hole, on_delete=models.CASCADE, related_name="player_scores")
 
     # FLEXIBLE FIELD SYSTEM: Holds whatever numerical value the current active game tracks
-    gross_value = models.IntegerField(default=0)  # Stores Gross Strokes, Chicago points hit, etc.
-    net_value = models.IntegerField(default=0)    # Stores calculated Net Strokes, Quota metrics, etc.
+    gross_value = models.IntegerField(default=0)  # Strokes, or Chicago points when net_value is 1
+    net_value = models.IntegerField(default=0)    # 1 marks a direct Chicago points entry, so 0 points still counts
 
     class Meta:
         unique_together = ('round', 'player', 'hole')

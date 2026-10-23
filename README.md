@@ -95,13 +95,13 @@ Use the dashboard **reset / clear round** actions carefully (clears the active r
 
 1. Log in at `/login/` (account must be linked to a **Player** record).  
 2. Open **`/play/`**.  
-3. Enter **gross strokes** for the hole (dropdown).  
+3. Enter the hole result (dropdown). Chicago formats take **points** (8, 4, 2, 1, or 0). Every other format takes **gross strokes**.  
 4. Use **Prev / Next** (or **Finish** on the last hole).  
 5. Open **Leaderboard** anytime to see standings.
 
 ### Format notes for players
 
-- **Chicago (18 or Team 9):** scorecard shows quota / points needed and running points (8 eagle+, 4 birdie, 2 par, 1 bogey).  
+- **Chicago (18 or Team 9):** enter points for the hole (8 eagle or better, 4 birdie, 2 par, 1 bogey, 0 double or worse). The card shows the quota and a running total. A 0 still counts as a scored hole.  
 - **Scramble:** captain enters one score for the team; card lists captain + teammates and running to-par.  
 - **Shotgun:** `/play/` sends you to your squad’s starting hole and walks the 9-hole loop in course order.
 

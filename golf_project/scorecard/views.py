@@ -20,22 +20,56 @@ from .forms import ScoringMemberRegistrationForm, ManualSquadForm, PayoutRulesFo
 from collections import defaultdict
 
 
+# Direct Chicago entry. net_value=1 means gross_value is these points, including 0.
+CHICAGO_POINT_CHOICES = (0, 1, 2, 4, 8)
+CHICAGO_POINTS_FORMATS = (
+    '18_IND_CHICAGO', 'chicago_points_18',
+    '9_TEAM_CHICAGO', 'team_chicago_points_9',
+)
+# A scored Chicago hole is either a direct points entry or an older stroke entry.
+CHICAGO_SCORED = Q(net_value=1) | Q(gross_value__gt=0)
+
+
+def is_chicago_points_format(game_format):
+    return str(game_format or '').strip() in CHICAGO_POINTS_FORMATS
+
+
+def points_from_gross_versus_par(gross_value, par):
+    """Older Chicago cards stored strokes. Eagle+ 8, birdie 4, par 2, bogey 1, else 0."""
+    relation_to_par = int(gross_value) - int(par or 4)
+    if relation_to_par <= -2:
+        return 8
+    if relation_to_par == -1:
+        return 4
+    if relation_to_par == 0:
+        return 2
+    if relation_to_par == 1:
+        return 1
+    return 0
+
+
 def chicago_points_from_scores(played_scores):
-    """Sum Chicago points from hole scores (eagle+ 8, birdie 4, par 2, bogey 1)."""
+    """Sum Chicago points. Direct entries store the points; older rows store strokes."""
     total = 0
     for score in played_scores:
-        if score.gross_value is None or score.gross_value <= 0:
+        if score.net_value == 1:
+            total += int(score.gross_value or 0)
             continue
-        relation_to_par = score.gross_value - score.hole.par
-        if relation_to_par <= -2:
-            total += 8
-        elif relation_to_par == -1:
-            total += 4
-        elif relation_to_par == 0:
-            total += 2
-        elif relation_to_par == 1:
-            total += 1
+        if score.gross_value is None or int(score.gross_value) <= 0:
+            continue
+        total += points_from_gross_versus_par(score.gross_value, score.hole.par)
     return total
+
+
+def chicago_points_entered_on_hole(score):
+    """Points to show in the dropdown, or None when this hole has not been entered."""
+    if score is None:
+        return None
+    if score.net_value == 1:
+        return int(score.gross_value or 0)
+    if score.gross_value is None or int(score.gross_value) <= 0:
+        return None
+    return points_from_gross_versus_par(score.gross_value, score.hole.par)
 
 
 def chicago_quota_step(differential):
@@ -75,11 +109,11 @@ def apply_18_chicago_quota_updates(active_round):
     """Adjust next-round 18-hole Chicago quotas for every player who scored in this round."""
     updated = []
     player_ids = HoleScore.objects.filter(
-        round=active_round, gross_value__gt=0
-    ).values_list('player_id', flat=True).distinct()
+        round=active_round
+    ).filter(CHICAGO_SCORED).values_list('player_id', flat=True).distinct()
 
     for player in Player.objects.filter(id__in=player_ids):
-        played = HoleScore.objects.filter(round=active_round, player=player, gross_value__gt=0)
+        played = HoleScore.objects.filter(round=active_round, player=player).filter(CHICAGO_SCORED)
         result = adjust_18_chicago_quota_for_player(player, played)
         if result:
             updated.append((player, result))
@@ -345,11 +379,11 @@ def apply_9_team_chicago_quota_updates(active_round):
     """Adjust next-round Chicago quotas after a 9-hole Team Chicago round."""
     updated = []
     player_ids = HoleScore.objects.filter(
-        round=active_round, gross_value__gt=0
-    ).values_list('player_id', flat=True).distinct()
+        round=active_round
+    ).filter(CHICAGO_SCORED).values_list('player_id', flat=True).distinct()
 
     for player in Player.objects.filter(id__in=player_ids):
-        played = HoleScore.objects.filter(round=active_round, player=player, gross_value__gt=0)
+        played = HoleScore.objects.filter(round=active_round, player=player).filter(CHICAGO_SCORED)
         result = adjust_9_team_chicago_quota_for_player(player, played)
         if result:
             updated.append((player, result))
@@ -671,7 +705,14 @@ def reset_tournament_action(request):
             # Open scorecard/views.py and update the inner player loop inside reset_tournament_action:
 
             for player in active_players:
-                played_scores = HoleScore.objects.filter(round=old_active_round, player=player, gross_value__gt=0)
+                if is_chicago_points_format(old_active_round.game_format):
+                    played_scores = HoleScore.objects.filter(
+                        round=old_active_round, player=player
+                    ).filter(CHICAGO_SCORED).select_related('hole')
+                else:
+                    played_scores = HoleScore.objects.filter(
+                        round=old_active_round, player=player, gross_value__gt=0
+                    )
                 holes_played = played_scores.count()
 
                 if holes_played > 0:
@@ -995,6 +1036,7 @@ def player_scorecard(request, hole_number=None):
     active_squad = None
     is_final_hole = False
     is_chicago_game = False
+    points_entry = False
     is_womens_league = False
     is_mens_league = False
     is_scramble_game = False
@@ -1035,6 +1077,7 @@ def player_scorecard(request, hole_number=None):
         is_chicago_game = game_format in ["chicago_points_18", "team_chicago_points_9", "18_IND_CHICAGO",
                                           "9_TEAM_CHICAGO", "9_WOMENS_LEAGUE"]
         is_team_chicago = game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]
+        points_entry = is_chicago_points_format(game_format)
         is_womens_league = game_format == "9_WOMENS_LEAGUE"
         is_mens_league = game_format == "18_HOLE_MENS_LEAGUE"
         is_scramble_game = game_format == "9_HOLE_SCRAMBLE"
@@ -1103,11 +1146,21 @@ def player_scorecard(request, hole_number=None):
                     else:
                         for p in squad_members:
                             strokes_raw = request.POST.get(f'score_{p.id}')
-                            if strokes_raw and strokes_raw.isdigit():
-                                HoleScore.objects.update_or_create(
-                                    round=active_round, hole=hole, player=p,
-                                    defaults={'gross_value': int(strokes_raw)}
-                                )
+                            raw_text = '' if strokes_raw is None else str(strokes_raw).strip()
+                            if raw_text.isdigit():
+                                entered = int(raw_text)
+                                if is_team_chicago:
+                                    if entered not in CHICAGO_POINT_CHOICES:
+                                        continue
+                                    HoleScore.objects.update_or_create(
+                                        round=active_round, hole=hole, player=p,
+                                        defaults={'gross_value': entered, 'net_value': 1},
+                                    )
+                                else:
+                                    HoleScore.objects.update_or_create(
+                                        round=active_round, hole=hole, player=p,
+                                        defaults={'gross_value': entered},
+                                    )
                             else:
                                 HoleScore.objects.filter(round=active_round, hole=hole, player=p).delete()
 
@@ -1164,8 +1217,9 @@ def player_scorecard(request, hole_number=None):
 
                     current_strokes = existing_score.gross_value if (
                                 existing_score and existing_score.gross_value is not None) else None
+                    stroke_display = current_strokes if current_strokes else ''
 
-                    if is_chicago_game:
+                    if points_entry or is_chicago_game:
                         if game_format in ["chicago_points_18", "18_IND_CHICAGO"]:
                             round_quota = player.chicago_points_18 if (
                                         player.chicago_points_18 and player.chicago_points_18 > 0) else max(
@@ -1179,25 +1233,25 @@ def player_scorecard(request, hole_number=None):
 
                         chicago_target = round_quota
 
-                        # Cumulative points from other holes (same 8/4/2/1 scale as scorecard JS)
-                        prior_scores = HoleScore.objects.filter(
-                            round=active_round, player=player, gross_value__gt=0
-                        ).exclude(hole=hole).select_related('hole')
-                        prior_points_earned = chicago_points_from_scores(prior_scores)
+                        if points_entry:
+                            # Dropdown stores points directly. 0 is a real score (double or worse).
+                            entered_points = chicago_points_entered_on_hole(existing_score)
+                            prior_scores = HoleScore.objects.filter(
+                                round=active_round, player=player
+                            ).filter(CHICAGO_SCORED).exclude(hole=hole).select_related('hole')
+                            prior_points_earned = chicago_points_from_scores(prior_scores)
+                            this_hole_points = 0 if entered_points is None else entered_points
+                            stroke_display = '' if entered_points is None else entered_points
+                        else:
+                            # Women's league still enters strokes on this card.
+                            prior_scores = HoleScore.objects.filter(
+                                round=active_round, player=player, gross_value__gt=0
+                            ).exclude(hole=hole).select_related('hole')
+                            prior_points_earned = chicago_points_from_scores(prior_scores)
+                            this_hole_points = 0
+                            if current_strokes is not None and int(current_strokes) > 0:
+                                this_hole_points = points_from_gross_versus_par(current_strokes, hole.par)
 
-                        this_hole_points = 0
-                        if current_strokes is not None and int(current_strokes) > 0:
-                            relation_to_par = int(current_strokes) - hole.par
-                            if relation_to_par <= -2:
-                                this_hole_points = 8
-                            elif relation_to_par == -1:
-                                this_hole_points = 4
-                            elif relation_to_par == 0:
-                                this_hole_points = 2
-                            elif relation_to_par == 1:
-                                this_hole_points = 1
-
-                        # Running total shown in Chgo. Points: prior holes + this hole (if scored)
                         current_hole_points = prior_points_earned + this_hole_points
 
                     player_scores.append({
@@ -1207,7 +1261,7 @@ def player_scorecard(request, hole_number=None):
                         'prior_points': prior_points_earned,
                         'current_points': current_hole_points,
                         'score': {
-                            'strokes': current_strokes if current_strokes else ''
+                            'strokes': stroke_display
                         },
                         # 👑 SYNCHRONIZATION TOKEN PASS:
                         # Feeds the captain's score text directly to regular teammate display rows
@@ -1251,6 +1305,7 @@ def player_scorecard(request, hole_number=None):
         'player_scores': player_scores,
         'is_final_hole': is_final_hole,
         'is_chicago_game': is_chicago_game,
+        'enter_chicago_points': points_entry,
         'is_womens_league': is_womens_league,
         'is_mens_league': is_mens_league,
         'is_scramble_game': is_scramble_game,
@@ -1535,11 +1590,12 @@ def tournament_leaderboard(request):
         entry_fee_val = float(game_cost)
         course_cut_val = float(course_amount)
 
-        # DEFENSIVE HEADCOUNT FILTER: Only pull players with an active score record in THIS round
+        # DEFENSIVE HEADCOUNT FILTER: Only pull players with an active score record in THIS round.
+        # Chicago counts a direct 0-point hole (double or worse) as a score.
+        scored_filter = CHICAGO_SCORED if is_chicago else Q(gross_value__gt=0)
         assigned_player_ids = HoleScore.objects.filter(
-            round=active_round,
-            gross_value__gt=0
-        ).values_list('player_id', flat=True)
+            round=active_round
+        ).filter(scored_filter).values_list('player_id', flat=True)
 
         # GATHER TOTAL ACTUAL INDIVIDUALS FOR THE FINANCIAL SUMMARY DISPLAY CARD
         all_active_individuals = Player.objects.filter(id__in=assigned_player_ids).distinct()
@@ -1557,7 +1613,6 @@ def tournament_leaderboard(request):
                 if not squad_members:
                     continue
 
-                total_squad_gross_strokes = 0
                 total_squad_chicago_points = 0
                 # Full team quota target (matches scorecard Group Target)
                 total_squad_quota_target = sum(_team_chicago_quota(p) for p in squad_members)
@@ -1578,15 +1633,12 @@ def tournament_leaderboard(request):
                         partner_names_list.append(player.name)
 
                     played_scores = HoleScore.objects.filter(
-                        round=active_round, player=player, gross_value__gt=0
-                    ).select_related('hole')
+                        round=active_round, player=player
+                    ).filter(CHICAGO_SCORED).select_related('hole')
 
                     if played_scores.exists():
                         has_any_scores = True
                         squad_holes_played = max(squad_holes_played, played_scores.count())
-
-                        player_gross = played_scores.aggregate(g_sum=Sum('gross_value'))['g_sum'] or 0
-                        total_squad_gross_strokes += player_gross
                         total_squad_chicago_points += chicago_points_from_scores(played_scores)
 
                 if has_any_scores:
@@ -1594,7 +1646,7 @@ def tournament_leaderboard(request):
                     # Green when over team quota, red when under, yellow when even.
                     squad_quota_diff = total_squad_chicago_points - total_squad_quota_target
 
-                    display_gross = total_squad_gross_strokes
+                    display_gross = total_squad_chicago_points
                     display_net = f"{total_squad_chicago_points} Pts"
                     if squad_quota_diff > 0:
                         to_par_str = f"+{squad_quota_diff}"
@@ -1740,18 +1792,14 @@ def tournament_leaderboard(request):
                             f"{to_par_raw}" if to_par_raw < 0 else f"+{to_par_raw}")
 
                 elif clean_fmt_check in ["chicago_points_18", "18_ind_chicago"]:
-                    # Individual Chicago: points earned vs personal quota target
-                    total_chicago_points = 0
-                    for score in played_scores.select_related('hole'):
-                        relation_to_par = score.gross_value - score.hole.par
-                        if relation_to_par <= -2:
-                            total_chicago_points += 8
-                        elif relation_to_par == -1:
-                            total_chicago_points += 4
-                        elif relation_to_par == 0:
-                            total_chicago_points += 2
-                        elif relation_to_par == 1:
-                            total_chicago_points += 1
+                    # Individual Chicago: entered points vs personal quota.
+                    # Re-query so a 0-point hole still counts as played.
+                    played_scores = HoleScore.objects.filter(
+                        round=active_round, player=player
+                    ).filter(CHICAGO_SCORED).select_related('hole')
+                    holes_played = played_scores.count()
+                    total_chicago_points = chicago_points_from_scores(played_scores)
+                    display_gross = total_chicago_points
 
                     quota = player.chicago_points_18 if (
                                 player.chicago_points_18 and player.chicago_points_18 > 0) else max(
@@ -1927,6 +1975,29 @@ def save_stroke_api(request):
         hole = get_object_or_404(Hole, id=hole_id)
         player = get_object_or_404(Player, id=player_id)
 
+        blank = gross_value is None or str(gross_value).strip() == ""
+
+        if is_chicago_points_format(g_round.game_format):
+            if blank:
+                HoleScore.objects.filter(round=g_round, hole=hole, player=player).delete()
+                return JsonResponse({'status': 'success', 'message': 'Score cleared'})
+            try:
+                points = int(gross_value)
+            except (TypeError, ValueError):
+                return JsonResponse({'status': 'error', 'message': 'Invalid points'}, status=400)
+            if points not in CHICAGO_POINT_CHOICES:
+                return JsonResponse(
+                    {'status': 'error', 'message': 'Points must be 0, 1, 2, 4, or 8'},
+                    status=400,
+                )
+            hole_score, _created = HoleScore.objects.get_or_create(
+                round=g_round, hole=hole, player=player
+            )
+            hole_score.gross_value = points
+            hole_score.net_value = 1
+            hole_score.save(update_fields=['gross_value', 'net_value'])
+            return JsonResponse({'status': 'success', 'message': 'Points saved successfully'})
+
         # 🟢 Fetch or initialize the instance to rewrite scores seamlessly
         hole_score, created = HoleScore.objects.get_or_create(
             round=g_round,
@@ -1934,7 +2005,7 @@ def save_stroke_api(request):
             player=player
         )
 
-        if gross_value is not None and str(gross_value).strip() != "":
+        if not blank:
             hole_score.gross_value = int(gross_value)
         else:
             hole_score.gross_value = None  # Clears score from database if unselected
@@ -1959,34 +2030,21 @@ def finalize_tournament_round(request, round_id):
     active_round = get_object_or_404(GolfRound, id=round_id)
     game_format = str(active_round.game_format or '').strip()
 
-    # Isolate only players who logged active scores to run their handicap calculations
+    # Isolate only players who logged active scores to run their handicap calculations.
+    # Chicago includes a direct entry of 0 points.
+    scored_filter = CHICAGO_SCORED if is_chicago_points_format(game_format) else Q(gross_value__gt=0)
     assigned_player_ids = HoleScore.objects.filter(
-        round=active_round,
-        gross_value__gt=0
-    ).values_list('player_id', flat=True).distinct()
+        round=active_round
+    ).filter(scored_filter).values_list('player_id', flat=True).distinct()
 
     active_players = Player.objects.filter(id__in=assigned_player_ids)
     for player in active_players:
-        played_scores = HoleScore.objects.filter(round=active_round, player=player, gross_value__gt=0)
+        played_scores = HoleScore.objects.filter(
+            round=active_round, player=player
+        ).filter(scored_filter).select_related('hole')
         holes_count = played_scores.count()
 
         if holes_count > 0:
-            total_gross = played_scores.aggregate(g_sum=Sum('gross_value'))['g_sum'] or 0
-            course_par = sum(score.hole.par for score in played_scores) if holes_count < 18 else 72
-
-            # Map out raw Chicago points accumulated during this round layout pass
-            total_chicago_points = 0
-            for score in played_scores:
-                rel_par = score.gross_value - score.hole.par
-                if rel_par <= -2:
-                    total_chicago_points += 8
-                elif rel_par == -1:
-                    total_chicago_points += 4
-                elif rel_par == 0:
-                    total_chicago_points += 2
-                elif rel_par == 1:
-                    total_chicago_points += 1
-
             # BRANCH A: MEN'S LEAGUE & 18-HOLE INDIVIDUAL GROSS/NET
             if game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
                 adjust_mens_handicap_for_player(player, played_scores, active_round)

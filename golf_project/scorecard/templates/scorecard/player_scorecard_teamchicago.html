@@ -91,6 +91,9 @@
                 ⛳ 9-Hole Team Chicago Format
             {% endif %}
         </small>
+        {% if not is_scramble_game %}
+        <p style="margin:8px 0 0 0; font-size:12px; font-weight:600; text-transform:none; letter-spacing:0;">Enter points: 8 eagle+ · 4 birdie · 2 par · 1 bogey · 0 double+</p>
+        {% endif %}
 
         {% if is_scramble_game %}
             <div style="margin-top: 12px; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;
@@ -192,11 +195,11 @@
 
                 <div class="input-group">
                     <div style="text-align: center;">
-                        <small style="display: block; color: #555; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Strokes</small>
+                        <small style="display: block; color: #555; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">{% if is_scramble_game %}Strokes{% else %}Points{% endif %}</small>
 
-                        <!-- 🟢 FIXED: Removed the corrupting text character from the name attribute so form submissions save perfectly! -->
                         <select name="score_{{ item.player.id }}" class="num-input strokes-dropdown" data-player-id="{{ item.player.id }}" style="background-color: #fff; cursor: pointer;">
                             <option value="">—</option>
+                            {% if is_scramble_game %}
                             <option value="1" {% if item.score.strokes == 1 %}selected{% endif %}>1</option>
                             <option value="2" {% if item.score.strokes == 2 %}selected{% endif %}>2</option>
                             <option value="3" {% if item.score.strokes == 3 %}selected{% endif %}>3</option>
@@ -209,14 +212,21 @@
                             <option value="10" {% if item.score.strokes == 10 %}selected{% endif %}>10</option>
                             <option value="11" {% if item.score.strokes == 11 %}selected{% endif %}>11</option>
                             <option value="12" {% if item.score.strokes == 12 %}selected{% endif %}>12</option>
+                            {% else %}
+                            <option value="0" {% if item.score.strokes == 0 %}selected{% endif %}>0</option>
+                            <option value="1" {% if item.score.strokes == 1 %}selected{% endif %}>1</option>
+                            <option value="2" {% if item.score.strokes == 2 %}selected{% endif %}>2</option>
+                            <option value="4" {% if item.score.strokes == 4 %}selected{% endif %}>4</option>
+                            <option value="8" {% if item.score.strokes == 8 %}selected{% endif %}>8</option>
+                            {% endif %}
                         </select>
                     </div>
 
                                         {% if not is_scramble_game %}
                     <div style="text-align: center;">
-                        <small style="display: block; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Chgo. Points</small>
+                        <small style="display: block; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Total</small>
 
-                        <!-- Running total so far (prior holes + this hole when strokes entered) -->
+                        <!-- Running total so far (prior holes + this hole's points) -->
                         <input type="text" id="chicago-display-{{ item.player.id }}" class="net-display" readonly
                                style="font-weight: 800; text-align: center; border: 1px solid #c5e1a5; background-color: #f1f8e9;
                                       color: {% if item.current_points < item.chicago_target %}#c62828{% elif item.current_points > item.chicago_target %}#2e7d32{% else %}#212121{% endif %};"
@@ -250,8 +260,6 @@
 <!-- 🟢 REAL-TIME ACCUMULATIVE CHICAGO TEAM CALCULATOR ENGINE -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // ⛳ 1. Grab the core hole par setting directly from your Django context database token
-    const holePar = parseInt("{{ current_hole.par|default:4 }}", 10);
     const dropdowns = document.querySelectorAll(".strokes-dropdown");
 
     // 📊 2. Function aggregates all individual boxes to update both Group Points and Group Net +/- instantly
@@ -260,8 +268,9 @@ document.addEventListener("DOMContentLoaded", function() {
         const squadEarnedBanner = document.getElementById("squad-total-earned");
         const squadDiffBanner = document.getElementById("squad-team-differential");
 
-        // Fetch the group's global point milestone directly from the target box text
-        const targetQuota = parseInt(document.getElementById("squad-total-quota").textContent || "0", 10);
+        const quotaNode = document.getElementById("squad-total-quota");
+        if (!quotaNode) return;
+        const targetQuota = parseInt(quotaNode.textContent || "0", 10);
 
         let combinedSquadPoints = 0;
         displayBoxes.forEach(function(box) {
@@ -314,26 +323,18 @@ document.addEventListener("DOMContentLoaded", function() {
             const pointsNeededInput = playerRow.querySelector(".quota-input");
             const personalQuotaTarget = parseInt(pointsNeededInput ? pointsNeededInput.value : "0", 10);
 
-            const grossScore = parseInt(this.value, 10);
+            const enteredPoints = this.value !== "" ? parseInt(this.value, 10) : NaN;
+            const holeEntered = !isNaN(enteredPoints);
 
-            let currentHolePoints = 0;
-            if (!isNaN(grossScore) && grossScore > 0) {
-                const relationToPar = grossScore - holePar;
-                if (relationToPar <= -2) { currentHolePoints = 8; }       // Eagle or better
-                else if (relationToPar === -1) { currentHolePoints = 4; } // Birdie
-                else if (relationToPar === 0) { currentHolePoints = 2; }  // Par
-                else if (relationToPar === 1) { currentHolePoints = 1; }  // Bogey
-                else { currentHolePoints = 0; }                          // Double Bogey+
-            }
+            // The menu is already points for this hole, including 0 for a double or worse.
+            const currentHolePoints = holeEntered ? enteredPoints : 0;
 
-            // Running total: points from prior holes + this hole's award
             const netAccumulativeTotal = priorPoints + currentHolePoints;
 
             if (displayBox) {
-                // Always show running total (prior alone until strokes are entered for this hole)
-                displayBox.value = (!isNaN(grossScore) && grossScore > 0) ? netAccumulativeTotal : priorPoints;
+                displayBox.value = holeEntered ? netAccumulativeTotal : priorPoints;
 
-                const compareTotal = (!isNaN(grossScore) && grossScore > 0) ? netAccumulativeTotal : priorPoints;
+                const compareTotal = holeEntered ? netAccumulativeTotal : priorPoints;
                 if (compareTotal < personalQuotaTarget) {
                     displayBox.style.setProperty("color", "#c62828", "important");
                 } else if (compareTotal > personalQuotaTarget) {
