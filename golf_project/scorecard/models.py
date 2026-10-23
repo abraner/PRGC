@@ -17,6 +17,7 @@ class Player(models.Model):
 
     # 🟢 9-HOLE SCRAMBLE TEAM BINDING
     is_captain = models.BooleanField(default=False, verbose_name="Team Captain")
+    scorekeeper = models.BooleanField(default=False, verbose_name="Scorekeeper")
     riding_partner = models.OneToOneField(
         'self', on_delete=models.SET_NULL, null=True, blank=True,
         related_name='cart_mate', verbose_name="Riding Partner (Same Cart)"

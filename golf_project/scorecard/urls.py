@@ -30,6 +30,7 @@ urlpatterns = [
     path('admin-dashboard/all-members/', views.view_all_members, name='all_members'),
     # Ensure name match is explicit
     path('admin-dashboard/toggle-playing/', views.toggle_playing_status_ajax, name='toggle_playing_ajax'),
+    path('admin-dashboard/toggle-scorekeeper/', views.toggle_scorekeeper_ajax, name='toggle_scorekeeper_ajax'),
     path('admin-dashboard/delete-player/<int:player_id>/', views.delete_player_action, name='delete_player'),
     path('admin-dashboard/edit-player/<int:player_id>/', views.edit_player_view, name='edit_player'),
     path('admin-dashboard/manual-squad/', views.manual_squad_create_view, name='manual_squad'),

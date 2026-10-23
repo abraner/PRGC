@@ -950,6 +950,21 @@ def toggle_playing_status_ajax(request):
     return JsonResponse({'status': 'failed', 'message': 'Invalid method'}, status=400)
 
 
+@csrf_exempt
+def toggle_scorekeeper_ajax(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            player = get_object_or_404(Player, id=data.get('player_id'))
+            player.scorekeeper = bool(data.get('scorekeeper'))
+            player.save(update_fields=['scorekeeper'])
+            return JsonResponse({'status': 'success', 'scorekeeper': player.scorekeeper})
+        except Exception as e:
+            return JsonResponse({'status': 'failed', 'error': str(e)}, status=400)
+
+    return JsonResponse({'status': 'failed', 'message': 'Invalid method'}, status=400)
+
+
 @require_POST  # Ensures players can only be deleted via a POST request for security
 def delete_player_action(request, player_id):
     player = get_object_or_404(Player, id=player_id)

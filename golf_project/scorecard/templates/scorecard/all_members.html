@@ -6,7 +6,7 @@
     <title>All Registered Members</title>
     <style>
         body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 25px; }
-        .list-container { max-width: 950px; margin: 0 auto; background: #B3DEB6; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .list-container { max-width: 1100px; margin: 0 auto; background: #B3DEB6; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
@@ -35,6 +35,7 @@
         <thead>
             <tr>
                 <th style="text-align: center; width: 110px;">Playing Today</th>
+                <th style="text-align: center; width: 110px;">Scorekeeper</th>
                 <th>Member ID</th>
                 <th>Name</th>
                 <th>18H Hcp</th>
@@ -54,6 +55,15 @@
                                data-player-id="{{ player.id }}"
                                {% if player.is_playing_today %}checked{% endif %}
                                onchange="updatePlayingStatus(this)">
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="checkbox-container">
+                        <input type="checkbox"
+                               class="playing-checkbox"
+                               data-player-id="{{ player.id }}"
+                               {% if player.scorekeeper %}checked{% endif %}
+                               onchange="updateScorekeeper(this)">
                     </div>
                 </td>
                 <td><span class="member-id-badge">{{ player.member_id|default:"N/A" }}</span></td>
@@ -88,7 +98,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
+                <td colspan="8" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -158,8 +168,34 @@ function updatePlayingStatus(checkbox) {
     });
 }
 
+function updateScorekeeper(checkbox) {
+    const playerId = checkbox.getAttribute('data-player-id');
+    const isChecked = checkbox.checked;
 
-
+    fetch("{% url 'scorecard:toggle_scorekeeper_ajax' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            player_id: playerId,
+            scorekeeper: isChecked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            alert('Could not update scorekeeper. Please retry.');
+            checkbox.checked = !isChecked;
+        }
+    })
+    .catch(error => {
+        console.error('Error updating scorekeeper:', error);
+        alert('Server connectivity issue encountered.');
+        checkbox.checked = !isChecked;
+    });
+}
 
 </script>
 

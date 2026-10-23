@@ -115,6 +115,7 @@ class ScoringMemberRegistrationForm(forms.ModelForm):
         'last_name',
         'is_player',
         'is_captain',
+        'scorekeeper',
         'handicap',
         'handicap_9_hole',
         'chicago_points_18',
@@ -127,6 +128,7 @@ class ScoringMemberRegistrationForm(forms.ModelForm):
         model = Player
         fields = [
             'is_captain',
+            'scorekeeper',
             'handicap',
             'chicago_points_18',
             'team_chicago_points_9',
@@ -134,6 +136,7 @@ class ScoringMemberRegistrationForm(forms.ModelForm):
         ]
         labels = {
             'is_captain': 'Register as Captain',
+            'scorekeeper': 'Scorekeeper',
             'handicap': '18 Hole Handicap',
         }
 
@@ -168,6 +171,13 @@ class ScoringMemberRegistrationForm(forms.ModelForm):
 
 
 
+def player_squad_choice_label(player):
+    """Show the scorekeeper mark after the player's name on the manual squad form."""
+    if player.scorekeeper:
+        return f"{player.name} ( Score Keeper )"
+    return player.name
+
+
 class ManualSquadForm(forms.ModelForm):
     players = forms.ModelMultipleChoiceField(
         queryset=Player.objects.filter(is_playing_today=True),
@@ -200,6 +210,7 @@ class ManualSquadForm(forms.ModelForm):
 
         # 4. Assign the filtered datasets back to the input widgets dynamically
         self.fields['players'].queryset = available_players.order_by('name')
+        self.fields['players'].label_from_instance = player_squad_choice_label
         self.fields['scorekeeper'].queryset = available_players.order_by('name')
 
         available_holes = Hole.objects.all().order_by('hole_number')

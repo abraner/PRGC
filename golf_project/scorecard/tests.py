@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from django.utils import timezone
 
+from scorecard.forms import player_squad_choice_label
 from scorecard.models import Cost, GolfRound, Hole, HoleScore, MensLeagueRoundScore, Player, WomensLeagueRoundScore
 from scorecard.views import (
     _member_last_name_key,
@@ -415,3 +416,37 @@ class MemberListOrderTests(TestCase):
         ]
         ordered = [player.name for player in sorted(players, key=_member_last_name_key)]
         self.assertEqual(ordered, ['Zoe Adams', 'Ann', 'Bob Smith', 'Cara Smith'])
+
+
+class AllMembersScorekeeperTests(TestCase):
+    def test_members_page_shows_a_scorekeeper_checkbox(self):
+        Player.objects.create(name='Kay Stone', scorekeeper=True)
+        response = self.client.get('/admin-dashboard/all-members/')
+        self.assertContains(response, 'Scorekeeper')
+        self.assertContains(response, 'updateScorekeeper')
+        self.assertContains(response, 'checked')
+
+    def test_checkbox_saves_the_scorekeeper_flag(self):
+        player = Player.objects.create(name='Lee Stone', scorekeeper=False)
+        response = self.client.post(
+            '/admin-dashboard/toggle-scorekeeper/',
+            data=json.dumps({'player_id': player.id, 'scorekeeper': True}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        player.refresh_from_db()
+        self.assertTrue(player.scorekeeper)
+
+
+class ManualSquadScorekeeperLabelTests(TestCase):
+    def test_scorekeeper_label_follows_the_player_name(self):
+        keeper = Player.objects.create(name='Ann Stone', is_playing_today=True, scorekeeper=True)
+        other = Player.objects.create(name='Bob Smith', is_playing_today=True, scorekeeper=False)
+        self.assertEqual(player_squad_choice_label(keeper), 'Ann Stone ( Score Keeper )')
+        self.assertEqual(player_squad_choice_label(other), 'Bob Smith')
+
+        staff = User.objects.create_user('staff', password='pw', is_staff=True)
+        self.client.force_login(staff)
+        response = self.client.get('/admin-dashboard/manual-squad/')
+        self.assertContains(response, 'Ann Stone ( Score Keeper )')
+        self.assertNotContains(response, 'Bob Smith ( Score Keeper )')
