@@ -426,6 +426,18 @@ class AllMembersScorekeeperTests(TestCase):
         self.assertContains(response, 'updateScorekeeper')
         self.assertContains(response, 'checked')
 
+    def test_members_page_scrolls_nine_rows_and_has_a_search(self):
+        for number in range(10):
+            Player.objects.create(name=f'Player {number} Stone', member_id=f'GLF-TEST-{number}')
+        response = self.client.get('/admin-dashboard/all-members/')
+        self.assertContains(response, 'id="member-scroll"')
+        self.assertContains(response, 'fitNineRows')
+        self.assertContains(response, 'id="member-search"')
+        self.assertContains(response, 'id="show-all-members"')
+        self.assertContains(response, 'All Members')
+        self.assertContains(response, 'Player 0 Stone')
+        self.assertContains(response, 'Player 9 Stone')
+
     def test_checkbox_saves_the_scorekeeper_flag(self):
         player = Player.objects.create(name='Lee Stone', scorekeeper=False)
         response = self.client.post(

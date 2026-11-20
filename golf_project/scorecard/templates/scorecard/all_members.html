@@ -8,11 +8,16 @@
         body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 25px; }
         .list-container { max-width: 1100px; margin: 0 auto; background: #B3DEB6; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .member-scroll { overflow-y: auto; scrollbar-gutter: stable; border: 1px solid #c8e6c9; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 0; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
-        th { background-color: #f5f5f5; color: #333; font-weight: bold; }
+        th { background-color: #f5f5f5; color: #333; font-weight: bold; position: sticky; top: 0; z-index: 1; }
         tr:hover { background-color: #fafafa; }
-        .btn-back { display: inline-block; background: #2e7d32; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; text-decoration: none; }
+        .member-search { margin-top: 16px; }
+        .member-search label { display: block; font-weight: bold; color: #2c3e50; margin-bottom: 6px; }
+        .member-search input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #1b5e20; border-radius: 6px; font-size: 16px; }
+        .header-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-back { display: inline-block; background: #2e7d32; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; font-size: 16px; font-family: Arial, sans-serif; }
         .btn-back:hover { background: #1b5e20; }
         .member-id-badge { background: #e0f2f1; color: #004d40; padding: 3px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; }
 
@@ -28,10 +33,14 @@
 <div class="list-container">
     <div class="header-row">
         <h2 style="margin: 0; color: #2c3e50;">👥 Registered Scoring Members</h2>
-        <a href="{% url 'scorecard:admin_dashboard' %}" class="btn-back">⬅️ Back to Dashboard</a>
+        <div class="header-actions">
+            <button type="button" id="show-all-members" class="btn-back" hidden>All Members</button>
+            <a href="{% url 'scorecard:admin_dashboard' %}" class="btn-back">⬅️ Back to Dashboard</a>
+        </div>
     </div>
 
-    <table>
+    <div class="member-scroll" id="member-scroll">
+    <table id="member-table">
         <thead>
             <tr>
                 <th style="text-align: center; width: 110px;">Playing Today</th>
@@ -47,7 +56,7 @@
         </thead>
         <tbody>
             {% for player in players %}
-            <tr>
+            <tr data-search="{{ player.member_id|default:'' }} {{ player.name }} {{ player.handicap }} {{ player.chicago_points_18 }} {{ player.team_chicago_points_9 }} {{ player.ladies_league_handicap|default:'' }}">
                 <td style="text-align: center;">
                     <div class="checkbox-container">
                         <input type="checkbox"
@@ -98,14 +107,74 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
+                <td colspan="9" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
             </tr>
             {% endfor %}
+            <tr id="member-search-empty" hidden>
+                <td colspan="9" style="text-align: center; color: #757575; padding: 30px;">No members match that search.</td>
+            </tr>
         </tbody>
     </table>
+    </div>
+
+    <div class="member-search">
+        <label for="member-search">Search</label>
+        <input id="member-search" type="search" placeholder="Search by name, member ID, or handicap" autocomplete="off">
+    </div>
 </div>
 
 <script>
+function memberRows() {
+    return [...document.querySelectorAll('#member-table tbody tr[data-search]')];
+}
+
+function fitNineRows(remeasure) {
+    const scrollBox = document.getElementById('member-scroll');
+    const table = document.getElementById('member-table');
+    const rows = memberRows().filter(row => !row.hidden);
+    const header = table.querySelector('thead');
+    if (!rows.length || !header) {
+        scrollBox.style.maxHeight = '';
+        return;
+    }
+    let height = header.offsetHeight;
+    const visibleCount = Math.min(9, rows.length);
+    for (let i = 0; i < visibleCount; i += 1) {
+        height += rows[i].offsetHeight;
+    }
+    scrollBox.style.maxHeight = height + 'px';
+    if (!remeasure) {
+        requestAnimationFrame(() => fitNineRows(true));
+    }
+}
+
+function applyMemberSearch() {
+    const query = document.getElementById('member-search').value.trim().toLowerCase();
+    let shown = 0;
+    memberRows().forEach(row => {
+        const match = !query || row.dataset.search.toLowerCase().includes(query);
+        row.hidden = !query ? false : !match;
+        if (match) shown += 1;
+    });
+    const empty = document.getElementById('member-search-empty');
+    if (empty) empty.hidden = shown !== 0 || memberRows().length === 0;
+    const showAll = document.getElementById('show-all-members');
+    if (showAll) showAll.hidden = !query;
+    fitNineRows();
+}
+
+function showAllMembers() {
+    const search = document.getElementById('member-search');
+    search.value = '';
+    applyMemberSearch();
+    search.focus();
+}
+
+document.getElementById('member-search').addEventListener('input', applyMemberSearch);
+document.getElementById('show-all-members').addEventListener('click', showAllMembers);
+window.addEventListener('load', () => fitNineRows());
+window.addEventListener('resize', () => fitNineRows());
+
 function updatePlayingStatus(checkbox) {
     const playerId = checkbox.getAttribute('data-player-id');
     const isChecked = checkbox.checked;
