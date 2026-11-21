@@ -16,6 +16,11 @@
         .num-input { width: 65px; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; }
         .net-display { background-color: #f5f5f5; border: 1px solid #e0e0e0; color: #424242; }
         .nav-buttons { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
+        .gn-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; width: 100%; }
+        .gn-nav a { display: block; text-align: center; text-decoration: none; padding: 12px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; }
+        .gn-prev { background: #cfd8dc; color: #37474f; }
+        .gn-next { background: #2e7d32; color: white; }
+        .gn-leaderboard { background: #00796b; color: white; grid-column: 1 / -1; width: auto; margin-left: 0; margin-right: 0; justify-self: stretch; }
         .btn { flex: 1; height: 50px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; }
         .btn-prev { background: #cfd8dc; color: #37474f; }
         .btn-next { background: #2e7d32; color: white; }
@@ -36,6 +41,9 @@
     {% if enter_chicago_points %}
     <p style="margin:8px 0 0 0; font-size:12px; font-weight:600;">Enter points: 8 eagle+ · 4 birdie · 2 par · 1 bogey · 0 double+</p>
     {% endif %}
+    {% if not is_scorecard_editable and not is_ind_chicago %}
+    <p style="margin:8px 0 0 0; font-size:13px; font-weight:700; color:#c62828; -webkit-text-stroke: 1px #000; paint-order: stroke fill;">View only. The scorekeeper enters the scores.</p>
+    {% endif %}
 </div>
 
     {% for item in player_scores %}
@@ -55,13 +63,13 @@
                 <span style="display: inline-flex; align-items: center; gap: 8px;">
                     {% if is_womens_league %}
                         <label style="font-weight: bold; color: #1b5e20;">Handicap:</label>
-                        <input type="number" min="0" max="54" class="hcp-input" style="border-color: #1b5e20; background-color: #f0f7f4; font-weight: bold; color: #1b5e20;" value="{{ item.player.ladies_league_handicap|default:item.display_hcp }}">
+                        <input type="number" min="0" max="54" class="hcp-input" style="border-color: #1b5e20; background-color: #f0f7f4; font-weight: bold; color: #1b5e20;" value="{{ item.player.ladies_league_handicap|default:item.display_hcp }}" {% if not is_scorecard_editable %}readonly{% endif %}>
                     {% elif is_chicago_game %}
                         <label style="font-weight: bold; color: #1b5e20;">Quota:</label>
-                        <input type="number" min="0" max="54" class="hcp-input" style="border-color: #1b5e20; background-color: #f0f7f4; font-weight: bold; color: #1b5e20;" value="{{ item.chicago_target }}">
+                        <input type="number" min="0" max="54" class="hcp-input" style="border-color: #1b5e20; background-color: #f0f7f4; font-weight: bold; color: #1b5e20;" value="{{ item.chicago_target }}" {% if not is_scorecard_editable %}readonly{% endif %}>
                     {% else %}
                         <label>Hcp:</label>
-                        <input type="number" min="0" max="{% if is_mens_league %}20{% else %}54{% endif %}" class="hcp-input" value="{{ item.display_hcp }}">
+                        <input type="number" min="0" max="{% if is_mens_league %}20{% else %}54{% endif %}" class="hcp-input" value="{{ item.display_hcp }}" {% if is_mens_league or is_gross_net or not is_scorecard_editable %}readonly{% endif %} {% if is_mens_league or is_gross_net %}style="background-color: #e2e8f0; cursor: not-allowed;"{% endif %}>
                     {% endif %}
                 </span>
             </div>
@@ -71,7 +79,7 @@
             <!-- Points for Chicago, gross strokes for every other format on this card -->
             <div style="text-align: center;">
                 <small style="display: block; text-align: center; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">{% if enter_chicago_points %}Points{% else %}Gross{% endif %}</small>
-                <select class="num-input stroke-field" style="width: 75px; height: 45px; font-size: 18px; text-align: center; text-align-last: center; padding: 0; font-weight: bold; border: 1px solid #ccc; border-radius: 6px; background-color: #fff; cursor: pointer;">
+                <select class="num-input stroke-field" {% if not is_scorecard_editable %}disabled{% endif %} style="width: 75px; height: 45px; font-size: 18px; text-align: center; text-align-last: center; padding: 0; font-weight: bold; border: 1px solid #ccc; border-radius: 6px; background-color: {% if is_scorecard_editable %}#fff{% else %}#e2e8f0{% endif %}; cursor: {% if is_scorecard_editable %}pointer{% else %}not-allowed{% endif %};">
                     <option value="" {% if item.score.strokes == '' or item.score.strokes is none %}selected{% endif %}>-</option>
                     {% if enter_chicago_points %}
                     <option value="0" {% if item.score.strokes == 0 %}selected{% endif %}>0</option>
@@ -98,7 +106,7 @@
             <!-- Net Calculation View Box (Displays cumulative points differential layout) -->
             <div style="text-align: center;">
                 <small style="display: block; text-align: center; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Net</small>
-                <input type="text" class="num-input net-display" readonly value="0" style="width: 65px; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; background-color: #f5f5f5; color: #424242;">
+                <input type="text" class="num-input net-display{% if is_gross_net and not is_scorecard_editable %} net-locked{% endif %}" readonly {% if is_gross_net and not is_scorecard_editable %}disabled{% endif %} value="0" style="width: 65px; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; background-color: {% if is_gross_net %}#e2e8f0{% else %}#f5f5f5{% endif %}; color: #424242;{% if is_gross_net and not is_scorecard_editable %} cursor: not-allowed;{% endif %}">
             </div>
         </div>
     </div>
@@ -106,25 +114,44 @@
 
 
     <!-- NAVIGATION PACK WITH UNIVERSAL FINISH LINE ENGINE -->
+    {% if paired_nav and not is_final_hole %}
+    <div class="gn-nav">
+        {% if show_prev_button %}
+        <a class="gn-prev" href="{% url 'scorecard:player_scorecard' prev_hole %}">⬅️ Prev</a>
+        {% endif %}
+        <a class="gn-next" href="{% url 'scorecard:player_scorecard' next_hole %}" {% if show_prev_button %}style="grid-column: 2;"{% else %}style="grid-column: 1 / -1;"{% endif %}>Next ➡️</a>
+        <a class="gn-leaderboard" href="{{ standings_url }}">🏆 Leaderboard</a>
+    </div>
+    {% else %}
     <div class="navigation-links" style="margin-top: 25px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+        {% if show_prev_button %}
         <a href="{% url 'scorecard:player_scorecard' prev_hole %}" style="flex: 1; text-align: center; padding: 12px 8px; background: #cfd8dc; color: #37474f; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box;">
             ⬅️ Prev
         </a>
+        {% endif %}
 
-        {% if is_final_hole %}
+        {% if is_final_hole and is_scorecard_editable %}
             <a href="{{ leaderboard_url }}" style="flex: 2.5; text-align: center; padding: 12px 8px; background: #004d40; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
                 🏁 Finish Match & View Leaderboard 🏆
             </a>
-        {% else %}
-            <a href="{{ standings_url }}" style="flex: 1.5; text-align: center; padding: 12px 8px; background: #00796b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        {% elif is_final_hole %}
+            <a href="{{ leaderboard_url }}" style="flex: 2.5; text-align: center; padding: 12px 8px; background: #00796b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 6px;">
                 🏆 Leaderboard
             </a>
-
-            <a href="{% url 'scorecard:player_scorecard' next_hole %}" style="flex: 1; text-align: center; padding: 12px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box;">
+        {% else %}
+            <a href="{{ standings_url }}" style="flex: 1.5; order: 2; text-align: center; padding: 12px 8px; background: #00796b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                🏆 Leaderboard
+            </a>
+            <a href="{% url 'scorecard:player_scorecard' next_hole %}" style="flex: 1; order: {% if show_prev_button %}3{% else %}1{% endif %}; text-align: center; padding: 12px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box;">
                 Next ➡️
             </a>
         {% endif %}
     </div>
+    {% endif %}
+
+    {% if is_ind_chicago and not is_scorecard_editable %}
+    <p style="margin:12px 0 0 0; text-align:center; font-size:13px; font-weight:700; color:#c62828;">View only. The scorekeeper enters the scores.</p>
+    {% endif %}
 
     <!-- SAFE DISCRETE UTILITY BAR FOOTER -->
     <div class="scorecard-footer" style="margin-top: 40px; text-align: center; border-top: 1px solid #e0e0e0; padding-top: 15px;">
@@ -142,6 +169,8 @@ document.addEventListener("DOMContentLoaded", function() {
                          "{{ round.game_format }}" === "9_WOMENS_LEAGUE";
     var isMensLeague = "{{ is_mens_league }}" === "True" ||
                        "{{ round.game_format }}" === "18_HOLE_MENS_LEAGUE";
+    var isGrossNet = "{{ is_gross_net }}" === "True" ||
+                     "{{ round.game_format }}" === "18_GROSS_NET";
     // Women's league shows Handicap (not Chicago quota) — keep Net off the Chicago points scale
     var isChicagoGame = !isWomensLeague && (
                         "{{ is_chicago_game }}" === "True" ||
@@ -168,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function setNetZero(netBox) {
         netBox.value = "0";
-        netBox.style.backgroundColor = "#f5f5f5";
+        netBox.style.backgroundColor = isGrossNet ? "#e2e8f0" : "#f5f5f5";
         netBox.style.color = "#424242";
     }
 
@@ -213,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var remainderHandicap = handicap % holesInRound;
                 if (holeHandicapIndex <= remainderHandicap) baseStrokesApplied += 1;
                 netBox.value = grossStrokes - baseStrokesApplied;
-                netBox.style.backgroundColor = "#f5f5f5";
+                netBox.style.backgroundColor = isGrossNet ? "#e2e8f0" : "#f5f5f5";
                 netBox.style.color = "#424242";
             }
             return grossStrokes;
@@ -274,19 +303,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     };
 
+    var canEnterScores = "{{ is_scorecard_editable }}" === "True";
     var playerRows = document.querySelectorAll(".player-row");
     playerRows.forEach(function(row) {
         var strokeSelect = row.querySelector(".stroke-field");
         var hcpField = row.querySelector(".hcp-input");
 
-        if (strokeSelect) {
+        if (strokeSelect && canEnterScores) {
             strokeSelect.addEventListener("change", function() {
                 var currentGross = calculateRowNetScore(row);
                 // Trigger live background database preservation instantly
                 saveStrokeToDatabase(row, currentGross);
             });
         }
-        if (hcpField) {
+        if (hcpField && !isMensLeague && !isGrossNet) {
             hcpField.addEventListener("input", function() { calculateRowNetScore(row); });
         }
         calculateRowNetScore(row);

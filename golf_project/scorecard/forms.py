@@ -178,6 +178,10 @@ def player_squad_choice_label(player):
     return player.name
 
 
+def designated_scorekeeper_label(player):
+    return f"{player.name} (scorekeeper)"
+
+
 class ManualSquadForm(forms.ModelForm):
     players = forms.ModelMultipleChoiceField(
         queryset=Player.objects.filter(is_playing_today=True),
@@ -211,7 +215,8 @@ class ManualSquadForm(forms.ModelForm):
         # 4. Assign the filtered datasets back to the input widgets dynamically
         self.fields['players'].queryset = available_players.order_by('name')
         self.fields['players'].label_from_instance = player_squad_choice_label
-        self.fields['scorekeeper'].queryset = available_players.order_by('name')
+        self.fields['scorekeeper'].queryset = available_players.filter(scorekeeper=True).order_by('name')
+        self.fields['scorekeeper'].label_from_instance = designated_scorekeeper_label
 
         available_holes = Hole.objects.all().order_by('hole_number')
         if active_round:

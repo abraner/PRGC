@@ -145,7 +145,7 @@
         </a>
         {% endif %}
     </div>
-    {% if not standings_only %}
+    {% if not standings_only and not is_scramble_game %}
     <!-- 💰 Outing Financial Matrix Summary Card -->
     <div class="financial-card">
         <span style="font-size: 13px; font-weight: bold; color: #2c3e50; text-transform: uppercase; letter-spacing: 0.5px; display: block; border-bottom: 2px solid #2e7d32; padding-bottom: 4px; margin-bottom: 12px;">
@@ -304,7 +304,7 @@
                             To Par
                         {% endif %}
                     </th>
-                    {% if not standings_only %}
+                    {% if not standings_only and not is_scramble_game %}
                     <th style="text-align: right; color: #1b5e20;">Payout</th>
                     {% endif %}
                 </tr>
@@ -414,7 +414,7 @@
                         {% endif %}
                     </td>
 
-                    {% if not standings_only %}
+                    {% if not standings_only and not is_scramble_game %}
                     <!-- Full-Dollar Rounded Cash Prize Distribution Cells -->
                     <td style="text-align: right; font-weight: bold; color: #1b5e20; font-size: 15px;">
                         {% if row.payout > 0 %}
@@ -427,7 +427,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="{% if standings_only %}6{% else %}7{% endif %}" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
+                    <td colspan="{% if standings_only or is_scramble_game %}6{% else %}7{% endif %}" style="text-align: center; padding: 30px; color: #7f8c8d; font-style: italic;">
                         No active scores have been recorded for this tournament round yet. Use scorecards to populate row metrics!
                     </td>
                 </tr>

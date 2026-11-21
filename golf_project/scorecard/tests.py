@@ -6,8 +6,8 @@ from django.test import TestCase
 
 from django.utils import timezone
 
-from scorecard.forms import player_squad_choice_label
-from scorecard.models import Cost, GolfRound, Hole, HoleScore, MensLeagueRoundScore, Player, WomensLeagueRoundScore
+from scorecard.forms import designated_scorekeeper_label, player_squad_choice_label
+from scorecard.models import Cost, GolfRound, Hole, HoleScore, MensLeagueRoundScore, Player, Squad, WomensLeagueRoundScore
 from scorecard.views import (
     _member_last_name_key,
     adjust_9_team_chicago_quota_for_player,
@@ -456,9 +456,293 @@ class ManualSquadScorekeeperLabelTests(TestCase):
         other = Player.objects.create(name='Bob Smith', is_playing_today=True, scorekeeper=False)
         self.assertEqual(player_squad_choice_label(keeper), 'Ann Stone ( Score Keeper )')
         self.assertEqual(player_squad_choice_label(other), 'Bob Smith')
+        self.assertEqual(designated_scorekeeper_label(keeper), 'Ann Stone (scorekeeper)')
 
         staff = User.objects.create_user('staff', password='pw', is_staff=True)
         self.client.force_login(staff)
         response = self.client.get('/admin-dashboard/manual-squad/')
         self.assertContains(response, 'Ann Stone ( Score Keeper )')
         self.assertNotContains(response, 'Bob Smith ( Score Keeper )')
+        scorekeeper_names = list(
+            response.context['form'].fields['scorekeeper'].queryset.values_list('name', flat=True)
+        )
+        self.assertEqual(scorekeeper_names, ['Ann Stone'])
+        self.assertContains(response, 'Ann Stone (scorekeeper)')
+
+
+class SquadViewerScorecardTests(TestCase):
+    def setUp(self):
+        self.keeper_user = User.objects.create_user('keeper', password='pw')
+        self.member_user = User.objects.create_user('member', password='pw')
+        self.keeper = Player.objects.create(name='Ann Stone', user=self.keeper_user, scorekeeper=True)
+        self.member = Player.objects.create(name='Bob Smith', user=self.member_user)
+        self.hole = Hole.objects.create(hole_number=1, par=4, handicap_index=1)
+        self.round = GolfRound.objects.create(game_format='18_GROSS_NET', is_active=True)
+        self.squad = Squad.objects.create(
+            round=self.round, squad_number=1, starting_hole=self.hole, scorekeeper=self.keeper
+        )
+        self.squad.players.add(self.keeper, self.member)
+
+    def test_squad_member_can_view_the_hole_and_leaderboard_but_not_enter_scores(self):
+        self.client.force_login(self.member_user)
+        response = self.client.get('/play/hole/1/')
+        self.assertContains(response, 'Hole 1')
+        self.assertContains(response, 'Leaderboard')
+        self.assertContains(response, 'View only. The scorekeeper enters the scores.')
+        self.assertContains(response, 'color:#c62828;')
+        gross_html = response.content.decode()
+        self.assertLess(
+            gross_html.find('View only. The scorekeeper enters the scores.'),
+            gross_html.find('class="gn-leaderboard"'),
+        )
+        self.assertContains(response, '-webkit-text-stroke: 1px #000')
+        self.assertContains(response, 'net-locked')
+        self.assertContains(response, 'disabled')
+
+        denied = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': self.member.id,
+                'hole_id': self.hole.id,
+                'round_id': self.round.id,
+                'gross_value': 5,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(denied.status_code, 403)
+        self.assertFalse(HoleScore.objects.filter(player=self.member).exists())
+
+    def test_scorekeeper_can_enter_a_squad_score(self):
+        self.client.force_login(self.keeper_user)
+        response = self.client.get('/play/hole/1/')
+        self.assertNotContains(response, 'View only. The scorekeeper enters the scores.')
+        self.assertNotContains(response, 'net-locked')
+        net_tag = response.content.decode().split('class="num-input net-display"', 1)[1].split('>', 1)[0]
+        self.assertIn('#e2e8f0', net_tag)
+
+        saved = self.client.post(
+            '/scorecard/save-stroke-api/',
+            data=json.dumps({
+                'player_id': self.member.id,
+                'hole_id': self.hole.id,
+                'round_id': self.round.id,
+                'gross_value': 4,
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(saved.status_code, 200)
+        self.assertTrue(HoleScore.objects.filter(player=self.member, gross_value=4).exists())
+
+    def test_mens_league_handicap_stays_locked_for_the_scorekeeper(self):
+        self.round.game_format = '18_HOLE_MENS_LEAGUE'
+        self.round.save(update_fields=['game_format'])
+        self.keeper.handicap = 12
+        self.keeper.save(update_fields=['handicap'])
+        self.client.force_login(self.keeper_user)
+        response = self.client.get('/play/hole/1/')
+        self.assertContains(response, 'value="12"')
+        self.assertContains(response, 'readonly')
+        self.assertContains(response, 'cursor: not-allowed')
+
+    def test_gross_net_handicap_stays_locked_for_the_scorekeeper(self):
+        self.keeper.handicap = 24
+        self.keeper.save(update_fields=['handicap'])
+        self.client.force_login(self.keeper_user)
+        response = self.client.get('/play/hole/1/')
+        self.assertContains(response, 'value="24"')
+        self.assertContains(response, 'readonly')
+        self.assertContains(response, 'cursor: not-allowed')
+
+    def test_mens_league_hides_previous_on_the_starting_hole(self):
+        hole_ten = Hole.objects.create(hole_number=10, par=4, handicap_index=10)
+        Hole.objects.create(hole_number=11, par=4, handicap_index=11)
+        self.squad.starting_hole = hole_ten
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '18_HOLE_MENS_LEAGUE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/10/')
+        self.assertNotContains(on_start, '⬅️ Prev')
+        self.assertContains(on_start, 'flex: 1; order: 1')
+        self.assertContains(on_start, 'flex: 1.5; order: 2')
+
+        later = self.client.get('/play/hole/11/')
+        self.assertContains(later, '⬅️ Prev')
+        self.assertContains(later, 'flex: 1.5; order: 2')
+        self.assertContains(later, 'flex: 1; order: 3')
+
+        self.round.game_format = '18_GROSS_NET'
+        self.round.save(update_fields=['game_format'])
+        gross_start = self.client.get('/play/hole/10/')
+        self.assertNotContains(gross_start, '⬅️ Prev')
+        self.assertContains(gross_start, 'class="gn-nav"')
+        self.assertContains(gross_start, 'class="gn-next"')
+        self.assertContains(gross_start, 'grid-column: 1 / -1;')
+        self.assertContains(gross_start, 'class="gn-leaderboard"')
+        gross_later = self.client.get('/play/hole/11/')
+        self.assertContains(gross_later, '⬅️ Prev')
+        self.assertContains(gross_later, 'class="gn-prev"')
+        self.assertContains(gross_later, 'grid-column: 2;')
+        self.assertContains(gross_later, 'class="gn-leaderboard"')
+
+    def test_team_chicago_matches_gross_net_navigation(self):
+        hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
+        Hole.objects.create(hole_number=6, par=4, handicap_index=6)
+        self.squad.starting_hole = hole_five
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '9_TEAM_CHICAGO'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/5/')
+        self.assertNotContains(on_start, 'Previous Hole')
+        self.assertContains(on_start, 'class="tc-nav"')
+        self.assertContains(on_start, 'Next Hole')
+        self.assertContains(on_start, 'grid-column: 1 / -1;')
+        self.assertContains(on_start, 'class="btn-nav tc-leaderboard"')
+
+        later = self.client.get('/play/hole/6/')
+        self.assertContains(later, 'Previous Hole')
+        self.assertContains(later, 'grid-column: 2;')
+        self.assertContains(later, 'class="btn-nav tc-leaderboard"')
+
+    def test_womens_league_matches_gross_net_navigation(self):
+        hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
+        Hole.objects.create(hole_number=6, par=3, handicap_index=6)
+        self.squad.starting_hole = hole_five
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '9_WOMENS_LEAGUE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/5/')
+        self.assertNotContains(on_start, '⬅️ Prev')
+        self.assertContains(on_start, 'class="gn-nav"')
+        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, 'grid-column: 1 / -1;')
+        self.assertContains(on_start, 'class="gn-leaderboard"')
+
+        later = self.client.get('/play/hole/6/')
+        self.assertContains(later, '⬅️ Prev')
+        self.assertContains(later, 'class="gn-prev"')
+        self.assertContains(later, 'grid-column: 2;')
+        self.assertContains(later, 'class="gn-leaderboard"')
+
+    def test_eighteen_chicago_matches_paired_navigation(self):
+        Hole.objects.create(hole_number=2, par=4, handicap_index=2)
+        self.round.game_format = '18_IND_CHICAGO'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/1/')
+        self.assertNotContains(on_start, '⬅️ Prev')
+        self.assertContains(on_start, 'class="gn-nav"')
+        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, 'grid-column: 1 / -1;')
+        self.assertContains(on_start, 'class="gn-leaderboard"')
+
+        later = self.client.get('/play/hole/2/')
+        self.assertContains(later, '⬅️ Prev')
+        self.assertContains(later, 'class="gn-prev"')
+        self.assertContains(later, 'grid-column: 2;')
+        self.assertContains(later, 'class="gn-leaderboard"')
+
+    def test_eighteen_chicago_quota_comes_from_the_player_field(self):
+        self.round.game_format = '18_IND_CHICAGO'
+        self.round.save(update_fields=['game_format'])
+        self.keeper.chicago_points_18 = 15
+        self.keeper.handicap = 10
+        self.keeper.save(update_fields=['chicago_points_18', 'handicap'])
+        self.member.chicago_points_18 = 0
+        self.member.handicap = 10
+        self.member.save(update_fields=['chicago_points_18', 'handicap'])
+        self.client.force_login(self.keeper_user)
+
+        response = self.client.get('/play/hole/1/')
+        self.assertContains(response, 'value="15"')
+        self.assertContains(response, 'value="0"')
+        self.assertNotContains(response, 'value="29"')
+
+    def test_eighteen_chicago_view_only_note_is_below_the_leaderboard(self):
+        self.round.game_format = '18_IND_CHICAGO'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.member_user)
+        response = self.client.get('/play/hole/1/')
+        html = response.content.decode()
+        note = 'View only. The scorekeeper enters the scores.'
+        self.assertLess(html.find('class="gn-leaderboard"'), html.find(note))
+        self.assertNotContains(response, '-webkit-text-stroke')
+
+    def test_team_chicago_viewer_total_matches_points_needed_background(self):
+        self.round.game_format = '9_TEAM_CHICAGO'
+        self.round.save(update_fields=['game_format'])
+
+        self.client.force_login(self.member_user)
+        viewer = self.client.get('/play/hole/1/')
+        viewer_total = viewer.content.decode().split('class="net-display"', 1)[1].split('>', 1)[0]
+        self.assertIn('background-color: #e0f2f1', viewer_total)
+        self.assertContains(viewer, 'text-align: center;">View only. The scorekeeper enters the scores.')
+
+        self.client.force_login(self.keeper_user)
+        keeper = self.client.get('/play/hole/1/')
+        keeper_total = keeper.content.decode().split('class="net-display"', 1)[1].split('>', 1)[0]
+        self.assertIn('background-color: #f1f8e9', keeper_total)
+
+    def test_scramble_hides_previous_on_the_starting_hole(self):
+        hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
+        Hole.objects.create(hole_number=6, par=3, handicap_index=6)
+        self.squad.starting_hole = hole_five
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '9_HOLE_SCRAMBLE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/5/')
+        start_html = on_start.content.decode()
+        self.assertContains(on_start, 'Scramble Live Card')
+        self.assertNotContains(on_start, 'Prev')
+        self.assertLess(start_html.find('Next'), start_html.find('Leaderboard'))
+
+        later = self.client.get('/play/hole/6/')
+        later_html = later.content.decode()
+        self.assertLess(later_html.find('Prev'), later_html.find('Next'))
+        self.assertLess(later_html.find('Next'), later_html.find('Leaderboard'))
+        self.assertContains(later, 'btn-leaderboard')
+        self.assertIn('grid-column: 1 / -1', later_html)
+
+    def test_scramble_leaderboard_shows_team_places_and_returns_to_the_hole(self):
+        hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
+        self.squad.starting_hole = hole_five
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '9_HOLE_SCRAMBLE'
+        self.round.save(update_fields=['game_format'])
+        HoleScore.objects.create(round=self.round, player=self.keeper, hole=hole_five, gross_value=4)
+        self.client.force_login(self.keeper_user)
+
+        card = self.client.get('/play/hole/5/')
+        self.assertContains(card, 'format=9_hole_scramble')
+        self.assertContains(card, 'standings=1')
+        self.assertContains(card, 'from_hole=5')
+
+        board = self.client.get('/leaderboard/?format=9_hole_scramble&standings=1&from_hole=5')
+        self.assertContains(board, 'Return to Hole 5')
+        self.assertContains(board, '/play/hole/5/')
+        self.assertContains(board, 'Ann Stone')
+        self.assertContains(board, 'Bob Smith')
+        self.assertNotContains(board, 'Payout')
+        self.assertNotContains(board, 'Outing Financial Matrix')
+
+        full_board = self.client.get('/leaderboard/?format=9_hole_scramble')
+        self.assertContains(full_board, 'Ann Stone')
+        self.assertNotContains(full_board, 'Payout')
+        self.assertNotContains(full_board, 'Outing Financial Matrix')
+
+
+class LoginPasswordToggleTests(TestCase):
+    def test_login_page_has_a_control_that_shows_the_password(self):
+        response = self.client.get('/login/')
+        self.assertContains(response, 'id="toggle-password"')
+        self.assertContains(response, 'aria-label="Show password"')
+        self.assertContains(response, 'id="id_password"')
+        self.assertContains(response, 'field.type = showing ? "password" : "text"')

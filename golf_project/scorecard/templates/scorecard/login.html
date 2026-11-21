@@ -11,6 +11,10 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; color: #333; font-size: 14px; }
         input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .password-wrap { position: relative; }
+        .password-wrap input { padding-right: 42px; }
+        .password-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: none; background: transparent; color: #1b5e20; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .password-toggle svg { width: 22px; height: 22px; display: block; }
         .btn-login { width: 100%; background: #2e7d32; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
         .error-msg { color: #d32f2f; font-size: 14px; text-align: center; margin-top: 10px; }
     </style>
@@ -31,7 +35,21 @@
         </div>
         <div class="form-group">
             <label for="id_password">Password</label>
-            <input type="password" name="password" id="id_password" required placeholder="Enter password">
+            <div class="password-wrap">
+                <input type="password" name="password" id="id_password" required placeholder="Enter password">
+                <button type="button" class="password-toggle" id="toggle-password" aria-label="Show password" aria-pressed="false">
+                    <svg id="eye-open" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg id="eye-off" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+                        <path d="M3 3l18 18"></path>
+                        <path d="M10.6 10.6a3 3 0 004.2 4.2"></path>
+                        <path d="M9.9 5.2A10.8 10.8 0 0112 5c6.5 0 10 7 10 7a18.4 18.4 0 01-3.2 4.2"></path>
+                        <path d="M6.1 6.1C3.8 7.8 2 12 2 12s3.5 7 10 7a10.7 10.7 0 004.2-.8"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
 
         {% if form.errors %}
@@ -41,6 +59,18 @@
         <button type="submit" class="btn-login">Sign In</button>
     </form>
 </div>
+
+<script>
+document.getElementById("toggle-password").addEventListener("click", function () {
+    var field = document.getElementById("id_password");
+    var showing = field.type === "text";
+    field.type = showing ? "password" : "text";
+    this.setAttribute("aria-pressed", showing ? "false" : "true");
+    this.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+    document.getElementById("eye-open").hidden = !showing;
+    document.getElementById("eye-off").hidden = showing;
+});
+</script>
 
 </body>
 </html>

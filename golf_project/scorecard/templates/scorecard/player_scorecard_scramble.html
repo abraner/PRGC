@@ -16,8 +16,9 @@
         .stroke-box { width: 120px; height: 60px; font-size: 32px; font-weight: bold; text-align: center; border: 2px solid #cbd5e1; border-radius: 8px; color: #0f172a; transition: border-color 0.2s; box-sizing: border-box; background: #fff; }
         .stroke-box:focus { border-color: #2e7d32; outline: none; }
         .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
-        .btn { display: block; text-align: center; text-decoration: none; padding: 12px; font-weight: bold; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; transition: background 0.2s; }
+        .btn { display: block; text-align: center; text-decoration: none; padding: 12px; font-weight: bold; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; transition: background 0.2s; box-sizing: border-box; }
         .btn-nav { background: #475569; color: white; }
+        .btn-leaderboard { background: #00796b; color: white; text-decoration: none; text-align: center; grid-column: 1 / -1; width: auto; margin-left: 0; margin-right: 0; justify-self: stretch; }
         .btn-finish { background: #1b5e20; color: white; width: 100%; grid-column: span 2; margin-top: 4px; }
         .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; height: 30px; box-sizing: border-box; }
         .msg { background: #fff3cd; border: 1px solid #ffe082; color: #856404; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 13px; }
@@ -128,13 +129,16 @@
         </div>
 
         <div class="nav-grid">
+            {% if show_prev_button %}
             <button type="submit" name="action" value="prev" class="btn btn-nav"{% if is_final_hole %} style="grid-column: span 2;"{% endif %}>◀ {% if is_scorecard_editable %}Save & {% endif %}Prev</button>
+            {% endif %}
             {% if not is_final_hole %}
-            <button type="submit" name="action" value="next" class="btn btn-nav">{% if is_scorecard_editable %}Save & {% endif %}Next ▶</button>
+            <button type="submit" name="action" value="next" class="btn btn-nav"{% if show_prev_button %} style="grid-column: 2;"{% else %} style="grid-column: span 2;"{% endif %}>{% if is_scorecard_editable %}Save & {% endif %}Next ▶</button>
             {% endif %}
             {% if is_final_hole %}
             <button type="submit" name="action" value="finish" class="btn btn-finish">🏆 Finish Round</button>
             {% endif %}
+            <a href="{{ leaderboard_url }}" class="btn btn-nav btn-leaderboard">🏆 Leaderboard</a>
         </div>
     </form>
     {% endif %}

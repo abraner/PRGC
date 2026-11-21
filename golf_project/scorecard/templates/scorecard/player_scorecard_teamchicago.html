@@ -53,6 +53,9 @@
         .num-input { width: 75px; height: 45px; text-align: center; font-size: 18px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; }
         .net-display { width: 65px !important; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; }
         .navigation-links { margin-top: 25px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .tc-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; width: 100%; }
+        .tc-nav .btn-nav { width: 100%; box-sizing: border-box; text-align: center; }
+        .tc-leaderboard { grid-column: 1 / -1; width: auto; margin-left: 0; margin-right: 0; justify-self: stretch; background: #00796b; color: white; text-align: center; text-decoration: none; }
 
         .btn-logout { background: #c62828; color: white; text-decoration: none; padding: 6px 12px; font-weight: bold; font-size: 12px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s; }
         .btn-logout:hover { background: #b71c1c; }
@@ -197,7 +200,7 @@
                     <div style="text-align: center;">
                         <small style="display: block; color: #555; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">{% if is_scramble_game %}Strokes{% else %}Points{% endif %}</small>
 
-                        <select name="score_{{ item.player.id }}" class="num-input strokes-dropdown" data-player-id="{{ item.player.id }}" style="background-color: #fff; cursor: pointer;">
+                        <select name="score_{{ item.player.id }}" class="num-input strokes-dropdown" data-player-id="{{ item.player.id }}" {% if not is_scorecard_editable %}disabled{% endif %} style="background-color: {% if is_scorecard_editable %}#fff{% else %}#e2e8f0{% endif %}; cursor: {% if is_scorecard_editable %}pointer{% else %}not-allowed{% endif %};">
                             <option value="">—</option>
                             {% if is_scramble_game %}
                             <option value="1" {% if item.score.strokes == 1 %}selected{% endif %}>1</option>
@@ -228,7 +231,7 @@
 
                         <!-- Running total so far (prior holes + this hole's points) -->
                         <input type="text" id="chicago-display-{{ item.player.id }}" class="net-display" readonly
-                               style="font-weight: 800; text-align: center; border: 1px solid #c5e1a5; background-color: #f1f8e9;
+                               style="font-weight: 800; text-align: center; border: 1px solid #c5e1a5; background-color: {% if not is_scorecard_editable %}#e0f2f1{% else %}#f1f8e9{% endif %};
                                       color: {% if item.current_points < item.chicago_target %}#c62828{% elif item.current_points > item.chicago_target %}#2e7d32{% else %}#212121{% endif %};"
                                value="{{ item.current_points|default:0 }}">
                     </div>
@@ -239,21 +242,25 @@
             </div>
         {% endfor %}
 
-        <div class="navigation-links">
-            <button type="submit" name="nav_direction" value="prev" class="btn-nav btn-prev">
-                ⬅️ Previous Hole
-            </button>
-
-            {% if is_final_hole %}
-                <button type="submit" name="nav_direction" value="finish" class="btn-nav btn-finish">
-                    🏁 Finish round
-                </button>
-            {% else %}
-                <button type="submit" name="nav_direction" value="next" class="btn-nav btn-next">
-                    Next Hole ➡️
-                </button>
+        {% if not is_scorecard_editable %}
+        <p style="margin: 12px 0; font-size: 13px; font-weight: 700; color: #c62828; text-align: center;">View only. The scorekeeper enters the scores.</p>
+        {% endif %}
+        {% if not is_final_hole %}
+        <div class="tc-nav">
+            {% if show_prev_button %}
+            <button type="submit" name="nav_direction" value="prev" class="btn-nav btn-prev">⬅️ Previous Hole</button>
             {% endif %}
+            <button type="submit" name="nav_direction" value="next" class="btn-nav btn-next" {% if show_prev_button %}style="grid-column: 2;"{% else %}style="grid-column: 1 / -1;"{% endif %}>Next Hole ➡️</button>
+            <a href="{{ standings_url }}" class="btn-nav tc-leaderboard">🏆 Leaderboard</a>
         </div>
+        {% else %}
+        <div class="navigation-links">
+            {% if show_prev_button %}
+            <button type="submit" name="nav_direction" value="prev" class="btn-nav btn-prev">⬅️ Previous Hole</button>
+            {% endif %}
+            <button type="submit" name="nav_direction" value="finish" class="btn-nav btn-finish">🏁 Finish round</button>
+        </div>
+        {% endif %}
     </form>
 </div>
 

@@ -85,6 +85,11 @@ def chicago_quota_step(differential):
     return step
 
 
+def eighteen_chicago_quota(player):
+    """Today's 18-hole Chicago quota is the value stored on the player."""
+    return int(player.chicago_points_18 or 0)
+
+
 def adjust_18_chicago_quota_for_player(player, played_scores):
     """
     Update player.chicago_points_18 for next round from today's +/- vs quota.
@@ -95,9 +100,7 @@ def adjust_18_chicago_quota_for_player(player, played_scores):
         return None
 
     points_earned = chicago_points_from_scores(scores)
-    hcp = player.handicap or 0
-    current_quota = player.chicago_points_18 if (
-                player.chicago_points_18 and player.chicago_points_18 > 0) else max(39 - hcp, 2)
+    current_quota = eighteen_chicago_quota(player)
     differential = points_earned - current_quota
     new_quota = max(2, min(54, current_quota + chicago_quota_step(differential)))
     player.chicago_points_18 = new_quota
@@ -412,6 +415,14 @@ def update_score_ajax(request):
                 active_round = GolfRound.objects.filter(id=round_id).first()
             if not active_round:
                 active_round = GolfRound.objects.filter(is_active=True).first()
+
+            actor = resolve_player_for_user(request.user)
+            squad = Squad.objects.filter(round=active_round, players=player).first() if active_round else None
+            if not player_may_enter_scores(request.user, squad, actor):
+                return JsonResponse(
+                    {'status': 'failed', 'error': 'Only the scorekeeper can enter scores.'},
+                    status=403,
+                )
 
             # Save or update your 'HoleScore' table record row
             score_record, created = HoleScore.objects.get_or_create(
@@ -1034,6 +1045,15 @@ def resolve_player_for_user(user):
     return None
 
 
+def player_may_enter_scores(user, squad, player):
+    """Staff and the squad scorekeeper enter scores. Other squad members only view."""
+    if getattr(user, 'is_staff', False):
+        return True
+    if squad is None:
+        return True
+    return player is not None and squad.scorekeeper_id == player.id
+
+
 # @login_required
 def player_scorecard(request, hole_number=None):
     # 🟢 Section 1 Initialization Block: Safeguards against local unbound scope compilation failures
@@ -1054,9 +1074,13 @@ def player_scorecard(request, hole_number=None):
     points_entry = False
     is_womens_league = False
     is_mens_league = False
+    is_gross_net = False
+    is_ind_chicago = False
+    paired_nav = False
     is_scramble_game = False
     game_format = ""
     is_scorecard_editable = True
+    show_prev_button = True
     squad_cumulative_to_par = 0
 
     # Globally define these variables at startup to prevent NameErrors on Finish Round branches
@@ -1095,25 +1119,21 @@ def player_scorecard(request, hole_number=None):
         points_entry = is_chicago_points_format(game_format)
         is_womens_league = game_format == "9_WOMENS_LEAGUE"
         is_mens_league = game_format == "18_HOLE_MENS_LEAGUE"
+        is_gross_net = game_format == "18_GROSS_NET"
+        is_ind_chicago = game_format in ("18_IND_CHICAGO", "chicago_points_18")
+        paired_nav = is_gross_net or is_womens_league or is_ind_chicago
         is_scramble_game = game_format == "9_HOLE_SCRAMBLE"
 
         current_player = resolve_player_for_user(request.user)
         if current_player:
             active_squad = Squad.objects.filter(round=active_round, players=current_player).first()
 
-            is_scorecard_editable = True
-
-            # 🟢 FIXED: Checks if the user is the round-specific scorekeeper (Designated Captain)
-            # instead of reading a permanent registration box on their member profile.
-            if is_scramble_game:
-                if active_squad:
-                    if active_squad.scorekeeper != current_player and not request.user.is_staff:
-                        is_scorecard_editable = False
-                else:
-                    is_scorecard_editable = False
+            is_scorecard_editable = player_may_enter_scores(request.user, active_squad, current_player)
 
             if active_squad and active_squad.starting_hole:
                 start_h = active_squad.starting_hole.hole_number
+                if (is_mens_league or is_team_chicago or paired_nav) and hole_number == start_h:
+                    show_prev_button = False
 
                 if is_scramble_game or is_womens_league or is_team_chicago:
                     full_tournament_route = list(range(start_h, 10)) + list(range(1, start_h))
@@ -1142,8 +1162,8 @@ def player_scorecard(request, hole_number=None):
                 except ValueError:
                     pass
             # HANDLE POST DATA SCORE SUBMISSIONS & SAVING
-            if request.method == 'POST' and is_scorecard_editable:
-                if active_squad:
+            if request.method == 'POST':
+                if is_scorecard_editable and active_squad:
                     squad_members = active_squad.players.all()
 
                     if is_scramble_game:
@@ -1182,7 +1202,8 @@ def player_scorecard(request, hole_number=None):
                 # INDENTATION SAFE POST DATA NAVIGATION HANDLER BLOCK
                 direction = request.POST.get('nav_direction', 'next')
                 if direction == 'prev':
-                    return redirect('scorecard:player_scorecard', hole_number=prev_hole)
+                    target_hole = prev_hole if show_prev_button else hole_number
+                    return redirect('scorecard:player_scorecard', hole_number=target_hole)
 
                 # 🏁 DYNAMIC FINISH ROUND GATE & AUTOMATED QUOTA ADJUSTMENT ENGINE
                 elif direction == 'finish':
@@ -1236,9 +1257,7 @@ def player_scorecard(request, hole_number=None):
 
                     if points_entry or is_chicago_game:
                         if game_format in ["chicago_points_18", "18_IND_CHICAGO"]:
-                            round_quota = player.chicago_points_18 if (
-                                        player.chicago_points_18 and player.chicago_points_18 > 0) else max(
-                                39 - active_display_hcp, 2)
+                            round_quota = eighteen_chicago_quota(player)
                         elif game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]:
                             round_quota = _team_chicago_quota(player)
                         elif game_format == "9_WOMENS_LEAGUE":
@@ -1323,8 +1342,12 @@ def player_scorecard(request, hole_number=None):
         'enter_chicago_points': points_entry,
         'is_womens_league': is_womens_league,
         'is_mens_league': is_mens_league,
+        'is_gross_net': is_gross_net,
+        'is_ind_chicago': is_ind_chicago,
+        'paired_nav': paired_nav,
         'is_scramble_game': is_scramble_game,
         'is_scorecard_editable': is_scorecard_editable,
+        'show_prev_button': show_prev_button,
         'squad_total_points_needed': squad_total_points_needed,
         'squad_running_total_earned': squad_running_total_earned,
         'leaderboard_url': leaderboard_url,
@@ -1541,11 +1564,13 @@ def _scorecard_standings_return(request):
     if request.GET.get('standings') != '1':
         return False, '/play/hole/', None
     from_hole = str(request.GET.get('from_hole', '')).strip()
+    squad_param = str(request.GET.get('squad', '')).strip()
+    squad_query = f'?squad={int(squad_param)}' if squad_param.isdigit() else ''
     if from_hole.isdigit():
         hole_num = int(from_hole)
         if 1 <= hole_num <= 18:
-            return True, f'/play/hole/{hole_num}/', hole_num
-    return True, '/play/hole/', None
+            return True, f'/play/hole/{hole_num}/{squad_query}', hole_num
+    return True, f'/play/hole/{squad_query}', None
 
 
 # @login_required
@@ -1816,9 +1841,7 @@ def tournament_leaderboard(request):
                     total_chicago_points = chicago_points_from_scores(played_scores)
                     display_gross = total_chicago_points
 
-                    quota = player.chicago_points_18 if (
-                                player.chicago_points_18 and player.chicago_points_18 > 0) else max(
-                        39 - hcp, 2)
+                    quota = eighteen_chicago_quota(player)
 
                     quota_diff = total_chicago_points - quota
                     display_net = f"{total_chicago_points} Pts"
@@ -1979,6 +2002,9 @@ def tournament_leaderboard(request):
 @require_POST
 def save_stroke_api(request):
     try:
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'Login required'}, status=403)
+
         data = json.loads(request.body)
         player_id = data.get('player_id')
         hole_id = data.get('hole_id')
@@ -1989,6 +2015,13 @@ def save_stroke_api(request):
         g_round = get_object_or_404(GolfRound, id=round_id)
         hole = get_object_or_404(Hole, id=hole_id)
         player = get_object_or_404(Player, id=player_id)
+        actor = resolve_player_for_user(request.user)
+        squad = Squad.objects.filter(round=g_round, players=player).first()
+        if not player_may_enter_scores(request.user, squad, actor):
+            return JsonResponse(
+                {'status': 'error', 'message': 'Only the scorekeeper can enter scores.'},
+                status=403,
+            )
 
         blank = gross_value is None or str(gross_value).strip() == ""
 
@@ -2696,16 +2729,10 @@ def player_scorecard_scramble_view(request, hole_number=1):
     next_hole = full_route[(idx + 1) % len(full_route)]
     prev_hole = full_route[(idx - 1) % len(full_route)]
     is_final_hole = idx == len(full_route) - 1
+    show_prev_button = idx > 0
 
-    # Captain (or staff) may enter the team score
-    is_scorecard_editable = False
-    if active_squad and active_squad.scorekeeper:
-        if request.user.is_staff:
-            is_scorecard_editable = True
-        elif player_profile and active_squad.scorekeeper_id == player_profile.id:
-            is_scorecard_editable = True
-        elif active_squad.scorekeeper.user_id and active_squad.scorekeeper.user_id == request.user.id:
-            is_scorecard_editable = True
+    # Captain (or staff) may enter the team score. Other squad members only view.
+    is_scorecard_editable = player_may_enter_scores(request.user, active_squad, player_profile)
 
     teammates = []
     if active_squad:
@@ -2716,9 +2743,7 @@ def player_scorecard_scramble_view(request, hole_number=1):
     if request.method == 'POST':
         direction = request.POST.get('action', 'next')
 
-        if not is_scorecard_editable:
-            messages.error(request, "Only the team captain (or staff) can enter scramble scores.")
-        elif active_squad:
+        if is_scorecard_editable and active_squad:
             strokes_raw = request.POST.get('score')
             squad_members = list(active_squad.players.all())
             # Ensure captain is included even if not in M2M yet
@@ -2738,7 +2763,8 @@ def player_scorecard_scramble_view(request, hole_number=1):
                 ).delete()
 
         if direction == 'prev':
-            return redirect('scorecard:player_scorecard_scramble', hole_number=prev_hole)
+            target_hole = prev_hole if show_prev_button else hole_number
+            return redirect('scorecard:player_scorecard_scramble', hole_number=target_hole)
         if direction == 'finish':
             return redirect('/leaderboard/?format=9_hole_scramble')
         return redirect('scorecard:player_scorecard_scramble', hole_number=next_hole)
@@ -2772,6 +2798,10 @@ def player_scorecard_scramble_view(request, hole_number=1):
             Squad.objects.filter(round=active_round).select_related('scorekeeper').order_by('squad_number')
         )
 
+    leaderboard_url = f'/leaderboard/?format=9_hole_scramble&standings=1&from_hole={int(hole_number)}'
+    if request.user.is_staff and request.GET.get('squad', '').isdigit() and active_squad:
+        leaderboard_url += f'&squad={active_squad.id}'
+
     context = {
         'current_hole': hole,
         'hole_number': hole_number,
@@ -2781,12 +2811,14 @@ def player_scorecard_scramble_view(request, hole_number=1):
         'squad': active_squad,
         'teammates': teammates,
         'is_final_hole': is_final_hole,
+        'show_prev_button': show_prev_button,
         'is_scorecard_editable': is_scorecard_editable,
         'current_team_score': current_team_score,
         'prior_to_par': prior_to_par,
         'prior_holes_scored': prior_holes_scored,
         'all_squads': all_squads,
         'is_staff_viewer': request.user.is_staff,
+        'leaderboard_url': leaderboard_url,
     }
     return render(request, 'scorecard/player_scorecard_scramble.html', context)
 
