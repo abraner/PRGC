@@ -1018,6 +1018,70 @@ def print_ladies_league_handicap(request):
     return _league_handicap_printout(request, 'ladies')
 
 
+def _mens_league_scorecard_round():
+    """The live men's league round, or the latest one that still has hole scores."""
+    live = GolfRound.objects.filter(is_active=True).order_by('id').first()
+    if live and str(live.game_format or '') == '18_HOLE_MENS_LEAGUE':
+        return live
+    return (
+        GolfRound.objects.filter(
+            game_format='18_HOLE_MENS_LEAGUE',
+            scores__gross_value__gt=0,
+        )
+        .distinct()
+        .order_by('-date_played', '-id')
+        .first()
+    )
+
+
+def print_mens_league_scorecard(request):
+    """18-hole men's league card: each player's hole scores, front, back, and total."""
+    if not request.user.is_authenticated:
+        return redirect('/login/')
+
+    golf_round = _mens_league_scorecard_round()
+    hole_numbers = list(range(1, 19))
+    rows = []
+    if golf_round:
+        by_player = defaultdict(dict)
+        played = HoleScore.objects.filter(
+            round=golf_round, gross_value__gt=0
+        ).select_related('player', 'hole')
+        for score in played:
+            by_player[score.player_id][int(score.hole.hole_number)] = int(score.gross_value)
+        players = sorted(
+            Player.objects.filter(id__in=by_player.keys()),
+            key=_member_last_name_key,
+        )
+        for player in players:
+            hole_scores = by_player[player.id]
+            cells = [hole_scores.get(number) for number in hole_numbers]
+            front_holes = [value for value in cells[:9] if value]
+            back_holes = [value for value in cells[9:] if value]
+            front = sum(front_holes) if front_holes else None
+            back = sum(back_holes) if back_holes else None
+            total = (front or 0) + (back or 0) if front_holes or back_holes else None
+            rows.append({
+                'name': player.name,
+                'cells': cells,
+                'front': front,
+                'back': back,
+                'total': total,
+            })
+
+    from_hole = str(request.GET.get('from_hole', '')).strip()
+    from_hole = int(from_hole) if from_hole.isdigit() else 0
+    if from_hole < 1 or from_hole > 18:
+        from_hole = 0
+
+    return render(request, 'scorecard/mens_league_scorecard.html', {
+        'golf_round': golf_round,
+        'hole_numbers': hole_numbers,
+        'rows': rows,
+        'from_hole': from_hole,
+    })
+
+
 @csrf_exempt
 def toggle_playing_status_ajax(request):
     if request.method == 'POST':

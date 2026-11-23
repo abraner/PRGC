@@ -163,6 +163,26 @@
     </div>
 </div>
 
+{% if is_mens_league %}
+<script>
+(function () {
+    var phoneLandscape = window.matchMedia('(orientation: landscape) and (max-height: 520px)');
+    function openFullCard() {
+        if (!phoneLandscape.matches) {
+            return;
+        }
+        window.location.replace("{% url 'scorecard:print_mens_league_scorecard' %}?from_hole={{ hole_number|default:1 }}");
+    }
+    if (phoneLandscape.addEventListener) {
+        phoneLandscape.addEventListener('change', openFullCard);
+    }
+    window.addEventListener('orientationchange', function () {
+        window.setTimeout(openFullCard, 200);
+    });
+    openFullCard();
+})();
+</script>
+{% endif %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     var holeHandicapIndex = parseInt("{{ current_hole.handicap_index }}") || 18;

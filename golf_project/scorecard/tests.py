@@ -355,6 +355,44 @@ class MensLeagueHandicapTests(TestCase):
         self.assertEqual(compute_round_skins(active, use_net=True, max_handicap=20), [])
 
 
+class MensLeagueScorecardTests(TestCase):
+    def test_card_shows_each_hole_plus_front_back_and_total(self):
+        staff = User.objects.create_user('staff', password='pw', is_staff=True)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 19)]
+        alan = Player.objects.create(name='Alan Braner')
+        doug = Player.objects.create(name='Doug Anderson')
+        active = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=True)
+        for hole in holes[:9]:
+            HoleScore.objects.create(round=active, player=alan, hole=hole, gross_value=4)
+        HoleScore.objects.create(round=active, player=alan, hole=holes[9], gross_value=5)
+        HoleScore.objects.create(round=active, player=alan, hole=holes[17], gross_value=0)
+        HoleScore.objects.create(round=active, player=doug, hole=holes[10], gross_value=6)
+
+        self.client.force_login(staff)
+        response = self.client.get('/admin-dashboard/mens-league-scorecard/?from_hole=10')
+        self.assertContains(response, 'Alan Braner')
+        self.assertContains(response, 'max-width: 520px')
+        self.assertContains(response, 'var hole = 10')
+        self.assertContains(response, '/play/hole/')
+        self.assertContains(response, 'Doug Anderson')
+        self.assertContains(response, '>Out<')
+        self.assertContains(response, '>In<')
+        self.assertContains(response, '>Total<')
+        page = response.content.decode()
+        alan_at = page.find('Alan Braner')
+        doug_at = page.find('Doug Anderson')
+        self.assertLess(doug_at, alan_at)
+        alan_row = page[alan_at:doug_at if doug_at > alan_at else None]
+        # Front nine is nine 4s. Back is the 5 on hole 10. The zero on 18 is blank.
+        self.assertIn('>36<', alan_row)
+        self.assertIn('>5<', alan_row)
+        self.assertIn('>41<', alan_row)
+
+        self.client.logout()
+        guest = self.client.get('/admin-dashboard/mens-league-scorecard/')
+        self.assertEqual(guest.status_code, 302)
+
+
 class WomensLeagueHandicapTests(TestCase):
     def test_formula_is_eighty_percent_of_average_minus_30(self):
         self.assertEqual(womens_league_handicap_from_scores([45]), 12)
@@ -672,6 +710,9 @@ class SquadViewerScorecardTests(TestCase):
         self.assertNotContains(on_start, '⬅️ Prev')
         self.assertContains(on_start, 'flex: 1; order: 1')
         self.assertContains(on_start, 'flex: 1.5; order: 2')
+        self.assertNotContains(on_start, ">Men's League Scorecard<")
+        self.assertContains(on_start, '/admin-dashboard/mens-league-scorecard/?from_hole=10')
+        self.assertContains(on_start, 'max-height: 520px')
 
         later = self.client.get('/play/hole/11/')
         self.assertContains(later, '⬅️ Prev')
@@ -681,6 +722,7 @@ class SquadViewerScorecardTests(TestCase):
         self.round.game_format = '18_GROSS_NET'
         self.round.save(update_fields=['game_format'])
         gross_start = self.client.get('/play/hole/10/')
+        self.assertNotContains(gross_start, 'mens-league-scorecard')
         self.assertNotContains(gross_start, '⬅️ Prev')
         self.assertContains(gross_start, 'class="gn-nav"')
         self.assertContains(gross_start, 'class="gn-next"')
