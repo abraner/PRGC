@@ -59,6 +59,7 @@
         <div class="player-name">
             {{ item.player.name }}
 
+            {% if not is_nine_hole_practice %}
             <div class="hcp-edit-group">
                 <span style="display: inline-flex; align-items: center; gap: 8px;">
                     {% if is_womens_league %}
@@ -73,6 +74,7 @@
                     {% endif %}
                 </span>
             </div>
+            {% endif %}
         </div>
 
         <div class="input-group" style="display: flex; gap: 10px; align-items: flex-end;">
@@ -103,11 +105,13 @@
                 </select>
             </div>
 
+            {% if not is_nine_hole_practice %}
             <!-- Net Calculation View Box (Displays cumulative points differential layout) -->
             <div style="text-align: center;">
                 <small style="display: block; text-align: center; color: #757575; font-size: 11px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase;">Net</small>
                 <input type="text" class="num-input net-display{% if is_gross_net and not is_scorecard_editable %} net-locked{% endif %}" readonly {% if is_gross_net and not is_scorecard_editable %}disabled{% endif %} value="0" style="width: 65px; height: 45px; text-align: center; font-size: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-weight: bold; background-color: {% if is_gross_net %}#e2e8f0{% else %}#f5f5f5{% endif %}; color: #424242;{% if is_gross_net and not is_scorecard_editable %} cursor: not-allowed;{% endif %}">
             </div>
+            {% endif %}
         </div>
     </div>
 {% endfor %}
@@ -167,6 +171,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // DETECT ACTIVE FORMAT STATE VIA BACKEND STRINGS
     var isWomensLeague = "{{ is_womens_league }}" === "True" ||
                          "{{ round.game_format }}" === "9_WOMENS_LEAGUE";
+    var isNineHolePractice = "{{ is_nine_hole_practice }}" === "True" ||
+                             "{{ round.game_format }}" === "9_HOLE_PRACTICE";
     var isMensLeague = "{{ is_mens_league }}" === "True" ||
                        "{{ round.game_format }}" === "18_HOLE_MENS_LEAGUE";
     var isGrossNet = "{{ is_gross_net }}" === "True" ||
@@ -206,6 +212,12 @@ document.addEventListener("DOMContentLoaded", function() {
         var strokeInput = row.querySelector(".stroke-field");
         var hcpInput = row.querySelector(".hcp-input");
         var netBox = row.querySelector(".net-display");
+
+        if (isNineHolePractice) {
+            if (!strokeInput || strokeInput.value === "") return null;
+            var practiceGross = parseInt(strokeInput.value);
+            return isNaN(practiceGross) ? null : practiceGross;
+        }
 
         if (!strokeInput || !netBox || !hcpInput) return null;
 

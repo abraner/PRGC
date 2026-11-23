@@ -5,26 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scorekeeper Login</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #008000; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .login-card { background: #B3DEB6; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 350px; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; font-size: 28px; background: #008000; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { background: #B3DEB6; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 430px; box-sizing: border-box; }
         .login-header { background: #1b5e20; color: white; margin: -30px -30px 20px -30px; padding: 20px; text-align: center; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+        .login-header h2 { margin: 0; font-size: 28px; }
+        .login-header p { margin: 5px 0 0 0; font-size: 28px; }
+        @media (min-width: 768px) and (max-width: 1400px) and (min-height: 700px) {
+            .login-card { padding: 39px; max-width: 455px; border-radius: 16px; }
+            .login-header { margin: -39px -39px 26px -39px; padding: 26px; border-top-left-radius: 16px; border-top-right-radius: 16px; }
+            .login-header p { margin-top: 7px; }
+            .form-group { margin-bottom: 20px; }
+            label { margin-bottom: 7px; }
+            input[type="text"], input[type="password"] { padding: 13px; border-radius: 8px; }
+            .password-wrap input { padding-right: 55px; }
+            .password-toggle { right: 8px; width: 42px; height: 42px; }
+            .password-toggle svg { width: 29px; height: 29px; }
+            .btn-login { padding: 16px; border-radius: 8px; margin-top: 13px; }
+            .error-msg { margin-top: 13px; }
+        }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #333; font-size: 14px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        label { display: block; margin-bottom: 5px; color: #333; font-size: 28px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 28pt; }
+        input::placeholder { font-size: 28pt; }
         .password-wrap { position: relative; }
-        .password-wrap input { padding-right: 42px; }
-        .password-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: none; background: transparent; color: #1b5e20; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .password-wrap input { padding-right: 58px; }
+        .password-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: none; background: transparent; color: #1b5e20; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
         .password-toggle svg { width: 22px; height: 22px; display: block; }
-        .btn-login { width: 100%; background: #2e7d32; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        .error-msg { color: #d32f2f; font-size: 14px; text-align: center; margin-top: 10px; }
+        .btn-login { width: 100%; background: #2e7d32; color: white; border: none; padding: 12px; font-size: 28px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .error-msg { color: #d32f2f; font-size: 28px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="login-card">
     <div class="login-header">
-        <h2 style="margin: 0; font-size: 20px;">PRGC Scorecard</h2>
-        <p style="margin: 5px 0 0 0; font-size: 14px;">Squad Scorekeeper Sign-In</p>
+        <h2>PRGC Scorecard</h2>
+        <p>Squad Scorekeeper Sign-In</p>
     </div>
 
     <form method="POST">

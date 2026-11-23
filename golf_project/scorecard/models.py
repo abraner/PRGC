@@ -60,6 +60,8 @@ class GolfRound(models.Model):
         ('9_TEAM_CHICAGO', '9-Hole Team Chicago Points'),
         ('9_WOMENS_LEAGUE', '9-Hole Women\'s League'),
         ('9_HOLE_SCRAMBLE', "Scramble Tournament (9 Holes)"),
+        ('9_HOLE_PRACTICE', '9-Hole Practice Game'),
+        ('18_HOLE_PRACTICE', '18-Hole Practice Game'),
     ]
     date_played = models.DateTimeField(auto_now_add=True)
     course_name = models.CharField(max_length=200, default="PRGC Course")

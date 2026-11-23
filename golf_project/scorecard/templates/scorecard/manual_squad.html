@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manually Build a Squad</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 25px; }
+        body { font-family: Arial, sans-serif; font-size: calc(16px + 4pt); background: #008000; margin: 0; padding: 25px; }
         .form-panel { max-width: 600px; margin: 40px auto; padding: 30px; border-radius: 12px; background: #B3DEB6; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { color: #e65100; margin-top: 0; }
+        h2 { color: #e65100; margin-top: 0; font-size: calc(24px + 4pt); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #333; }
-        input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        input[type="number"], select, option { font-size: calc(14px + 4pt); }
+        input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
         .checkbox-list { background: #fafafa; padding: 15px; border: 1px solid #ddd; border-radius: 6px; max-height: 200px; overflow-y: auto; }
-        .btn-submit { background: #e65100; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .btn-cancel { color: #666; text-decoration: none; margin-left: 15px; }
+        .checkbox-list label { font-size: calc(16px + 4pt); }
+        .checkbox-list input[type="checkbox"] { width: calc(13px * 1.5); height: calc(13px * 1.5); vertical-align: middle; }
+        .btn-submit { background: #e65100; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: calc(13.333px + 4pt); }
+        .btn-cancel { color: #666; text-decoration: none; margin-left: 15px; font-size: calc(16px + 4pt); }
     </style>
 </head>
 <body>
 
 <div class="form-panel">
     <h2>🛠️ Manually Build a Squad</h2>
-    <p>Select a hole, assign a Captain, and choose which active players belong to this group.</p>
     <hr style="border:0; border-top: 1px solid #eee; margin-bottom: 20px;">
 
     <form method="POST">

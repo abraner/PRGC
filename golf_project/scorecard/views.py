@@ -8,7 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt  # 💡 FIXED: Missing import explicitly declared here!
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import Sum, Q, Min
+from django.db.models import Sum, Q, Min, Prefetch
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.models import User
@@ -123,6 +123,11 @@ def apply_18_chicago_quota_updates(active_round):
     return updated
 
 
+def is_practice_format(game_format):
+    """Practice rounds are for fun. They never feed a handicap or a quota."""
+    return str(game_format or '').strip().upper() in ('9_HOLE_PRACTICE', '18_HOLE_PRACTICE')
+
+
 def womens_league_handicap_from_scores(gross_scores):
     """
     9-hole women's league handicap from up to the last five 9-hole grosses.
@@ -143,6 +148,9 @@ def adjust_ladies_handicap_for_player(player, played_scores, active_round):
     from the last five recorded grosses: 80% of (average − 30). Fewer than five
     rounds uses however many full rounds are on file. A card short of 9 holes is ignored.
     """
+    if is_practice_format(getattr(active_round, 'game_format', '')):
+        return None
+
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
     scored = [s for s in scores if s.gross_value]
     if len(scored) < 9:
@@ -169,6 +177,8 @@ def adjust_ladies_handicap_for_player(player, played_scores, active_round):
 
 def apply_womens_handicap_updates(active_round):
     """Recalculate ladies_league_handicap for every player with a full 9-hole card."""
+    if is_practice_format(getattr(active_round, 'game_format', '')):
+        return []
     updated = []
     player_ids = HoleScore.objects.filter(
         round=active_round, gross_value__gt=0
@@ -189,9 +199,10 @@ def mens_league_handicap_from_scores(gross_scores):
     """
     Men's league handicap from up to the last five 18-hole grosses.
     handicap = 80% of (average − 60), rounded half up, floored at 0.
+    A gross of 0 is an empty round and is left out of the average.
     Men's league play and updates are then capped at MENS_LEAGUE_MAX_HANDICAP.
     """
-    recent = [int(score) for score in list(gross_scores)[:5]]
+    recent = [int(score) for score in list(gross_scores)[:5] if int(score) > 0]
     if not recent:
         return None
     average = sum(recent) / len(recent)
@@ -206,6 +217,9 @@ def adjust_mens_handicap_for_player(player, played_scores, active_round):
     18-hole individual gross/net share that history. Fewer than five rounds uses
     however many full rounds are on file. A card short of 18 holes is ignored.
     """
+    if is_practice_format(getattr(active_round, 'game_format', '')):
+        return None
+
     scores = list(played_scores.select_related('hole')) if hasattr(played_scores, 'select_related') else list(played_scores)
     scored = [s for s in scores if s.gross_value]
     if len(scored) < 18:
@@ -234,6 +248,8 @@ def adjust_mens_handicap_for_player(player, played_scores, active_round):
 
 def apply_mens_handicap_updates(active_round):
     """Recalculate handicaps from full 18-hole cards, men's league or gross/net."""
+    if is_practice_format(getattr(active_round, 'game_format', '')):
+        return []
     updated = []
     player_ids = HoleScore.objects.filter(
         round=active_round, gross_value__gt=0
@@ -353,7 +369,7 @@ def format_skins_winners_html(skins_found, skins_pool=0):
     per_skin_rounded = int(round(per_skin, 0))
     footer = (
         f"<div style='margin-top:8px; padding-top:6px; border-top:1px dashed #ffe082; "
-        f"font-size:12px; font-weight:normal; color:#ff8f00;'>"
+        f"font-size:var(--fs-12, 12px); font-weight:normal; color:#ff8f00;'>"
         f"{total_skins} skins won &middot; ${per_skin_rounded} per skin"
         f"</div>"
     )
@@ -713,9 +729,9 @@ def reset_tournament_action(request):
                 Q(is_playing_today=True) | Q(id__in=assigned_player_ids)
             ).distinct()
 
-            # Open scorecard/views.py and update the inner player loop inside reset_tournament_action:
-
-            for player in active_players:
+            # A practice round is only for fun. Leave every handicap and quota alone.
+            if not is_practice_format(old_active_round.game_format):
+              for player in active_players:
                 if is_chicago_points_format(old_active_round.game_format):
                     played_scores = HoleScore.objects.filter(
                         round=old_active_round, player=player
@@ -779,10 +795,16 @@ def reset_tournament_action(request):
         # Uncheck player checkboxes back to default benched empty positions
         Player.objects.all().update(is_playing_today=False)
 
-        messages.success(
-            request,
-            f"🏁 Round finalized! New handicaps applied to player profiles. Fresh Tournament Session ID #{new_round.id} initiated successfully."
-        )
+        if old_active_round and is_practice_format(old_active_round.game_format):
+            messages.success(
+                request,
+                f"Practice round cleared. Handicaps were left unchanged. Fresh Tournament Session ID #{new_round.id} started."
+            )
+        else:
+            messages.success(
+                request,
+                f"🏁 Round finalized! New handicaps applied to player profiles. Fresh Tournament Session ID #{new_round.id} initiated successfully."
+            )
         return redirect('scorecard:admin_dashboard')
 
     return redirect('scorecard:admin_dashboard')
@@ -909,6 +931,14 @@ def login_view(request):
 
 
 def logout_view(request):
+    if (
+        request.method == 'POST'
+        and request.POST.get('erase_practice') == '1'
+        and request.user.is_authenticated
+    ):
+        active_round = GolfRound.objects.filter(is_active=True).first()
+        if active_round and str(active_round.game_format or '').strip().upper() == '9_HOLE_PRACTICE':
+            start_fresh_game(request)
     logout(request)
     return redirect('scorecard:login_view')
 
@@ -937,6 +967,55 @@ def _member_last_name_key(player):
 def view_all_members(request):
     players = sorted(Player.objects.all(), key=_member_last_name_key)
     return render(request, 'scorecard/all_members.html', {'players': players})  # <-- Sent as 'players'
+
+
+def _league_handicap_printout(request, league):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('/login/')
+    if league == 'ladies':
+        title = "Ladies League Handicap"
+        score_model = WomensLeagueRoundScore
+        scores_attr = 'womens_league_scores'
+        handicap_from_scores = womens_league_handicap_from_scores
+    else:
+        title = "Men's League Handicap"
+        score_model = MensLeagueRoundScore
+        scores_attr = 'mens_league_scores'
+        handicap_from_scores = mens_league_handicap_from_scores
+    recent_scores = score_model.objects.order_by('-played_on', '-id')
+    player_ids = score_model.objects.values_list('player_id', flat=True).distinct()
+    players = sorted(
+        Player.objects.filter(id__in=player_ids).prefetch_related(
+            Prefetch(scores_attr, queryset=recent_scores)
+        ),
+        key=_member_last_name_key,
+    )
+    for player in players:
+        recent = list(getattr(player, scores_attr).all())[:5]
+        padded = recent + [None] * (5 - len(recent))
+        player.print_rounds = list(reversed(padded))
+        grosses = [int(score.gross_score) for score in recent if int(score.gross_score) > 0]
+        if grosses:
+            player.print_average = f"{sum(grosses) / len(grosses):.1f}"
+            player.print_handicap = handicap_from_scores(grosses)
+        else:
+            player.print_average = None
+            player.print_handicap = None
+    return render(request, 'scorecard/handicap_printout.html', {
+        'title': title,
+        'players': players,
+        'show_rounds': True,
+        'portrait': True,
+        'round_labels': ['Fifth', 'Fourth', 'Third', 'Second', 'First'],
+    })
+
+
+def print_mens_league_handicap(request):
+    return _league_handicap_printout(request, 'mens')
+
+
+def print_ladies_league_handicap(request):
+    return _league_handicap_printout(request, 'ladies')
 
 
 @csrf_exempt
@@ -1073,6 +1152,7 @@ def player_scorecard(request, hole_number=None):
     is_chicago_game = False
     points_entry = False
     is_womens_league = False
+    is_nine_hole_practice = False
     is_mens_league = False
     is_gross_net = False
     is_ind_chicago = False
@@ -1118,10 +1198,11 @@ def player_scorecard(request, hole_number=None):
         is_team_chicago = game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]
         points_entry = is_chicago_points_format(game_format)
         is_womens_league = game_format == "9_WOMENS_LEAGUE"
+        is_nine_hole_practice = game_format == "9_HOLE_PRACTICE"
         is_mens_league = game_format == "18_HOLE_MENS_LEAGUE"
         is_gross_net = game_format == "18_GROSS_NET"
         is_ind_chicago = game_format in ("18_IND_CHICAGO", "chicago_points_18")
-        paired_nav = is_gross_net or is_womens_league or is_ind_chicago
+        paired_nav = is_gross_net or is_womens_league or is_nine_hole_practice or is_ind_chicago
         is_scramble_game = game_format == "9_HOLE_SCRAMBLE"
 
         current_player = resolve_player_for_user(request.user)
@@ -1135,7 +1216,7 @@ def player_scorecard(request, hole_number=None):
                 if (is_mens_league or is_team_chicago or paired_nav) and hole_number == start_h:
                     show_prev_button = False
 
-                if is_scramble_game or is_womens_league or is_team_chicago:
+                if is_scramble_game or is_womens_league or is_nine_hole_practice or is_team_chicago:
                     full_tournament_route = list(range(start_h, 10)) + list(range(1, start_h))
                 else:
                     front_seq = list(range(start_h, 10)) + list(range(1, start_h))
@@ -1144,7 +1225,7 @@ def player_scorecard(request, hole_number=None):
 
                 try:
                     current_index = full_tournament_route.index(hole_number)
-                    route_limit_length = 9 if (is_team_chicago or is_womens_league or is_scramble_game) else len(
+                    route_limit_length = 9 if (is_team_chicago or is_womens_league or is_nine_hole_practice or is_scramble_game) else len(
                         full_tournament_route)
 
                     if current_index == route_limit_length - 1:
@@ -1221,6 +1302,8 @@ def player_scorecard(request, hole_number=None):
 
                     elif clean_fmt_key == "9_hole_scramble":
                         return redirect('/leaderboard/?format=9_hole_scramble')
+                    elif clean_fmt_key == "9_hole_practice":
+                        return redirect('/leaderboard/?format=9_hole_practice')
                     elif clean_fmt_key == "18_gross_net":
                         return redirect('/leaderboard/?format=18_gross_net')
                     else:
@@ -1313,6 +1396,8 @@ def player_scorecard(request, hole_number=None):
     fmt_key = str(game_format or '').strip().lower()
     if fmt_key == '9_womens_league':
         leaderboard_url = '/leaderboard/?format=9_womens_league'
+    elif fmt_key == '9_hole_practice':
+        leaderboard_url = '/leaderboard/?format=9_hole_practice'
     elif fmt_key in ('chicago_points_18', '18_ind_chicago'):
         leaderboard_url = '/leaderboard/?format=chicago_points_18'
     elif fmt_key in ('team_chicago_points_9', '9_team_chicago'):
@@ -1341,6 +1426,7 @@ def player_scorecard(request, hole_number=None):
         'is_chicago_game': is_chicago_game,
         'enter_chicago_points': points_entry,
         'is_womens_league': is_womens_league,
+        'is_nine_hole_practice': is_nine_hole_practice,
         'is_mens_league': is_mens_league,
         'is_gross_net': is_gross_net,
         'is_ind_chicago': is_ind_chicago,
@@ -1480,6 +1566,13 @@ def finish_round_update_quotas(request):
             return redirect('/leaderboard/?format=18_gross_net')
         if fmt == "9_womens_league":
             return redirect('/leaderboard/?format=9_womens_league')
+        if fmt == "9_hole_practice":
+            return redirect('/leaderboard/?format=9_hole_practice')
+        return redirect('scorecard:leaderboard')
+
+    if fmt in ("9_hole_practice", "18_hole_practice"):
+        if fmt == "9_hole_practice":
+            return redirect('/leaderboard/?format=9_hole_practice')
         return redirect('scorecard:leaderboard')
 
     if fmt in ("chicago_points_18", "18_ind_chicago"):
@@ -1817,6 +1910,16 @@ def tournament_leaderboard(request):
                         to_par_str = f"E" if to_par_raw == 0 else (
                             f"{to_par_raw}" if to_par_raw < 0 else f"+{to_par_raw}")
 
+                elif clean_fmt_check == "9_hole_practice":
+                    sort_net_metric = g_sum if holes_played > 0 else 999
+                    if holes_played > 0:
+                        played_hole_ids = played_scores.values_list('hole_id', flat=True)
+                        total_completed_par = Hole.objects.filter(id__in=played_hole_ids).aggregate(Sum('par'))[
+                                                  'par__sum'] or 0
+                        to_par_raw = g_sum - total_completed_par
+                        to_par_str = f"E" if to_par_raw == 0 else (
+                            f"{to_par_raw}" if to_par_raw < 0 else f"+{to_par_raw}")
+
                 elif clean_fmt_check == "9_womens_league":
                     # 9-hole women's league: stroke-play net using ladies_league_handicap (not Chicago points)
                     ladies_hcp = player.ladies_league_handicap or 0
@@ -1960,6 +2063,7 @@ def tournament_leaderboard(request):
         'round': active_round,
         'net_leaderboard': net_leaderboard,
         'is_mens_league': is_mens_league or (clean_fmt_check == "18_hole_mens_league"),
+        'is_nine_hole_practice': clean_fmt_check == '9_hole_practice',
         'is_chicago': is_chicago,
         'is_team_game': is_team_game,
         'is_team_chicago': is_team_game or (
@@ -2085,29 +2189,30 @@ def finalize_tournament_round(request, round_id):
         round=active_round
     ).filter(scored_filter).values_list('player_id', flat=True).distinct()
 
-    active_players = Player.objects.filter(id__in=assigned_player_ids)
-    for player in active_players:
-        played_scores = HoleScore.objects.filter(
-            round=active_round, player=player
-        ).filter(scored_filter).select_related('hole')
-        holes_count = played_scores.count()
+    if not is_practice_format(game_format):
+        active_players = Player.objects.filter(id__in=assigned_player_ids)
+        for player in active_players:
+            played_scores = HoleScore.objects.filter(
+                round=active_round, player=player
+            ).filter(scored_filter).select_related('hole')
+            holes_count = played_scores.count()
 
-        if holes_count > 0:
-            # BRANCH A: MEN'S LEAGUE & 18-HOLE INDIVIDUAL GROSS/NET
-            if game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
-                adjust_mens_handicap_for_player(player, played_scores, active_round)
+            if holes_count > 0:
+                # BRANCH A: MEN'S LEAGUE & 18-HOLE INDIVIDUAL GROSS/NET
+                if game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
+                    adjust_mens_handicap_for_player(player, played_scores, active_round)
 
-            # BRANCH B: 18-HOLE CHICAGO POINTS GAMES
-            elif game_format in ["18_IND_CHICAGO", "chicago_points_18"]:
-                adjust_18_chicago_quota_for_player(player, played_scores)
+                # BRANCH B: 18-HOLE CHICAGO POINTS GAMES
+                elif game_format in ["18_IND_CHICAGO", "chicago_points_18"]:
+                    adjust_18_chicago_quota_for_player(player, played_scores)
 
-            # BRANCH C: 9-HOLE LADIES LEAGUE FORMAT
-            elif game_format == "9_WOMENS_LEAGUE":
-                adjust_ladies_handicap_for_player(player, played_scores, active_round)
+                # BRANCH C: 9-HOLE LADIES LEAGUE FORMAT
+                elif game_format == "9_WOMENS_LEAGUE":
+                    adjust_ladies_handicap_for_player(player, played_scores, active_round)
 
-            # BRANCH D: 9-HOLE TEAM CHICAGO FORMAT
-            elif game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]:
-                adjust_9_team_chicago_quota_for_player(player, played_scores)
+                # BRANCH D: 9-HOLE TEAM CHICAGO FORMAT
+                elif game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]:
+                    adjust_9_team_chicago_quota_for_player(player, played_scores)
 
     # SECTION 4: SHIELD CLOSURE ENFORCEMENT ENGINE
     # -------------------------------------------------------------
@@ -2131,8 +2236,16 @@ def finalize_tournament_round(request, round_id):
         game_format=""  # Kept as an empty string to safely pass MySQL NOT NULL constraints
     )
 
-    messages.success(request,
-                     "Tournament round finalized successfully. Handicaps adjusted, and a fresh round slate has been initialized for next week!")
+    if is_practice_format(game_format):
+        messages.success(
+            request,
+            "Practice round cleared. Handicaps were left unchanged, and a fresh round is ready."
+        )
+    else:
+        messages.success(
+            request,
+            "Tournament round finalized successfully. Handicaps adjusted, and a fresh round slate has been initialized for next week!"
+        )
     return redirect('/admin-dashboard/')
 
 
@@ -2545,62 +2658,68 @@ def assign_scramble_hole_ajax(request):
     return JsonResponse({'status': 'failed', 'message': 'Invalid method'}, status=400)
 
 
+def start_fresh_game(request):
+    """Erase the active round and open a blank one. Same steps as Erase Round & Start Fresh Game."""
+    active_round = GolfRound.objects.filter(is_active=True).first()
+    if active_round:
+        fmt = str(active_round.game_format or '').strip().lower()
+        # Apply next-round adjustments from today's results before wiping scores (once only)
+        if not active_round.metrics_finalized:
+            if fmt in ("chicago_points_18", "18_ind_chicago"):
+                apply_18_chicago_quota_updates(active_round)
+                messages.success(
+                    request,
+                    "18-Hole Chicago quotas updated for next round based on today's +/- to quota."
+                )
+            elif fmt in ("9_team_chicago", "team_chicago_points_9"):
+                apply_9_team_chicago_quota_updates(active_round)
+                messages.success(
+                    request,
+                    "9-Hole Team Chicago quotas updated for next round based on today's +/- to quota."
+                )
+            elif fmt in ("18_hole_mens_league", "mens_league"):
+                apply_mens_handicap_updates(active_round)
+                messages.success(
+                    request,
+                    "Men's league handicaps updated from the last five 18-hole scores."
+                )
+            elif fmt == "18_gross_net":
+                apply_mens_handicap_updates(active_round)
+                messages.success(
+                    request,
+                    "18-hole individual handicaps updated from the last five 18-hole scores."
+                )
+            elif fmt == "9_womens_league":
+                apply_womens_handicap_updates(active_round)
+                messages.success(
+                    request,
+                    "Ladies league handicaps updated from the last five 9-hole scores."
+                )
+
+        # Symmetrical database cascading lookups will automatically clear HoleScores and Squads
+        active_round.delete()
+        messages.success(request, "💥 Active tournament round session completely erased from database columns.")
+
+    # Directly clear out checked-in markers on all active members to reset the field roster
+    Player.objects.all().update(is_playing_today=False, is_captain=False, riding_partner=None)
+
+    # Instantiate a fresh, clean tournament container row for the next game
+    GolfRound.objects.create(
+        course_name="PRGC Championship Course",
+        is_active=True,
+        game_format=""  # Empty string to satisfy database constraints cleanly
+    )
+
+    messages.success(
+        request,
+        "🔄 Fresh tournament round initialized successfully! All fields reset to pristine states."
+    )
+
+
 @staff_member_required
 def reset_scramble_tournament_action(request):
     if request.method == "POST":
-        # 1. Locate and permanently delete the current active round container row
-        active_round = GolfRound.objects.filter(is_active=True).first()
-        if active_round:
-            fmt = str(active_round.game_format or '').strip().lower()
-            # Apply next-round adjustments from today's results before wiping scores (once only)
-            if not active_round.metrics_finalized:
-                if fmt in ("chicago_points_18", "18_ind_chicago"):
-                    apply_18_chicago_quota_updates(active_round)
-                    messages.success(
-                        request,
-                        "18-Hole Chicago quotas updated for next round based on today's +/- to quota."
-                    )
-                elif fmt in ("9_team_chicago", "team_chicago_points_9"):
-                    apply_9_team_chicago_quota_updates(active_round)
-                    messages.success(
-                        request,
-                        "9-Hole Team Chicago quotas updated for next round based on today's +/- to quota."
-                    )
-                elif fmt in ("18_hole_mens_league", "mens_league"):
-                    apply_mens_handicap_updates(active_round)
-                    messages.success(
-                        request,
-                        "Men's league handicaps updated from the last five 18-hole scores."
-                    )
-                elif fmt == "18_gross_net":
-                    apply_mens_handicap_updates(active_round)
-                    messages.success(
-                        request,
-                        "18-hole individual handicaps updated from the last five 18-hole scores."
-                    )
-                elif fmt == "9_womens_league":
-                    apply_womens_handicap_updates(active_round)
-                    messages.success(
-                        request,
-                        "Ladies league handicaps updated from the last five 9-hole scores."
-                    )
-
-            # Symmetrical database cascading lookups will automatically clear HoleScores and Squads
-            active_round.delete()
-            messages.success(request, "💥 Active tournament round session completely erased from database columns.")
-
-        # 2. Directly clear out checked-in markers on all active members to reset the field roster
-        Player.objects.all().update(is_playing_today=False, is_captain=False, riding_partner=None)
-
-        # 3. Instantiate a fresh, clean tournament container row for your next scramble game
-        GolfRound.objects.create(
-            course_name="PRGC Championship Course",
-            is_active=True,
-            game_format=""  # Empty string to satisfy database constraints cleanly
-        )
-
-        messages.success(request,
-                         "🔄 Fresh tournament round initialized successfully! All fields reset to pristine states.")
+        start_fresh_game(request)
     return redirect('scorecard:admin_dashboard')
 
 

@@ -14,6 +14,8 @@ from scorecard.views import (
     adjust_18_chicago_quota_for_player,
     adjust_ladies_handicap_for_player,
     adjust_mens_handicap_for_player,
+    apply_mens_handicap_updates,
+    apply_womens_handicap_updates,
     chicago_quota_step,
     compute_round_skins,
     mens_league_handicap_from_scores,
@@ -406,6 +408,110 @@ class WomensLeagueHandicapTests(TestCase):
         self.assertEqual(WomensLeagueRoundScore.objects.count(), 0)
 
 
+class NineHolePracticeHandicapTests(TestCase):
+    def test_practice_round_does_not_change_handicaps(self):
+        player = Player.objects.create(name='Pat', handicap=11, ladies_league_handicap=7)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 10)]
+        active = GolfRound.objects.create(game_format='9_HOLE_PRACTICE', is_active=True)
+        for hole in holes:
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=6)
+
+        played = HoleScore.objects.filter(round=active, player=player)
+        self.assertIsNone(adjust_ladies_handicap_for_player(player, played, active))
+        self.assertIsNone(adjust_mens_handicap_for_player(player, played, active))
+        self.assertEqual(apply_womens_handicap_updates(active), [])
+        self.assertEqual(apply_mens_handicap_updates(active), [])
+
+        staff = User.objects.create_user('practice-staff', password='pw', is_staff=True)
+        self.client.force_login(staff)
+        board = self.client.get('/leaderboard/?format=9_hole_practice')
+        self.assertNotContains(board, 'Update Ladies Handicaps')
+        self.assertNotContains(board, 'Update Player Handicaps')
+        self.assertNotContains(board, 'Handicap:')
+        self.assertContains(board, 'Back to the Ninth Hole')
+        self.assertContains(board, '/play/hole/9/')
+
+        finish = self.client.get('/play/finish/')
+        self.assertRedirects(finish, '/leaderboard/?format=9_hole_practice', fetch_redirect_response=False)
+
+        self.client.post('/admin-dashboard/finalize-handicaps/')
+        player.refresh_from_db()
+        self.assertEqual(player.handicap, 11)
+        self.assertEqual(player.ladies_league_handicap, 7)
+        self.assertEqual(WomensLeagueRoundScore.objects.count(), 0)
+        self.assertEqual(MensLeagueRoundScore.objects.count(), 0)
+
+        GolfRound.objects.filter(is_active=True).update(is_active=False)
+        again = GolfRound.objects.create(game_format='9_HOLE_PRACTICE', is_active=True)
+        for hole in holes:
+            HoleScore.objects.create(round=again, player=player, hole=hole, gross_value=6)
+        self.client.post('/admin-dashboard/reset-game/')
+        player.refresh_from_db()
+        self.assertEqual(player.handicap, 11)
+        self.assertEqual(player.ladies_league_handicap, 7)
+        self.assertEqual(WomensLeagueRoundScore.objects.count(), 0)
+        self.assertEqual(MensLeagueRoundScore.objects.count(), 0)
+
+    def test_practice_leaderboard_logout_starts_a_fresh_game(self):
+        keeper_user = User.objects.create_user('keeper', password='pw')
+        partner = Player.objects.create(name='Pat Partner')
+        player = Player.objects.create(
+            name='Pat',
+            user=keeper_user,
+            handicap=11,
+            ladies_league_handicap=7,
+            is_playing_today=True,
+            is_captain=True,
+            riding_partner=partner,
+        )
+        hole = Hole.objects.create(hole_number=9, par=4)
+        active = GolfRound.objects.create(game_format='9_HOLE_PRACTICE', is_active=True)
+        squad = Squad.objects.create(
+            round=active, squad_number=1, starting_hole=hole, scorekeeper=player
+        )
+        squad.players.add(player)
+        HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=5)
+
+        self.client.force_login(keeper_user)
+        board = self.client.get('/leaderboard/?format=9_hole_practice')
+        self.assertContains(board, 'name="erase_practice"')
+
+        stayed = self.client.get('/logout/')
+        self.assertRedirects(stayed, '/login/')
+        self.assertTrue(GolfRound.objects.filter(id=active.id).exists())
+
+        self.client.force_login(keeper_user)
+        response = self.client.post('/logout/', {'erase_practice': '1'})
+        self.assertRedirects(response, '/login/')
+        self.assertNotIn('_auth_user_id', self.client.session)
+        self.assertFalse(GolfRound.objects.filter(id=active.id).exists())
+        self.assertFalse(HoleScore.objects.exists())
+        self.assertFalse(Squad.objects.exists())
+        fresh = GolfRound.objects.get(is_active=True)
+        self.assertEqual(fresh.game_format, '')
+        player.refresh_from_db()
+        self.assertFalse(player.is_playing_today)
+        self.assertFalse(player.is_captain)
+        self.assertIsNone(player.riding_partner_id)
+        self.assertEqual(player.handicap, 11)
+        self.assertEqual(player.ladies_league_handicap, 7)
+
+    def test_logout_does_not_erase_a_league_round(self):
+        keeper_user = User.objects.create_user('keeper', password='pw')
+        player = Player.objects.create(name='Pat', user=keeper_user, handicap=11, is_playing_today=True)
+        hole = Hole.objects.create(hole_number=1, par=4)
+        active = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=True)
+        HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=4)
+
+        self.client.force_login(keeper_user)
+        response = self.client.post('/logout/', {'erase_practice': '1'})
+        self.assertRedirects(response, '/login/')
+        self.assertTrue(GolfRound.objects.filter(id=active.id).exists())
+        self.assertTrue(HoleScore.objects.filter(round=active, gross_value=4).exists())
+        player.refresh_from_db()
+        self.assertTrue(player.is_playing_today)
+
+
 class MemberListOrderTests(TestCase):
     def test_members_sort_by_last_name(self):
         players = [
@@ -628,6 +734,30 @@ class SquadViewerScorecardTests(TestCase):
         self.assertContains(later, 'class="gn-prev"')
         self.assertContains(later, 'grid-column: 2;')
         self.assertContains(later, 'class="gn-leaderboard"')
+
+    def test_nine_hole_practice_matches_womens_card_without_handicap_or_net(self):
+        hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
+        Hole.objects.create(hole_number=6, par=3, handicap_index=6)
+        self.squad.starting_hole = hole_five
+        self.squad.save(update_fields=['starting_hole'])
+        self.round.game_format = '9_HOLE_PRACTICE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        on_start = self.client.get('/play/hole/5/')
+        self.assertNotContains(on_start, '⬅️ Prev')
+        self.assertContains(on_start, 'class="gn-nav"')
+        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, '>Gross<')
+        self.assertNotContains(on_start, 'Handicap:')
+        self.assertNotContains(on_start, '>Net<')
+        self.assertContains(on_start, 'Bob Smith')
+
+        later = self.client.get('/play/hole/6/')
+        self.assertContains(later, '⬅️ Prev')
+        self.assertContains(later, 'class="gn-prev"')
+        self.assertNotContains(later, 'Handicap:')
+        self.assertNotContains(later, '>Net<')
 
     def test_eighteen_chicago_matches_paired_navigation(self):
         Hole.objects.create(hole_number=2, par=4, handicap_index=2)

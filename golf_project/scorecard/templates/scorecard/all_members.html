@@ -5,27 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Registered Members</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #008000; margin: 0; padding: 12px; }
+        body { font-family: Arial, sans-serif; font-size: calc(16px + 6pt); background: #008000; margin: 0; padding: 12px; }
         .list-container { max-width: 1100px; margin: 0 auto; background: #B3DEB6; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .header-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; margin-bottom: 20px; }
+        h2 { font-size: calc(24px + 6pt); }
         .member-scroll { overflow-y: auto; scrollbar-gutter: stable; border: 1px solid #c8e6c9; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; margin-top: 0; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e0e0e0; vertical-align: middle; font-size: calc(16px + 6pt); }
         th { background-color: #f5f5f5; color: #333; font-weight: bold; position: sticky; top: 0; z-index: 1; }
         tr:hover { background-color: #fafafa; }
         .member-search { margin-top: 16px; }
         .member-search label { display: block; font-weight: bold; color: #2c3e50; margin-bottom: 6px; }
-        .member-search input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #1b5e20; border-radius: 6px; font-size: 16px; }
+        .member-search input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #1b5e20; border-radius: 6px; font-size: calc(16px + 6pt); }
         .header-actions { display: flex; gap: 8px; align-items: center; }
-        .btn-back { display: inline-block; background: #2e7d32; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; font-size: 16px; font-family: Arial, sans-serif; }
+        .btn-back { display: inline-block; background: #2e7d32; color: white; padding: 10px 15px; font-weight: bold; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; font-size: calc(16px + 6pt); font-family: Arial, sans-serif; }
         .btn-back:hover { background: #1b5e20; }
-        .member-id-badge { background: #e0f2f1; color: #004d40; padding: 3px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; }
 
         /* Interactive styling additions */
-        .btn-inline-edit { padding: 5px 10px; background: #ffb300; color: #333; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 13px; margin-right: 5px;}
-        .btn-inline-delete { padding: 5px 10px; background: #d32f2f; color: white; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 13px; }
+        .btn-inline-edit, .btn-inline-delete { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 62px; padding: 5px 10px; font-weight: bold; border-radius: 4px; font-size: calc(13px + 6pt); line-height: 1; text-align: center; }
+        .btn-inline-edit { background: #ffb300; color: #333; text-decoration: none; margin-right: 5px; }
+        .btn-inline-delete { background: #d32f2f; color: white; text-decoration: none; border: none; cursor: pointer; }
         .checkbox-container { display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .playing-checkbox { transform: scale(1.3); cursor: pointer; }
+        .playing-checkbox { width: 34px; height: 34px; cursor: pointer; }
+        td:first-child .playing-checkbox { transform: translateX(10pt); }
+        td:nth-child(2) .playing-checkbox { transform: translateX(-10pt); }
+        .name-col { box-sizing: border-box; width: calc(157px + 50pt); min-width: calc(157px + 50pt); }
+        .hcp-col { text-align: center; }
     </style>
 </head>
 <body>
@@ -45,18 +50,17 @@
             <tr>
                 <th style="text-align: center; width: 110px;">Playing Today</th>
                 <th style="text-align: center; width: 110px;">Scorekeeper</th>
-                <th>Member ID</th>
-                <th>Name</th>
-                <th>18H Hcp</th>
-                <th>18H Chicago</th>
-                <th>9H Team Chicago</th>
-                <th>Ladies Hcp</th>
+                <th class="name-col">Name</th>
+                <th class="hcp-col">18H Hcp</th>
+                <th class="hcp-col">18H Chicago</th>
+                <th class="hcp-col">9H Team Chicago</th>
+                <th class="hcp-col">Ladies Hcp</th>
                 <th style="width: 140px;">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for player in players %}
-            <tr data-search="{{ player.member_id|default:'' }} {{ player.name }} {{ player.handicap }} {{ player.chicago_points_18 }} {{ player.team_chicago_points_9 }} {{ player.ladies_league_handicap|default:'' }}">
+            <tr data-search="{{ player.name }} {{ player.handicap }} {{ player.chicago_points_18 }} {{ player.team_chicago_points_9 }} {{ player.ladies_league_handicap|default:'' }}">
                 <td style="text-align: center;">
                     <div class="checkbox-container">
                         <input type="checkbox"
@@ -75,23 +79,21 @@
                                onchange="updateScorekeeper(this)">
                     </div>
                 </td>
-                <td><span class="member-id-badge">{{ player.member_id|default:"N/A" }}</span></td>
-                                <!-- 🟢 Dynamic Name Colorization: Captain names turn green! -->
-                <td>
+                <td class="name-col">
                     <strong style="{% if player.is_captain %}color: #1b5e20;{% else %}color: #2c3e50;{% endif %}">
                         {{ player.name }}
                     </strong>
                     {% if player.is_captain %}
-                        <span style="background: #e8f5e9; color: #1b5e20; padding: 1px 5px; border-radius: 3px; font-size: 10px; font-weight: bold; display: inline-block; margin-left: 5px; text-transform: uppercase; letter-spacing: 0.3px;">
+                        <span style="background: #e8f5e9; color: #1b5e20; padding: 1px 5px; border-radius: 3px; font-size: calc(10px + 6pt); font-weight: bold; display: inline-block; margin-left: 5px; text-transform: uppercase; letter-spacing: 0.3px;">
                             Captain
                         </span>
                     {% endif %}
                 </td>
 
-                <td>{{ player.handicap }}</td>
-                <td>{{ player.chicago_points_18 }}</td>
-                <td>{{ player.team_chicago_points_9 }}</td>
-                <td>{{ player.ladies_league_handicap|default:"-" }}</td>
+                <td class="hcp-col">{{ player.handicap }}</td>
+                <td class="hcp-col">{{ player.chicago_points_18 }}</td>
+                <td class="hcp-col">{{ player.team_chicago_points_9 }}</td>
+                <td class="hcp-col">{{ player.ladies_league_handicap|default:"-" }}</td>
                 <td>
     <div style="display: flex; align-items: center; gap: 8px;">
         <a href="{% url 'scorecard:edit_player' player.id %}" class="btn-inline-edit" style="text-decoration: none;">✏️ Edit</a>
@@ -99,7 +101,7 @@
         <!-- NEW: Secure Deletion Form Wrapper Panel -->
         <form action="{% url 'scorecard:delete_player' player.id %}" method="POST" onsubmit="return confirm('⚠️ Permanent Action: Are you sure you want to completely remove {{ player.name }} from the system roster? This cannot be undone.');" style="margin: 0; padding: 0;">
             {% csrf_token %}
-            <button type="submit" class="btn-inline-delete" style="border: none; cursor: pointer; padding: 5px 10px;">❌</button>
+            <button type="submit" class="btn-inline-delete">❌</button>
         </form>
     </div>
 </td>
@@ -107,11 +109,11 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="9" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
+                <td colspan="8" style="text-align: center; color: #757575; padding: 30px;">No registered members found.</td>
             </tr>
             {% endfor %}
             <tr id="member-search-empty" hidden>
-                <td colspan="9" style="text-align: center; color: #757575; padding: 30px;">No members match that search.</td>
+                <td colspan="8" style="text-align: center; color: #757575; padding: 30px;">No members match that search.</td>
             </tr>
         </tbody>
     </table>
@@ -119,7 +121,7 @@
 
     <div class="member-search">
         <label for="member-search">Search</label>
-        <input id="member-search" type="search" placeholder="Search by name, member ID, or handicap" autocomplete="off">
+        <input id="member-search" type="search" placeholder="Search by name or handicap" autocomplete="off">
     </div>
 </div>
 

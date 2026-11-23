@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: calc(16px + 7pt); color: #222; margin: 24px; }
+        h1 { font-size: calc(24px + 7pt); margin: 0 0 16px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px 10px; border-bottom: 1px solid #ccc; text-align: left; }
+        tbody tr:nth-child(even) td { background: #eeeeee; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        th.hcp, td.hcp, th.round, td.round, th.avg, td.avg { text-align: center; }
+        th.hcp, td.hcp { width: 90px; }
+        th.avg, td.avg { width: 80px; }
+        th.round, td.round { width: 90px; }
+        .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; }
+        .toolbar button, .toolbar a { font-size: calc(16px + 7pt); font-weight: bold; }
+        .toolbar button { background: #1565c0; color: white; border: none; border-radius: 6px; padding: 10px 16px; cursor: pointer; }
+        .toolbar a { color: #1565c0; }
+        {% if portrait %}
+        @page { size: 8.5in 11in; margin: 0.4in 0.45in; }
+        body { max-width: 8.5in; margin: 24px auto; font-size: calc(12px + 7pt); }
+        h1 { font-size: calc(18px + 7pt); margin: 0 0 8px 0; }
+        table { table-layout: fixed; }
+        th, td { padding: 3pt 3px; line-height: 1.15; }
+        th { font-size: calc(12px + 4pt); }
+        th.name, td.name { width: 38%; white-space: nowrap; }
+        th.round, td.round { width: 8%; }
+        th.avg, td.avg { width: 11%; }
+        th.hcp, td.hcp { width: 11%; }
+        {% endif %}
+        @media print {
+            .toolbar { display: none; }
+            body { margin: 0; max-width: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button type="button" onclick="window.print()">Print</button>
+        <a href="{% url 'scorecard:admin_dashboard' %}">Back to Dashboard</a>
+    </div>
+    <h1>{{ title }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th class="name">Name</th>
+                {% if show_rounds %}
+                    {% for label in round_labels %}
+                    <th class="round">{{ label }}</th>
+                    {% endfor %}
+                {% endif %}
+                {% if show_rounds %}
+                <th class="avg">Average</th>
+                {% endif %}
+                <th class="hcp">Handicap</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td class="name">{{ player.name }}</td>
+                {% if show_rounds %}
+                    {% for score in player.print_rounds %}
+                    <td class="round">
+                        {% if score and score.gross_score %}
+                            {{ score.gross_score }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                {% endif %}
+                {% if show_rounds %}
+                <td class="avg">{% if player.print_average %}{{ player.print_average }}{% else %}—{% endif %}</td>
+                {% endif %}
+                <td class="hcp">{% if player.print_handicap == None %}—{% else %}{{ player.print_handicap }}{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="{% if show_rounds %}8{% else %}2{% endif %}">No players are registered.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -60,6 +60,8 @@ urlpatterns = [
     # ⛳ Ensure this line exists exactly as written with matching view attributes
     path('admin-dashboard/assign-scramble-hole/', views.assign_scramble_hole_ajax, name='assign_scramble_hole_ajax'),
     path('admin-dashboard/reset-game/', views.reset_scramble_tournament_action, name='reset_scramble_tournament_action'),
+    path('admin-dashboard/print-mens-handicap/', views.print_mens_league_handicap, name='print_mens_league_handicap'),
+    path('admin-dashboard/print-ladies-handicap/', views.print_ladies_league_handicap, name='print_ladies_league_handicap'),
     path('admin-dashboard/dismantle-squad/<int:squad_id>/', views.dismantle_squad_action, name='dismantle_squad_action'),
     path('scramble-scorecard/<int:hole_number>/', views.player_scorecard_scramble_view, name='player_scorecard_scramble'),
 
