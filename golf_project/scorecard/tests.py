@@ -378,6 +378,8 @@ class MensLeagueScorecardTests(TestCase):
         self.assertContains(response, '>Out<')
         self.assertContains(response, '>In<')
         self.assertContains(response, '>Total<')
+        self.assertContains(response, 'width: 200%')
+        self.assertContains(response, 'Slide for the back nine.')
         page = response.content.decode()
         alan_at = page.find('Alan Braner')
         doug_at = page.find('Doug Anderson')

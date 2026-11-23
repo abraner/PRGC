@@ -8,27 +8,35 @@
         body { font-family: Arial, sans-serif; font-size: 11px; color: #222; margin: 16px; }
         h1 { font-size: 18px; margin: 0 0 4px 0; }
         .when { margin: 0 0 12px 0; color: #444; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th, td { border: 1px solid #bbb; padding: 3px 2px; text-align: center; }
-        th.name, td.name { text-align: left; width: 16%; white-space: nowrap; padding-left: 4px; }
-        th.sum, td.sum { font-weight: bold; background: #e8f5e9; width: 4.2%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .card-scroll { overflow-x: scroll; width: 100%; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; scrollbar-color: #0d47a1 #cfd8dc; }
+        .card-scroll::-webkit-scrollbar { height: 12px; }
+        .card-scroll::-webkit-scrollbar-track { background: #cfd8dc; }
+        .card-scroll::-webkit-scrollbar-thumb { background: #0d47a1; border-radius: 6px; }
+        .card-track { display: flex; width: 200%; }
+        .card-track table { flex: 0 0 50%; width: 50%; border-collapse: collapse; table-layout: fixed; scroll-snap-align: start; scroll-snap-stop: always; }
+        th, td { border: 1px solid #bbb; padding: 4px 2px; text-align: center; }
+        th.name, td.name { text-align: left; width: 26%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 4px; }
+        th.sum, td.sum { font-weight: bold; background: #e8f5e9; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         tbody tr:nth-child(even) td { background: #eeeeee; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         tbody tr:nth-child(even) td.sum { background: #dcedc8; }
+        .slide-note { margin: 0 0 8px 0; color: #444; font-size: 13px; }
         .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
         .toolbar button, .toolbar a { font-size: 16px; font-weight: bold; }
         .toolbar button { background: #0d47a1; color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; }
         .toolbar a { color: #0d47a1; }
         @page { size: 11in 8.5in; margin: 0.35in; }
         @media print {
-            .toolbar { display: none; }
+            .toolbar, .slide-note { display: none; }
             body { margin: 0; }
+            .card-scroll { overflow: visible; }
+            .card-track { width: 100%; }
         }
         @media (orientation: landscape) and (max-height: 520px) {
-            body { margin: 6px; font-size: 9px; }
-            h1 { font-size: 14px; }
-            .when { margin-bottom: 6px; }
+            body { margin: 6px; font-size: 14px; }
+            h1 { font-size: 16px; }
+            .when, .slide-note { margin-bottom: 4px; font-size: 12px; }
             .toolbar { display: none; }
-            .card-scroll { overflow-x: auto; }
+            th, td { padding: 6px 2px; }
         }
     </style>
 </head>
@@ -60,16 +68,47 @@
     {% if golf_round %}
     <p class="when">{{ golf_round.date_played|date:"F j, Y" }}</p>
     {% endif %}
+    <p class="slide-note">Slide for the back nine.</p>
     <div class="card-scroll">
+    <div class="card-track">
     <table>
         <thead>
             <tr>
                 <th class="name">Name</th>
                 {% for number in hole_numbers %}
-                    {% if number == 10 %}
-                    <th class="sum">Out</th>
-                    {% endif %}
+                    {% if number <= 9 %}
                     <th>{{ number }}</th>
+                    {% endif %}
+                {% endfor %}
+                <th class="sum">Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td class="name">{{ row.name }}</td>
+                {% for score in row.cells %}
+                    {% if forloop.counter <= 9 %}
+                    <td>{% if score %}{{ score }}{% else %}—{% endif %}</td>
+                    {% endif %}
+                {% endfor %}
+                <td class="sum">{% if row.front %}{{ row.front }}{% else %}—{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td class="name" colspan="11">No men's league hole scores are on file.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th class="name">Name</th>
+                {% for number in hole_numbers %}
+                    {% if number >= 10 %}
+                    <th>{{ number }}</th>
+                    {% endif %}
                 {% endfor %}
                 <th class="sum">In</th>
                 <th class="sum">Total</th>
@@ -80,21 +119,17 @@
             <tr>
                 <td class="name">{{ row.name }}</td>
                 {% for score in row.cells %}
-                    {% if forloop.counter == 10 %}
-                    <td class="sum">{% if row.front %}{{ row.front }}{% else %}—{% endif %}</td>
-                    {% endif %}
+                    {% if forloop.counter >= 10 %}
                     <td>{% if score %}{{ score }}{% else %}—{% endif %}</td>
+                    {% endif %}
                 {% endfor %}
                 <td class="sum">{% if row.back %}{{ row.back }}{% else %}—{% endif %}</td>
                 <td class="sum">{% if row.total %}{{ row.total }}{% else %}—{% endif %}</td>
             </tr>
-            {% empty %}
-            <tr>
-                <td class="name" colspan="22">No men's league hole scores are on file.</td>
-            </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
     </div>
 </body>
 </html>
