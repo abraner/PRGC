@@ -736,6 +736,28 @@ class SquadViewerScorecardTests(TestCase):
         self.assertContains(gross_later, 'grid-column: 2;')
         self.assertContains(gross_later, 'class="gn-leaderboard"')
 
+    def test_mens_league_eighteenth_hole_uses_the_same_leaderboard_button(self):
+        Hole.objects.create(hole_number=17, par=4, handicap_index=17)
+        Hole.objects.create(hole_number=18, par=4, handicap_index=18)
+        self.round.game_format = '18_HOLE_MENS_LEAGUE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        seventeenth = self.client.get('/play/hole/17/')
+        eighteenth = self.client.get('/play/hole/18/')
+        self.assertContains(seventeenth, '🏆 Leaderboard')
+        self.assertContains(seventeenth, 'standings=1&amp;from_hole=17')
+        self.assertNotContains(eighteenth, 'Finish Match')
+        self.assertContains(eighteenth, '🏆 Leaderboard')
+        self.assertContains(eighteenth, 'standings=1&amp;from_hole=18')
+
+        board = self.client.get('/leaderboard/?standings=1&from_hole=18')
+        board_html = board.content.decode()
+        self.assertContains(board, 'Return to Hole 18')
+        self.assertContains(board, '🚪 Log Out')
+        self.assertLess(board_html.find('Return to Hole 18'), board_html.find('🚪 Log Out'))
+        self.assertIn('margin-left: auto', board_html)
+
     def test_team_chicago_matches_gross_net_navigation(self):
         hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
         Hole.objects.create(hole_number=6, par=4, handicap_index=6)

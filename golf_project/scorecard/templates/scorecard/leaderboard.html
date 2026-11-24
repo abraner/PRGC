@@ -103,6 +103,10 @@
             <a href="{{ scorecard_return_url }}" class="btn-shortcut" style="background: #2e7d32;">
                 {% if scorecard_return_hole %}📝 Return to Hole {{ scorecard_return_hole }}{% else %}📝 Return to Scorecard{% endif %}
             </a>
+            <a href="{% url 'scorecard:logout' %}" class="btn-shortcut" style="background: #c62828; margin-left: auto;"
+               onclick="return confirm('Log out now?');">
+                🚪 Log Out
+            </a>
         {% elif request.user.is_staff %}
             {% if metrics_finalized or not total_individual_count or not is_mens_league and not is_team_chicago and request.GET.format != "18_gross_net" and round.game_format != "18_GROSS_NET" and request.GET.format != "9_team_chicago" and round.game_format != "team_chicago_points_9" and round.game_format != "9_TEAM_CHICAGO" and request.GET.format != "9_womens_league" and round.game_format != "9_WOMENS_LEAGUE" %}
             <a href="/admin-dashboard/" class="btn-shortcut">

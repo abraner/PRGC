@@ -134,7 +134,11 @@
         </a>
         {% endif %}
 
-        {% if is_final_hole and is_scorecard_editable %}
+        {% if is_mens_league and is_final_hole %}
+            <a href="{{ standings_url }}" style="flex: 1.5; order: 2; text-align: center; padding: 12px 8px; background: #00796b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                🏆 Leaderboard
+            </a>
+        {% elif is_final_hole and is_scorecard_editable %}
             <a href="{{ leaderboard_url }}" style="flex: 2.5; text-align: center; padding: 12px 8px; background: #004d40; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
                 🏁 Finish Match & View Leaderboard 🏆
             </a>
