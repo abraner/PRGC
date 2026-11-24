@@ -51,8 +51,8 @@
 
     <div style="display: flex; justify-content: space-between; align-items: stretch; background: #fafafa; padding: 12px 18px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px; gap: 15px;">
         <div class="handicap-print-row">
-            <a href="{% url 'scorecard:print_mens_league_handicap' %}" class="btn-action" style="background:#1565c0;">Men's League Handicap</a>
-            <a href="{% url 'scorecard:print_ladies_league_handicap' %}" class="btn-action" style="background:#e91e63;">Ladies League Handicap</a>
+            <a href="{% url 'scorecard:print_mens_league_handicap' %}" class="btn-action" style="background:#1565c0;">18 Hole Handicap</a>
+            <a href="{% url 'scorecard:print_ladies_league_handicap' %}" class="btn-action" style="background:#e91e63;">9 Hole Handicap</a>
         </div>
         <a href="{% url 'scorecard:tournament_leaderboard' %}?next=admin" class="btn btn-primary" style="text-decoration: none; padding: 8px 16px; background: #2e7d32; color: white; border-radius: 6px; font-weight: bold; font-size: calc(13px + 6pt); display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s;" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'">
             🏆️ View Live Leaderboard

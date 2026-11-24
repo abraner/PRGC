@@ -973,12 +973,12 @@ def _league_handicap_printout(request, league):
     if not request.user.is_authenticated or not request.user.is_staff:
         return redirect('/login/')
     if league == 'ladies':
-        title = "Ladies League Handicap"
+        title = "9 Hole Handicap"
         score_model = WomensLeagueRoundScore
         scores_attr = 'womens_league_scores'
         handicap_from_scores = womens_league_handicap_from_scores
     else:
-        title = "Men's League Handicap"
+        title = "18 Hole Handicap"
         score_model = MensLeagueRoundScore
         scores_attr = 'mens_league_scores'
         handicap_from_scores = mens_league_handicap_from_scores
