@@ -14,7 +14,7 @@ from django.contrib.messages import get_messages
 from django.contrib.auth.models import User
 from .models import (
     Player, GolfRound, Hole, Squad, HoleScore, PayoutSetting, Cost,
-    MensLeagueRoundScore, WomensLeagueRoundScore,
+    MensLeagueRoundScore, MensLeaguePayout, GamePayout, WomensLeagueRoundScore,
 )
 from .forms import ScoringMemberRegistrationForm, ManualSquadForm, PayoutRulesForm
 from collections import defaultdict
@@ -30,8 +30,16 @@ CHICAGO_POINTS_FORMATS = (
 CHICAGO_SCORED = Q(net_value=1) | Q(gross_value__gt=0)
 
 
+def normalized_format(game_format):
+    return str(game_format or '').strip().lower()
+
+
 def is_chicago_points_format(game_format):
-    return str(game_format or '').strip() in CHICAGO_POINTS_FORMATS
+    return normalized_format(game_format) in {name.lower() for name in CHICAGO_POINTS_FORMATS}
+
+
+def is_mens_league_format(game_format):
+    return normalized_format(game_format) in ('18_hole_mens_league', 'mens_league')
 
 
 def points_from_gross_versus_par(gross_value, par):
@@ -210,12 +218,33 @@ def mens_league_handicap_from_scores(gross_scores):
     return max(0, int(math.floor(raw + 0.5)))
 
 
+def current_mens_table_handicap(player):
+    """
+    Handicap used for 18-hole individual gross/net.
+    The latest handicap stored on MensLeagueRoundScore wins. Older rows that
+    only have a gross still produce a handicap from those grosses.
+    """
+    latest = (
+        MensLeagueRoundScore.objects.filter(player=player, handicap__isnull=False)
+        .order_by('-played_on', '-id')
+        .values_list('handicap', flat=True)
+        .first()
+    )
+    if latest is not None:
+        return int(latest)
+    grosses = MensLeagueRoundScore.objects.filter(player=player).order_by(
+        '-played_on', '-id'
+    ).values_list('gross_score', flat=True)[:5]
+    calculated = mens_league_handicap_from_scores(grosses)
+    return 0 if calculated is None else int(calculated)
+
+
 def adjust_mens_handicap_for_player(player, played_scores, active_round):
     """
-    Record today's 18-hole gross on MensLeagueRoundScore, then set player.handicap
-    from the last five recorded grosses: 80% of (average − 60). Men's league and
-    18-hole individual gross/net share that history. Fewer than five rounds uses
-    however many full rounds are on file. A card short of 18 holes is ignored.
+    Record today's 18-hole gross on MensLeagueRoundScore, then store the new
+    handicap on that row and on the player: 80% of (average of the last five
+    grosses − 60). Men's league caps the saved handicap at 20. Gross/net saves
+    the full handicap on the player as well. A card short of 18 holes is ignored.
     """
     if is_practice_format(getattr(active_round, 'game_format', '')):
         return None
@@ -225,8 +254,11 @@ def adjust_mens_handicap_for_player(player, played_scores, active_round):
     if len(scored) < 18:
         return None
 
+    is_mens_league = is_mens_league_format(active_round.game_format)
+    old_hcp = int(player.handicap or 0) if is_mens_league else current_mens_table_handicap(player)
+
     total_gross = sum(int(s.gross_value) for s in scored)
-    MensLeagueRoundScore.objects.update_or_create(
+    score_row, _created = MensLeagueRoundScore.objects.update_or_create(
         player=player,
         golf_round=active_round,
         defaults={
@@ -237,12 +269,13 @@ def adjust_mens_handicap_for_player(player, played_scores, active_round):
     recent_grosses = MensLeagueRoundScore.objects.filter(player=player).order_by(
         '-played_on', '-id'
     ).values_list('gross_score', flat=True)[:5]
-    old_hcp = int(player.handicap or 0)
     new_hcp = mens_league_handicap_from_scores(recent_grosses)
-    if str(active_round.game_format or '') == '18_HOLE_MENS_LEAGUE':
+    if is_mens_league:
         new_hcp = min(new_hcp, MENS_LEAGUE_MAX_HANDICAP)
     player.handicap = new_hcp
     player.save(update_fields=['handicap'])
+    score_row.handicap = new_hcp
+    score_row.save(update_fields=['handicap'])
     return old_hcp, new_hcp, total_gross
 
 
@@ -751,16 +784,17 @@ def reset_tournament_action(request):
                                            'par__sum'] or 0
 
                     # 🟢 CHOOSE CALCULATION METHOD & DB FIELD BASED ON ACTIVE FORMAT
-                    if old_active_round.game_format == "9_WOMENS_LEAGUE":
+                    fmt = normalized_format(old_active_round.game_format)
+                    if fmt == "9_womens_league":
                         adjust_ladies_handicap_for_player(player, played_scores, old_active_round)
 
-                    elif old_active_round.game_format in ("18_IND_CHICAGO", "chicago_points_18"):
+                    elif fmt in ("18_ind_chicago", "chicago_points_18"):
                         adjust_18_chicago_quota_for_player(player, played_scores)
 
-                    elif old_active_round.game_format == "9_TEAM_CHICAGO":
+                    elif fmt in ("9_team_chicago", "team_chicago_points_9"):
                         adjust_9_team_chicago_quota_for_player(player, played_scores)
 
-                    elif old_active_round.game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
+                    elif fmt in ("18_hole_mens_league", "mens_league", "18_gross_net"):
                         adjust_mens_handicap_for_player(player, played_scores, old_active_round)
 
                     else:
@@ -1390,7 +1424,12 @@ def player_scorecard(request, hole_number=None):
 
                 for player in squad_players:
                     existing_score = HoleScore.objects.filter(round=active_round, hole=hole, player=player).first()
-                    active_display_hcp = player.ladies_league_handicap or 0 if is_womens_league else player.handicap or 0
+                    if is_womens_league:
+                        active_display_hcp = player.ladies_league_handicap or 0
+                    elif is_gross_net:
+                        active_display_hcp = current_mens_table_handicap(player)
+                    else:
+                        active_display_hcp = player.handicap or 0
                     if is_mens_league:
                         active_display_hcp = min(int(active_display_hcp or 0), MENS_LEAGUE_MAX_HANDICAP)
 
@@ -1603,10 +1642,11 @@ def finalize_handicaps_action(request):
 def finish_round_update_quotas(request):
     """
     Staff end-of-round action from the leaderboard.
-    - 18-hole Chicago: updates chicago_points_18 from today's +/- to quota
-    - 9-hole Team Chicago: updates 18-hole Chicago from today's 9-hole +/- 
-    - 18-hole Men's League and Individual Gross/Net: handicap = 80% of (average of the last five 18-hole grosses − 60), shared history
-    - 9-hole Women's: ladies handicap = 80% of (average of the last five 9-hole grosses − 30)
+    - 18-hole Chicago: writes the next quota to player.chicago_points_18
+    - 9-hole Team Chicago: writes the next quota to player.team_chicago_points_9
+    - Men's league: writes the capped handicap to player.handicap
+    - 18-hole individual gross/net: writes the full handicap to player.handicap
+    - 9-hole women's league: writes the next handicap to player.ladies_league_handicap
     Locked by GolfRound.metrics_finalized so it cannot run twice.
     """
     if not request.user.is_staff:
@@ -1730,6 +1770,32 @@ def _scorecard_standings_return(request):
     return True, f'/play/hole/{squad_query}', None
 
 
+def _place_payouts_for(model, player_count):
+    row = model.objects.filter(player_count=player_count).first()
+    if row is None:
+        return None
+    amounts = row.place_amounts()
+    return amounts or None
+
+
+def mens_league_place_payouts(player_count):
+    """Place dollars for a men's league field, read from the men's payout table.
+
+    Returns None when that player count has no row, so a field under 5 or over
+    30 still uses the percentage split.
+    """
+    return _place_payouts_for(MensLeaguePayout, player_count)
+
+
+def game_place_payouts(player_count):
+    """Place dollars for every game except the men's 18-hole league.
+
+    Read from the games payout table. Returns None when that player count has
+    no row, so a field under 5 or over 30 still uses the percentage split.
+    """
+    return _place_payouts_for(GamePayout, player_count)
+
+
 # @login_required
 def tournament_leaderboard(request):
     # SECURITY FIX: Direct hardcoded path string mapping avoids NoReverseMatch compiler check bugs
@@ -1754,7 +1820,7 @@ def tournament_leaderboard(request):
     entry_fee_val = 12.00
     course_cut_val = 2.00
     closest_to_hole_rate = 2.00
-    skins_rate = 3.00
+    skins_rate = 2.00
 
     calculated_total_pot = 0.00
     calculated_course_money = 0.00
@@ -1958,7 +2024,10 @@ def tournament_leaderboard(request):
                 display_net = "-"
                 sort_net_metric = g_sum if holes_played > 0 else 999
                 to_par_str = "E"
-                hcp = int(player.handicap or 0)
+                if clean_fmt_check == "18_gross_net":
+                    hcp = current_mens_table_handicap(player)
+                else:
+                    hcp = int(player.handicap or 0)
                 if is_mens_league:
                     hcp = min(hcp, MENS_LEAGUE_MAX_HANDICAP)
 
@@ -2037,7 +2106,7 @@ def tournament_leaderboard(request):
             # Chicago pays the whole remainder after the golf course amount.
             if clean_fmt_check in ("18_hole_mens_league", "mens_league"):
                 closest_to_hole_rate = 2.00
-                skins_rate = 3.00
+                skins_rate = 2.00
             else:
                 closest_to_hole_rate = 0.00
                 skins_rate = 0.00
@@ -2051,16 +2120,24 @@ def tournament_leaderboard(request):
 
             # 📈 DYNAMIC PLACEMENT PAYOUT ENGINE
             item_count_to_payout = len([x for x in ordered_list if x['holes_played'] > 0])
-            if item_count_to_payout <= 2:
-                payout_percentages = [1.00]
-            elif item_count_to_payout <= 3:
-                payout_percentages = [0.60, 0.40]
-            elif item_count_to_payout <= 15:
-                payout_percentages = [0.50, 0.30, 0.20]
+            if clean_fmt_check in ("18_hole_mens_league", "mens_league"):
+                place_schedule = mens_league_place_payouts(total_individual_count)
             else:
-                payout_percentages = [0.40, 0.30, 0.20, 0.10]
+                place_schedule = game_place_payouts(total_individual_count)
+            if place_schedule is not None:
+                placement_prizes = [float(amount) for amount in place_schedule]
+                calculated_net_placement_pool = float(sum(place_schedule))
+            else:
+                if item_count_to_payout <= 2:
+                    payout_percentages = [1.00]
+                elif item_count_to_payout <= 3:
+                    payout_percentages = [0.60, 0.40]
+                elif item_count_to_payout <= 15:
+                    payout_percentages = [0.50, 0.30, 0.20]
+                else:
+                    payout_percentages = [0.40, 0.30, 0.20, 0.10]
 
-            placement_prizes = [calculated_net_placement_pool * pct for pct in payout_percentages]
+                placement_prizes = [calculated_net_placement_pool * pct for pct in payout_percentages]
 
             # 🛠️ PLACEMENT TIE RESOLUTION MATRIX
             from collections import defaultdict
@@ -2245,6 +2322,7 @@ def finalize_tournament_round(request, round_id):
 
     active_round = get_object_or_404(GolfRound, id=round_id)
     game_format = str(active_round.game_format or '').strip()
+    fmt = normalized_format(game_format)
 
     # Isolate only players who logged active scores to run their handicap calculations.
     # Chicago includes a direct entry of 0 points.
@@ -2263,19 +2341,19 @@ def finalize_tournament_round(request, round_id):
 
             if holes_count > 0:
                 # BRANCH A: MEN'S LEAGUE & 18-HOLE INDIVIDUAL GROSS/NET
-                if game_format in ("18_HOLE_MENS_LEAGUE", "18_GROSS_NET"):
+                if fmt in ("18_hole_mens_league", "mens_league", "18_gross_net"):
                     adjust_mens_handicap_for_player(player, played_scores, active_round)
 
                 # BRANCH B: 18-HOLE CHICAGO POINTS GAMES
-                elif game_format in ["18_IND_CHICAGO", "chicago_points_18"]:
+                elif fmt in ("18_ind_chicago", "chicago_points_18"):
                     adjust_18_chicago_quota_for_player(player, played_scores)
 
                 # BRANCH C: 9-HOLE LADIES LEAGUE FORMAT
-                elif game_format == "9_WOMENS_LEAGUE":
+                elif fmt == "9_womens_league":
                     adjust_ladies_handicap_for_player(player, played_scores, active_round)
 
                 # BRANCH D: 9-HOLE TEAM CHICAGO FORMAT
-                elif game_format in ["team_chicago_points_9", "9_TEAM_CHICAGO"]:
+                elif fmt in ("team_chicago_points_9", "9_team_chicago"):
                     adjust_9_team_chicago_quota_for_player(player, played_scores)
 
     # SECTION 4: SHIELD CLOSURE ENFORCEMENT ENGINE

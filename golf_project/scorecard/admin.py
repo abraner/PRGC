@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 # 🟢 1. Make sure Hole is imported alongside your other models
-from .models import Hole, Player, Squad, GolfRound, PayoutSetting, Cost, MensLeagueRoundScore, WomensLeagueRoundScore
+from .models import (
+    Hole, Player, Squad, GolfRound, PayoutSetting, Cost,
+    MensLeagueRoundScore, MensLeaguePayout, GamePayout, WomensLeagueRoundScore,
+)
 
 # Open Django Admin in the same tab; "View site" returns to the tournament control panel
 admin.site.site_url = '/admin-dashboard/'
@@ -35,7 +38,7 @@ admin.site.register(PayoutSetting)
 
 @admin.register(MensLeagueRoundScore)
 class MensLeagueRoundScoreAdmin(admin.ModelAdmin):
-    list_display = ('player', 'gross_score', 'played_on', 'golf_round')
+    list_display = ('player', 'gross_score', 'handicap', 'played_on', 'golf_round')
     list_filter = ('played_on',)
     search_fields = ('player__name',)
 
@@ -45,6 +48,42 @@ class WomensLeagueRoundScoreAdmin(admin.ModelAdmin):
     list_display = ('player', 'gross_score', 'played_on', 'golf_round')
     list_filter = ('played_on',)
     search_fields = ('player__name',)
+
+
+@admin.register(GamePayout)
+class GamePayoutAdmin(admin.ModelAdmin):
+    """Games payout sheet. Men's 18-hole league has its own table."""
+
+    list_display = (
+        'player_count', 'gross', 'golf_course', 'position',
+        'place_1', 'place_2', 'place_3', 'place_4', 'place_5', 'place_6',
+        'place_7', 'place_8', 'place_9', 'place_10', 'place_11',
+    )
+    list_display_links = ('player_count',)
+    list_editable = (
+        'gross', 'golf_course', 'position',
+        'place_1', 'place_2', 'place_3', 'place_4', 'place_5', 'place_6',
+        'place_7', 'place_8', 'place_9', 'place_10', 'place_11',
+    )
+    ordering = ('player_count',)
+
+
+@admin.register(MensLeaguePayout)
+class MensLeaguePayoutAdmin(admin.ModelAdmin):
+    """Men's 18-hole payout sheet. One row per field size."""
+
+    list_display = (
+        'player_count', 'gross', 'golf_course', 'closest_to_pin', 'skins', 'position',
+        'place_1', 'place_2', 'place_3', 'place_4', 'place_5', 'place_6', 'place_7',
+        'place_8', 'place_9', 'place_10', 'place_11', 'place_12', 'place_13',
+    )
+    list_display_links = ('player_count',)
+    list_editable = (
+        'gross', 'golf_course', 'closest_to_pin', 'skins', 'position',
+        'place_1', 'place_2', 'place_3', 'place_4', 'place_5', 'place_6', 'place_7',
+        'place_8', 'place_9', 'place_10', 'place_11', 'place_12', 'place_13',
+    )
+    ordering = ('player_count',)
 
 
 @admin.register(Cost)

@@ -123,6 +123,10 @@ class MensLeagueRoundScore(models.Model):
         GolfRound, on_delete=models.SET_NULL, null=True, blank=True, related_name='mens_league_scores'
     )
     gross_score = models.PositiveIntegerField()
+    handicap = models.IntegerField(
+        null=True, blank=True,
+        help_text="Handicap after this round. 18-hole individual gross/net plays from the latest one.",
+    )
     played_on = models.DateTimeField()
 
     class Meta:
@@ -262,6 +266,86 @@ _COST_FIELD_BY_FORMAT = {
     '18_ind_chicago': 'chicago_18',
     'chicago_points_18': 'chicago_18',
 }
+
+
+class MensLeaguePayout(models.Model):
+    """One column of the men's 18-hole league payout sheet."""
+
+    player_count = models.PositiveSmallIntegerField(unique=True, verbose_name="# of Players")
+    gross = models.PositiveIntegerField(verbose_name="Gross")
+    golf_course = models.PositiveIntegerField(verbose_name="Golf Course")
+    closest_to_pin = models.PositiveIntegerField(verbose_name="Closest to pin")
+    skins = models.PositiveIntegerField(verbose_name="Skins")
+    position = models.PositiveIntegerField(verbose_name="Position")
+    place_1 = models.PositiveIntegerField(null=True, blank=True, verbose_name="1")
+    place_2 = models.PositiveIntegerField(null=True, blank=True, verbose_name="2")
+    place_3 = models.PositiveIntegerField(null=True, blank=True, verbose_name="3")
+    place_4 = models.PositiveIntegerField(null=True, blank=True, verbose_name="4")
+    place_5 = models.PositiveIntegerField(null=True, blank=True, verbose_name="5")
+    place_6 = models.PositiveIntegerField(null=True, blank=True, verbose_name="6")
+    place_7 = models.PositiveIntegerField(null=True, blank=True, verbose_name="7")
+    place_8 = models.PositiveIntegerField(null=True, blank=True, verbose_name="8")
+    place_9 = models.PositiveIntegerField(null=True, blank=True, verbose_name="9")
+    place_10 = models.PositiveIntegerField(null=True, blank=True, verbose_name="10")
+    place_11 = models.PositiveIntegerField(null=True, blank=True, verbose_name="11")
+    place_12 = models.PositiveIntegerField(null=True, blank=True, verbose_name="12")
+    place_13 = models.PositiveIntegerField(null=True, blank=True, verbose_name="13")
+
+    class Meta:
+        ordering = ['player_count']
+        verbose_name = "Men's league payout"
+        verbose_name_plural = "Men's league payouts"
+
+    def __str__(self):
+        return f"{self.player_count} players"
+
+    def place_amounts(self):
+        """Paid places for this field size, in finishing order."""
+        amounts = []
+        for place in range(1, 14):
+            value = getattr(self, f'place_{place}')
+            if value is None:
+                break
+            amounts.append(value)
+        return tuple(amounts)
+
+
+class GamePayout(models.Model):
+    """One column of the games payout sheet. Men's 18-hole league uses its own table."""
+
+    player_count = models.PositiveSmallIntegerField(unique=True, verbose_name="# of Players")
+    gross = models.PositiveIntegerField(verbose_name="Gross")
+    golf_course = models.PositiveIntegerField(verbose_name="Golf Course")
+    position = models.PositiveIntegerField(verbose_name="Position")
+    place_1 = models.PositiveIntegerField(null=True, blank=True, verbose_name="1")
+    place_2 = models.PositiveIntegerField(null=True, blank=True, verbose_name="2")
+    place_3 = models.PositiveIntegerField(null=True, blank=True, verbose_name="3")
+    place_4 = models.PositiveIntegerField(null=True, blank=True, verbose_name="4")
+    place_5 = models.PositiveIntegerField(null=True, blank=True, verbose_name="5")
+    place_6 = models.PositiveIntegerField(null=True, blank=True, verbose_name="6")
+    place_7 = models.PositiveIntegerField(null=True, blank=True, verbose_name="7")
+    place_8 = models.PositiveIntegerField(null=True, blank=True, verbose_name="8")
+    place_9 = models.PositiveIntegerField(null=True, blank=True, verbose_name="9")
+    place_10 = models.PositiveIntegerField(null=True, blank=True, verbose_name="10")
+    place_11 = models.PositiveIntegerField(null=True, blank=True, verbose_name="11")
+
+    class Meta:
+        ordering = ['player_count']
+        verbose_name = "Game payout"
+        verbose_name_plural = "Game payouts"
+
+    def __str__(self):
+        return f"{self.player_count} players"
+
+    def place_amounts(self):
+        """Paid places for this field size, in finishing order."""
+        amounts = []
+        for place in range(1, 12):
+            value = getattr(self, f'place_{place}')
+            if value is None:
+                break
+            amounts.append(value)
+        return tuple(amounts)
 
 
 

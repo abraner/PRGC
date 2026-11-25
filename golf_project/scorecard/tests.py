@@ -7,7 +7,10 @@ from django.test import TestCase
 from django.utils import timezone
 
 from scorecard.forms import designated_scorekeeper_label, player_squad_choice_label
-from scorecard.models import Cost, GolfRound, Hole, HoleScore, MensLeagueRoundScore, Player, Squad, WomensLeagueRoundScore
+from scorecard.models import (
+    Cost, GamePayout, GolfRound, Hole, HoleScore, MensLeaguePayout, MensLeagueRoundScore,
+    Player, Squad, WomensLeagueRoundScore,
+)
 from scorecard.views import (
     _member_last_name_key,
     adjust_9_team_chicago_quota_for_player,
@@ -18,7 +21,9 @@ from scorecard.views import (
     apply_womens_handicap_updates,
     chicago_quota_step,
     compute_round_skins,
+    game_place_payouts,
     mens_league_handicap_from_scores,
+    mens_league_place_payouts,
     womens_league_handicap_from_scores,
 )
 
@@ -93,6 +98,92 @@ class CostAmountTests(TestCase):
         self.assertEqual(response.context['closest_pin_pool'], '0')
         payouts = sorted((row['payout'] for row in response.context['net_leaderboard']), reverse=True)
         self.assertEqual(payouts, [20, 12, 8, 0])
+
+    def test_mens_league_skins_are_two_dollars_a_player(self):
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        row = Cost.objects.first()
+        row.mens_league_18 = Decimal('12.00')
+        row.golf_course_amount = Decimal('2.00')
+        row.save()
+
+        hole = Hole.objects.create(hole_number=1, par=4)
+        active = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=True)
+        for name, gross in (('Ada', 4), ('Bea', 5)):
+            player = Player.objects.create(name=name, handicap=0)
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=gross)
+
+        response = self.client.get('/leaderboard/')
+        self.assertEqual(response.context['skins_pool'], '4')
+        self.assertEqual(response.context['closest_pin_pool'], '4')
+
+    def test_mens_league_place_money_follows_the_spreadsheet(self):
+        self.assertEqual(MensLeaguePayout.objects.count(), 26)
+        stored = MensLeaguePayout.objects.get(player_count=10)
+        self.assertEqual(
+            (stored.gross, stored.golf_course, stored.closest_to_pin, stored.skins, stored.position),
+            (110, 20, 20, 20, 50),
+        )
+        self.assertEqual(stored.place_amounts(), (14, 12, 10, 8, 6))
+        twenty_three = MensLeaguePayout.objects.get(player_count=23)
+        self.assertEqual(twenty_three.position, 117)
+        self.assertEqual(sum(twenty_three.place_amounts()), 118)
+
+        self.assertIsNone(mens_league_place_payouts(4))
+        self.assertIsNone(mens_league_place_payouts(31))
+        self.assertEqual(mens_league_place_payouts(10), (14, 12, 10, 8, 6))
+        self.assertEqual(mens_league_place_payouts(23), (19, 17, 15, 13, 11, 10, 9, 8, 7, 5, 4))
+        purses = {
+            5: 25, 6: 30, 7: 35, 8: 40, 9: 45, 10: 50, 11: 57, 12: 60,
+            13: 67, 14: 70, 15: 77, 16: 80, 17: 87, 18: 90, 19: 97, 20: 100,
+            21: 107, 22: 110, 23: 118, 24: 120, 25: 127, 26: 130, 27: 137,
+            28: 140, 29: 147, 30: 150,
+        }
+        for players, purse in purses.items():
+            self.assertEqual(sum(mens_league_place_payouts(players)), purse, players)
+
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        row = Cost.objects.first()
+        row.mens_league_18 = Decimal('12.00')
+        row.golf_course_amount = Decimal('2.00')
+        row.save()
+        hole = Hole.objects.create(hole_number=1, par=4, handicap_index=1)
+        active = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=True)
+        for gross in range(4, 14):
+            player = Player.objects.create(name=f'Player {gross}', handicap=0)
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=gross)
+
+        response = self.client.get('/leaderboard/')
+        self.assertEqual(response.context['net_pool'], '50')
+        self.assertEqual(response.context['skins_pool'], '20')
+        self.assertEqual(response.context['closest_pin_pool'], '20')
+        payouts = sorted((item['payout'] for item in response.context['net_leaderboard']), reverse=True)
+        self.assertEqual(payouts, [14, 12, 10, 8, 6, 0, 0, 0, 0, 0])
+
+    def test_other_games_use_the_games_payout_sheet(self):
+        self.assertEqual(GamePayout.objects.count(), 26)
+        stored = GamePayout.objects.get(player_count=5)
+        self.assertEqual((stored.gross, stored.golf_course, stored.position), (30, 10, 20))
+        self.assertEqual(stored.place_amounts(), (10, 7, 3))
+        self.assertEqual(game_place_payouts(10), (12, 10, 8, 6, 4))
+        self.assertIsNone(game_place_payouts(4))
+        self.assertNotEqual(game_place_payouts(10), mens_league_place_payouts(10))
+
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        hole = Hole.objects.create(hole_number=1, par=4)
+        active = GolfRound.objects.create(game_format='9_WOMENS_LEAGUE', is_active=True)
+        for gross in range(4, 9):
+            player = Player.objects.create(name=f'Player {gross}', ladies_league_handicap=0)
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=gross)
+
+        response = self.client.get('/leaderboard/?format=9_womens_league')
+        self.assertEqual(response.context['net_pool'], '20')
+        self.assertEqual(response.context['skins_pool'], '0')
+        self.assertEqual(response.context['closest_pin_pool'], '0')
+        payouts = sorted((item['payout'] for item in response.context['net_leaderboard']), reverse=True)
+        self.assertEqual(payouts, [10, 7, 3, 0, 0])
 
 
 class ChicagoQuotaStepTests(TestCase):
@@ -232,6 +323,86 @@ class ChicagoQuotaStepTests(TestCase):
         self.assertEqual((stroke_row.gross_value, stroke_row.net_value), (5, 0))
 
 
+class PlayerTableRatingTests(TestCase):
+    def test_mens_league_alias_writes_the_capped_handicap_on_the_player(self):
+        player = Player.objects.create(name='Ned', handicap=4)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 19)]
+        active = GolfRound.objects.create(game_format='mens_league', is_active=True)
+        for hole in holes:
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=5)
+
+        adjust_mens_handicap_for_player(
+            player, HoleScore.objects.filter(round=active, player=player), active
+        )
+        player.refresh_from_db()
+        self.assertEqual(player.handicap, 20)
+
+    def test_finish_writes_mens_ladies_and_chicago_ratings_on_the_player(self):
+        staff = User.objects.create_user('ratings', password='pw', is_staff=True)
+        self.client.force_login(staff)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 19)]
+        player = Player.objects.create(
+            name='Rita',
+            handicap=4,
+            ladies_league_handicap=1,
+            chicago_points_18=10,
+            team_chicago_points_9=8,
+        )
+
+        mens = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=True)
+        for hole in holes:
+            HoleScore.objects.create(round=mens, player=player, hole=hole, gross_value=5)
+        self.client.get('/play/finish/')
+        player.refresh_from_db()
+        self.assertEqual(player.handicap, 20)
+        mens.is_active = False
+        mens.save(update_fields=['is_active'])
+
+        ladies = GolfRound.objects.create(game_format='9_WOMENS_LEAGUE', is_active=True)
+        for hole in holes[:9]:
+            HoleScore.objects.create(round=ladies, player=player, hole=hole, gross_value=5)
+        self.client.get('/play/finish/')
+        player.refresh_from_db()
+        self.assertEqual(player.ladies_league_handicap, 12)
+        self.assertEqual(player.handicap, 20)
+        ladies.is_active = False
+        ladies.save(update_fields=['is_active'])
+
+        chicago = GolfRound.objects.create(game_format='chicago_points_18', is_active=True)
+        for hole in holes[:5]:
+            HoleScore.objects.create(round=chicago, player=player, hole=hole, gross_value=5)
+        self.client.get('/play/finish/')
+        player.refresh_from_db()
+        self.assertEqual(player.chicago_points_18, 8)
+        chicago.is_active = False
+        chicago.save(update_fields=['is_active'])
+
+        team = GolfRound.objects.create(game_format='9_TEAM_CHICAGO', is_active=True)
+        for hole in holes[:4]:
+            HoleScore.objects.create(round=team, player=player, hole=hole, gross_value=3)
+        self.client.get('/play/finish/')
+        player.refresh_from_db()
+        self.assertEqual(player.team_chicago_points_9, 12)
+        self.assertEqual(player.handicap, 20)
+        self.assertEqual(player.ladies_league_handicap, 12)
+        self.assertEqual(player.chicago_points_18, 8)
+
+    def test_reset_team_chicago_alias_updates_team_points_not_handicap(self):
+        staff = User.objects.create_user('reset-staff', password='pw', is_staff=True)
+        self.client.force_login(staff)
+        player = Player.objects.create(name='Tess', handicap=15, team_chicago_points_9=8)
+        active = GolfRound.objects.create(game_format='team_chicago_points_9', is_active=True)
+        holes = [Hole.objects.create(hole_number=n, par=4) for n in range(1, 5)]
+        for hole in holes:
+            HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=3)
+
+        response = self.client.post('/admin-dashboard/reset/')
+        self.assertEqual(response.status_code, 302)
+        player.refresh_from_db()
+        self.assertEqual(player.team_chicago_points_9, 12)
+        self.assertEqual(player.handicap, 15)
+
+
 class MensLeagueHandicapTests(TestCase):
     def test_formula_is_eighty_percent_of_average_minus_60(self):
         self.assertEqual(mens_league_handicap_from_scores([90]), 24)
@@ -302,9 +473,12 @@ class MensLeagueHandicapTests(TestCase):
             player, HoleScore.objects.filter(round=active, player=player), active
         )
         player.refresh_from_db()
-        # Prior men's 80 and today's gross/net 90 average 85. (85 − 60) × 0.8 = 20.
-        self.assertEqual((old_hcp, new_hcp, total_gross), (4, 20, 90))
+        # Prior men's 80 is a table handicap of 16. Today's 90 makes the last
+        # two average 85. (85 − 60) × 0.8 = 20, stored on the player and the row.
+        self.assertEqual((old_hcp, new_hcp, total_gross), (16, 20, 90))
         self.assertEqual(player.handicap, 20)
+        today = player.mens_league_scores.get(golf_round=active)
+        self.assertEqual(today.handicap, 20)
         self.assertEqual(player.mens_league_scores.count(), 2)
 
     def test_mens_league_update_caps_at_20(self):
@@ -333,7 +507,31 @@ class MensLeagueHandicapTests(TestCase):
         _, new_hcp, _total = adjust_mens_handicap_for_player(
             player, HoleScore.objects.filter(round=active, player=player), active
         )
+        player.refresh_from_db()
         self.assertEqual(new_hcp, 24)
+        self.assertEqual(player.handicap, 24)
+        self.assertEqual(player.mens_league_scores.get(golf_round=active).handicap, 24)
+
+    def test_gross_net_leaderboard_uses_the_mens_league_table_handicap(self):
+        User.objects.create_user('keeper', password='pw')
+        self.client.login(username='keeper', password='pw')
+        player = Player.objects.create(name='Cal', handicap=4)
+        past = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=False)
+        MensLeagueRoundScore.objects.create(
+            player=player,
+            golf_round=past,
+            gross_score=80,
+            handicap=16,
+            played_on=timezone.now(),
+        )
+        hole = Hole.objects.create(hole_number=1, par=4, handicap_index=1)
+        active = GolfRound.objects.create(game_format='18_GROSS_NET', is_active=True)
+        HoleScore.objects.create(round=active, player=player, hole=hole, gross_value=5)
+
+        response = self.client.get('/leaderboard/?format=18_gross_net')
+        rows = {row['player'].name: row for row in response.context['net_leaderboard']}
+        self.assertEqual(rows['Cal']['playing_handicap'], 16)
+        self.assertEqual(rows['Cal']['net_score'], 5 - 16)
 
     def test_mens_league_leaderboard_and_skins_use_20(self):
         User.objects.create_user('keeper', password='pw')
@@ -691,11 +889,20 @@ class SquadViewerScorecardTests(TestCase):
         self.assertContains(response, 'cursor: not-allowed')
 
     def test_gross_net_handicap_stays_locked_for_the_scorekeeper(self):
-        self.keeper.handicap = 24
+        self.keeper.handicap = 7
         self.keeper.save(update_fields=['handicap'])
+        past = GolfRound.objects.create(game_format='18_HOLE_MENS_LEAGUE', is_active=False)
+        MensLeagueRoundScore.objects.create(
+            player=self.keeper,
+            golf_round=past,
+            gross_score=90,
+            handicap=24,
+            played_on=timezone.now(),
+        )
         self.client.force_login(self.keeper_user)
         response = self.client.get('/play/hole/1/')
-        self.assertContains(response, 'value="24"')
+        self.assertContains(response, 'class="hcp-input" value="24"')
+        self.assertNotContains(response, 'class="hcp-input" value="7"')
         self.assertContains(response, 'readonly')
         self.assertContains(response, 'cursor: not-allowed')
 
