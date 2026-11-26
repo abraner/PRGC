@@ -7,6 +7,8 @@
     <style>
         body { font-family: Arial, sans-serif; background: #008000; padding: 15px; margin: 0; color: #1e293b; }
         .card { max-width: 500px; margin: 0 auto; background: #B3DEB6; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body.hole-even { background: #0d47a1; }
+        body.hole-even .card { background: #d7e8f7; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e7d32; padding-bottom: 10px; margin-bottom: 15px; gap: 10px; }
         .team-banner { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; }
         .hole-display { text-align: center; margin: 20px 0; }
@@ -18,6 +20,7 @@
         .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
         .btn { display: block; text-align: center; text-decoration: none; padding: 12px; font-weight: bold; border-radius: 6px; font-size: 14px; cursor: pointer; border: none; transition: background 0.2s; box-sizing: border-box; }
         .btn-nav { background: #475569; color: white; }
+        .next-hole.is-locked { opacity: 0.55; pointer-events: none; cursor: not-allowed; }
         .btn-leaderboard { background: #00796b; color: white; text-decoration: none; text-align: center; grid-column: 1 / -1; width: auto; margin-left: 0; margin-right: 0; justify-self: stretch; }
         .btn-finish { background: #1b5e20; color: white; width: 100%; grid-column: span 2; margin-top: 4px; }
         .status-badge { display: inline-flex; align-items: center; justify-content: center; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; height: 30px; box-sizing: border-box; }
@@ -31,7 +34,7 @@
         .running-to-par.even { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
     </style>
 </head>
-<body>
+<body class="{% if hole_number|divisibleby:2 %}hole-even{% else %}hole-odd{% endif %}">
 
 <div class="card">
     <div class="header">
@@ -133,7 +136,7 @@
             <button type="submit" name="action" value="prev" class="btn btn-nav"{% if is_final_hole %} style="grid-column: span 2;"{% endif %}>◀ {% if is_scorecard_editable %}Save & {% endif %}Prev</button>
             {% endif %}
             {% if not is_final_hole %}
-            <button type="submit" name="action" value="next" class="btn btn-nav"{% if show_prev_button %} style="grid-column: 2;"{% else %} style="grid-column: span 2;"{% endif %}>{% if is_scorecard_editable %}Save & {% endif %}Next ▶</button>
+            <button type="submit" name="action" value="next" class="btn btn-nav next-hole"{% if show_prev_button %} style="grid-column: 2;"{% else %} style="grid-column: span 2;"{% endif %}>{% if is_scorecard_editable %}Save & {% endif %}Next ▶</button>
             {% endif %}
             {% if is_final_hole %}
             <button type="submit" name="action" value="finish" class="btn btn-finish">🏆 Finish Round</button>
@@ -191,6 +194,22 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 {% endif %}
+<script>
+document.addEventListener('click', function (event) {
+    var button = event.target.closest('.next-hole');
+    if (!button) return;
+    if (button.classList.contains('is-locked')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+    }
+    button.classList.add('is-locked');
+    button.setAttribute('aria-disabled', 'true');
+    if (button.tagName === 'BUTTON') {
+        window.setTimeout(function () { button.disabled = true; }, 0);
+    }
+});
+</script>
 
 </body>
 </html>

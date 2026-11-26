@@ -7,6 +7,8 @@
     <style>
         body { font-family: sans-serif; background: #008000; margin: 0; padding: 15px; }
         .card { background: #B3DEB6; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: 0 auto; box-sizing: border-box; }
+        body.hole-even { background: #0d47a1; }
+        body.hole-even .card { background: #d7e8f7; }
         .header { background: #1b5e20; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
         .player-row { border-bottom: 1px solid #e0e0e0; padding: 15px 0; display: flex; align-items: center; justify-content: space-between; }
         .player-name { font-weight: bold; font-size: 16px; color: #2c3e50; }
@@ -20,13 +22,14 @@
         .gn-nav a { display: block; text-align: center; text-decoration: none; padding: 12px 8px; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; }
         .gn-prev { background: #cfd8dc; color: #37474f; }
         .gn-next { background: #2e7d32; color: white; }
+        .next-hole.is-locked { opacity: 0.55; pointer-events: none; cursor: not-allowed; }
         .gn-leaderboard { background: #00796b; color: white; grid-column: 1 / -1; width: auto; margin-left: 0; margin-right: 0; justify-self: stretch; }
         .btn { flex: 1; height: 50px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; }
         .btn-prev { background: #cfd8dc; color: #37474f; }
         .btn-next { background: #2e7d32; color: white; }
     </style>
 </head>
-<body>
+<body class="{% if current_hole.hole_number|divisibleby:2 %}hole-even{% else %}hole-odd{% endif %}">
 
 <div class="card">
     <div class="header">
@@ -118,12 +121,14 @@
 
 
     <!-- NAVIGATION PACK WITH UNIVERSAL FINISH LINE ENGINE -->
-    {% if paired_nav and not is_final_hole %}
+    {% if is_womens_league or paired_nav and not is_final_hole %}
     <div class="gn-nav">
         {% if show_prev_button %}
         <a class="gn-prev" href="{% url 'scorecard:player_scorecard' prev_hole %}">⬅️ Prev</a>
         {% endif %}
-        <a class="gn-next" href="{% url 'scorecard:player_scorecard' next_hole %}" {% if show_prev_button %}style="grid-column: 2;"{% else %}style="grid-column: 1 / -1;"{% endif %}>Next ➡️</a>
+        {% if not is_final_hole %}
+        <a class="gn-next next-hole" href="{% url 'scorecard:player_scorecard' next_hole %}" {% if show_prev_button %}style="grid-column: 2;"{% else %}style="grid-column: 1 / -1;"{% endif %}>Next ➡️</a>
+        {% endif %}
         <a class="gn-leaderboard" href="{{ standings_url }}">🏆 Leaderboard</a>
     </div>
     {% else %}
@@ -150,7 +155,7 @@
             <a href="{{ standings_url }}" style="flex: 1.5; order: 2; text-align: center; padding: 12px 8px; background: #00796b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 🏆 Leaderboard
             </a>
-            <a href="{% url 'scorecard:player_scorecard' next_hole %}" style="flex: 1; order: {% if show_prev_button %}3{% else %}1{% endif %}; text-align: center; padding: 12px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box;">
+            <a class="next-hole" href="{% url 'scorecard:player_scorecard' next_hole %}" style="flex: 1; order: {% if show_prev_button %}3{% else %}1{% endif %}; text-align: center; padding: 12px 8px; background: #2e7d32; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-sizing: border-box;">
                 Next ➡️
             </a>
         {% endif %}
@@ -357,6 +362,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         calculateRowNetScore(row);
     });
+});
+</script>
+<script>
+document.addEventListener('click', function (event) {
+    var button = event.target.closest('.next-hole');
+    if (!button) return;
+    if (button.classList.contains('is-locked')) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+    }
+    button.classList.add('is-locked');
+    button.setAttribute('aria-disabled', 'true');
 });
 </script>
 

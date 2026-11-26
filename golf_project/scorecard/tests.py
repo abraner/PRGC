@@ -917,6 +917,8 @@ class SquadViewerScorecardTests(TestCase):
 
         on_start = self.client.get('/play/hole/10/')
         self.assertNotContains(on_start, '⬅️ Prev')
+        self.assertContains(on_start, 'class="next-hole"')
+        self.assertContains(on_start, "closest('.next-hole')")
         self.assertContains(on_start, 'flex: 1; order: 1')
         self.assertContains(on_start, 'flex: 1.5; order: 2')
         self.assertNotContains(on_start, ">Men's League Scorecard<")
@@ -934,7 +936,7 @@ class SquadViewerScorecardTests(TestCase):
         self.assertNotContains(gross_start, 'mens-league-scorecard')
         self.assertNotContains(gross_start, '⬅️ Prev')
         self.assertContains(gross_start, 'class="gn-nav"')
-        self.assertContains(gross_start, 'class="gn-next"')
+        self.assertContains(gross_start, 'class="gn-next next-hole"')
         self.assertContains(gross_start, 'grid-column: 1 / -1;')
         self.assertContains(gross_start, 'class="gn-leaderboard"')
         gross_later = self.client.get('/play/hole/11/')
@@ -975,13 +977,17 @@ class SquadViewerScorecardTests(TestCase):
         self.client.force_login(self.keeper_user)
 
         on_start = self.client.get('/play/hole/5/')
+        self.assertContains(on_start, 'class="hole-odd"')
         self.assertNotContains(on_start, 'Previous Hole')
         self.assertContains(on_start, 'class="tc-nav"')
         self.assertContains(on_start, 'Next Hole')
         self.assertContains(on_start, 'grid-column: 1 / -1;')
+        self.assertContains(on_start, 'class="btn-nav btn-next next-hole"')
         self.assertContains(on_start, 'class="btn-nav tc-leaderboard"')
+        self.assertContains(on_start, "closest('.next-hole')")
 
         later = self.client.get('/play/hole/6/')
+        self.assertContains(later, 'class="hole-even"')
         self.assertContains(later, 'Previous Hole')
         self.assertContains(later, 'grid-column: 2;')
         self.assertContains(later, 'class="btn-nav tc-leaderboard"')
@@ -996,17 +1002,41 @@ class SquadViewerScorecardTests(TestCase):
         self.client.force_login(self.keeper_user)
 
         on_start = self.client.get('/play/hole/5/')
+        self.assertContains(on_start, 'class="hole-odd"')
         self.assertNotContains(on_start, '⬅️ Prev')
         self.assertContains(on_start, 'class="gn-nav"')
-        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, 'class="gn-next next-hole"')
         self.assertContains(on_start, 'grid-column: 1 / -1;')
         self.assertContains(on_start, 'class="gn-leaderboard"')
+        self.assertContains(on_start, "closest('.next-hole')")
 
         later = self.client.get('/play/hole/6/')
+        self.assertContains(later, 'class="hole-even"')
         self.assertContains(later, '⬅️ Prev')
         self.assertContains(later, 'class="gn-prev"')
         self.assertContains(later, 'grid-column: 2;')
         self.assertContains(later, 'class="gn-leaderboard"')
+
+    def test_womens_league_last_hole_uses_the_same_leaderboard_button(self):
+        for n in range(2, 10):
+            Hole.objects.create(hole_number=n, par=4, handicap_index=n)
+        self.round.game_format = '9_WOMENS_LEAGUE'
+        self.round.save(update_fields=['game_format'])
+        self.client.force_login(self.keeper_user)
+
+        eighth = self.client.get('/play/hole/8/')
+        ninth = self.client.get('/play/hole/9/')
+        self.assertContains(eighth, 'class="gn-leaderboard"')
+        self.assertContains(eighth, 'standings=1&amp;from_hole=8')
+        self.assertContains(eighth, 'Next ➡️')
+        self.assertNotContains(ninth, 'Finish Match')
+        self.assertNotContains(ninth, 'Next ➡️')
+        self.assertContains(ninth, 'class="gn-leaderboard"')
+        self.assertContains(ninth, '🏆 Leaderboard')
+        self.assertContains(ninth, 'standings=1&amp;from_hole=9')
+
+        board = self.client.get('/leaderboard/?format=9_womens_league&standings=1&from_hole=9')
+        self.assertContains(board, 'Return to Hole 9')
 
     def test_nine_hole_practice_matches_womens_card_without_handicap_or_net(self):
         hole_five = Hole.objects.create(hole_number=5, par=4, handicap_index=5)
@@ -1020,7 +1050,7 @@ class SquadViewerScorecardTests(TestCase):
         on_start = self.client.get('/play/hole/5/')
         self.assertNotContains(on_start, '⬅️ Prev')
         self.assertContains(on_start, 'class="gn-nav"')
-        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, 'class="gn-next next-hole"')
         self.assertContains(on_start, '>Gross<')
         self.assertNotContains(on_start, 'Handicap:')
         self.assertNotContains(on_start, '>Net<')
@@ -1041,7 +1071,7 @@ class SquadViewerScorecardTests(TestCase):
         on_start = self.client.get('/play/hole/1/')
         self.assertNotContains(on_start, '⬅️ Prev')
         self.assertContains(on_start, 'class="gn-nav"')
-        self.assertContains(on_start, 'class="gn-next"')
+        self.assertContains(on_start, 'class="gn-next next-hole"')
         self.assertContains(on_start, 'grid-column: 1 / -1;')
         self.assertContains(on_start, 'class="gn-leaderboard"')
 
@@ -1102,9 +1132,12 @@ class SquadViewerScorecardTests(TestCase):
         self.client.force_login(self.keeper_user)
 
         on_start = self.client.get('/play/hole/5/')
+        self.assertContains(on_start, 'class="hole-odd"')
         start_html = on_start.content.decode()
         self.assertContains(on_start, 'Scramble Live Card')
         self.assertNotContains(on_start, 'Prev')
+        self.assertContains(on_start, 'class="btn btn-nav next-hole"')
+        self.assertContains(on_start, "closest('.next-hole')")
         self.assertLess(start_html.find('Next'), start_html.find('Leaderboard'))
 
         later = self.client.get('/play/hole/6/')
